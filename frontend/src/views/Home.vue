@@ -33,7 +33,7 @@ export default {
   name: "HomePage",
   data() {
     return {
-      name: "xxxxxx",
+      name: "Nook Nut Art",
     };
   },
 };
