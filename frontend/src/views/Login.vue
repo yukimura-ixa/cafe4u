@@ -43,7 +43,7 @@
         </button>
 
         <p class="my-3">
-          Don't have an account? <a href="/signup.html">Sign in</a>
+          Don't have an account? <a href="#/signup">Sign in</a>
         </p>
         </div>
       </div>
