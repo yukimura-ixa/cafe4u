@@ -5,6 +5,22 @@
         <div class="card">
           <header class="card-header"  style="background-color:rgb(13, 56, 11)">
             <p class="card-header-title has-text-success-light">Pending Order</p>
+            <div class="card-header-icon">
+              <div class="control has-icons-left">
+                <div class="select is-primary" >
+                  <select style="background-color:rgb(219, 255, 217)" v-model="sortPending">
+                    <option value="status_d">Status DESC</option>
+                    <option value="status_a">Status ASC</option>
+                    <option value="date_d">Date DESC</option>
+                    <option value="date_a">Date ASC</option>
+                  </select>
+                </div>
+                <div class="icon is-left">
+                  <font-awesome-icon icon="fa-solid fa-arrow-down-wide-short" class="has-text-black-ter"  />
+                </div>
+              </div>
+              
+            </div>
           </header>
           <div class="card-content has-background-grey-lighter">
             <div class="content" style="max-height: 40vh;overflow-y: auto;">
@@ -35,6 +51,22 @@
           </div>
           <header class="card-header"  style="background-color:rgb(13, 56, 11)">
             <p class="card-header-title has-text-success-light">Order History</p>
+              <div class="card-header-icon">
+              <div class="control has-icons-left">
+                <div class="select is-primary" >
+                  <select style="background-color:rgb(219, 255, 217)" v-model="sortHistory">
+                    <option value="status_d">Status DESC</option>
+                    <option value="status_a">Status ASC</option>
+                    <option value="date_d">Date DESC</option>
+                    <option value="date_a">Date ASC</option>
+                  </select>
+                </div>
+                <div class="icon is-left">
+                  <font-awesome-icon icon="fa-solid fa-arrow-down-wide-short" class="has-text-black-ter"  />
+                </div>
+              </div>
+              
+            </div>
           </header>
           <div class="card-content has-background-grey-lighter">
             <div class="content" style="max-height: 40vh;overflow-y: auto;">
@@ -130,10 +162,16 @@ export default {
   data() {
     return {
       selectedOrder:-1,
+      sortPending:'status_d',
+      sortHistory:'status_a',
       orders:[{order_id:1,order_datetime:'2021-07-15 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      {order_id:14,order_datetime:'2021-07-15 12:43:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'sold',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      {order_id:15,order_datetime:'2021-07-15 12:42:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'in queue',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe2',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      {order_id:12,order_datetime:'2021-07-15 12:41:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'finished',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe3',cafe_desc:'11111111111',cafe_theme:'Cool'},
+      {order_id:14,order_datetime:'2021-05-9 12:43:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'sold',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
+      {order_id:15,order_datetime:'2021-04-10 12:42:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'in queue',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe2',cafe_desc:'11111111111',cafe_theme:'Cool'},
+      {order_id:111,order_datetime:'2021-03-11 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
+      {order_id:151,order_datetime:'2021-02-01 12:42:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'in queue',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe2',cafe_desc:'11111111111',cafe_theme:'Cool'},
+      {order_id:112,order_datetime:'2021-01-30 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
+      
+      {order_id:12,order_datetime:'2021-07-13 12:41:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'finished',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe3',cafe_desc:'11111111111',cafe_theme:'Cool'},
       {order_id:13,order_datetime:'2021-07-15 12:40:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'cancelled',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'}],
     //   when add db    orders join cafe join emp join promotion  maybe join user                        orders_item join product
       orders_item:[{item_no:1,product_price:80,order_amount:1,item_totalprice:80,product_id:1,order_id:1,product_name:'Nitro',product_desc:'Nitrooo :D',product_type:'drink',product_status:'available',product_amount:45},
@@ -163,14 +201,108 @@ export default {
             },0)
         },
         pendingOrder(){
-          return this.orders.filter((order)=>{
+          let order = this.orders.filter((order)=>{
                 return order.order_status == 'pending' || order.order_status == 'in queue' || order.order_status == 'finished'
             })
+          
+          //order by Status Desc
+          var arr = ['in queue','pending','finished','sold','cancelled']
+          if(this.sortPending == 'status_d'){
+            order.sort((a,b)=>{
+              var aa, bb
+              //  weight: sold cancelled    finish pending in queue
+              for (let i = 0; i < arr.length; i++) {
+                if(a.order_status == arr[i]){aa = i}
+                if(b.order_status == arr[i]){bb = i}
+              }
+              if(aa > bb){return -1}
+              if(bb > aa){return 1}
+              return 0
+            })
+          }
+          //order by Status Asc
+          else if(this.sortPending == 'status_a'){
+            order.sort((a,b)=>{
+              var aa, bb
+              //  weight: sold cancelled    finish pending in queue
+              for (let i = 0; i < arr.length; i++) {
+                if(a.order_status == arr[i]){aa = i}
+                if(b.order_status == arr[i]){bb = i}
+              }
+              if(aa > bb){return 1}
+              if(bb > aa){return -1}
+              return 0
+            })
+          }
+          //order by Date desc
+          else if(this.sortPending == 'date_d'){
+            order.sort((a,b)=>{
+              if(a.order_datetime > b.order_datetime){return -1}
+              if(b.order_datetime > a.order_datetime){return 1}
+              return 0
+            })
+          }
+          //order by Date asc
+          else if(this.sortPending == 'date_a'){
+            order.sort((a,b)=>{
+              if(a.order_datetime > b.order_datetime){return 1}
+              if(b.order_datetime > a.order_datetime){return -1}
+              return 0
+            })
+          }
+          return order
         },
         historyOrder(){
-          return this.orders.filter((order)=>{
+          let order =this.orders.filter((order)=>{
                 return order.order_status != 'pending' && order.order_status != 'in queue' && order.order_status != 'finished'
+          })
+
+          //order by Status Desc
+          var arr = ['in queue','pending','finished','sold','cancelled']
+          if(this.sortHistory == 'status_d'){
+            order.sort((a,b)=>{
+              var aa, bb
+              //  weight: sold cancelled    finish pending in queue
+              for (let i = 0; i < arr.length; i++) {
+                if(a.order_status == arr[i]){aa = i}
+                if(b.order_status == arr[i]){bb = i}
+              }
+              if(aa > bb){return -1}
+              if(bb > aa){return 1}
+              return 0
             })
+          }
+          //order by Status Asc
+          else if(this.sortHistory == 'status_a'){
+            order.sort((a,b)=>{
+              var aa, bb
+              //  weight: sold cancelled    finish pending in queue
+              for (let i = 0; i < arr.length; i++) {
+                if(a.order_status == arr[i]){aa = i}
+                if(b.order_status == arr[i]){bb = i}
+              }
+              if(aa > bb){return 1}
+              if(bb > aa){return -1}
+              return 0
+            })
+          }
+          //order by Date desc
+          else if(this.sortHistory == 'date_d'){
+            order.sort((a,b)=>{
+              if(a.order_datetime > b.order_datetime){return -1}
+              if(b.order_datetime > a.order_datetime){return 1}
+              return 0
+            })
+          }
+          //order by Date asc
+          else if(this.sortHistory == 'date_a'){
+            order.sort((a,b)=>{
+              if(a.order_datetime > b.order_datetime){return 1}
+              if(b.order_datetime > a.order_datetime){return -1}
+              return 0
+            })
+          }
+          return order
         }
   },
   methods:{
@@ -190,4 +322,5 @@ body {
   background-color: rgb(50, 119, 80);
   height: 100vh;
 }
+
 </style>
