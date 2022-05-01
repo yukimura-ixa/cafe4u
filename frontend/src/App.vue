@@ -55,24 +55,43 @@
       </div>
     </nav>
 
-    <router-view :key="$route.fullPath" />
+    <router-view :key="$route.fullPath" :user="localUser" :cart="localCart"/>
   </div>
 </template>
 
 <script>
+// import axios from "axios";
+
 export default {
   name: "App",
   props: ["user", "cart"],
   data() {
     return {
-      user_logged: "",
-      cart_item: [],
       searchText: '',
+      localUser: null,
+      localCart: null,
     };
   },
-  // mounted() {},
-  // computed() {},
-  // methods() {},
+  mounted() {
+    // this.onAuthChange();
+  },
+  methods: {
+    // onAuthChange() {
+    //   const token = localStorage.getItem("token");
+    //   if (token) {
+    //     this.getUser();
+    //   }
+    // },
+    // getUser() {
+    //   axios.get("/user/me", {}).then((res) => {
+    //     this.user = res.data;
+    //   });
+    // },
+    logout() {
+      localStorage.removeItem("token");
+      this.$router.go();
+    },
+  },
 };
 </script>
 

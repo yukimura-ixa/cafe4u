@@ -28,7 +28,22 @@ const routes = [
     path: '/order',
     name: 'order',
     component: () => import('../views/OrderHistory.vue')
-  }
+  },
+  {
+    path: '/cafe',
+    name: 'cafe',
+    component: () => import('../views/CafeDetail.vue')
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('../views/SearchPage.vue')
+  },
+  {
+    path: '/map',
+    name: 'map',
+    component: () => import('../views/CafeMap.vue')
+  },
 //   {
 //     path: '/user/login',
 //     name: 'login',
