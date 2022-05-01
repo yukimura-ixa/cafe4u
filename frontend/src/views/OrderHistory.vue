@@ -1,6 +1,8 @@
 <template>
   <div class="container is-fluid mt-5">
     <div class="columns is-centered">
+
+      <!-- left element -->
       <div class="column is-4">
         <div class="card">
           <header class="card-header"  style="background-color:rgb(13, 56, 11)">
@@ -43,10 +45,6 @@
                   </div>
                 </div>
               </div>
-
-
-
-
             </div>
           </div>
           <header class="card-header"  style="background-color:rgb(13, 56, 11)">
@@ -89,10 +87,11 @@
           </div>
         </div>
       </div>
+
+      <!-- right element -->
       <div class="column is-8">
-           <div class="card" style="min-height: 80vh;">
-               
-          <div class="card-content has-background-white" v-if="currentOrder">
+           <div class="card" :class="[!currentOrder?'blankstyle':'']">   
+          <div class="card-content has-background-white" style="min-height: 80vh;" v-if="currentOrder">
                <div class="content">
                  <div class="columns">
                 <div class="column is-8">
@@ -145,10 +144,16 @@
                   </tbody>
               </table>
               <div v-if="currentOrder.pro_id">Promotion Used: {{currentOrder.pro_id}}</div>
+              
 
 
             </div>
           </div>
+          <footer class="card-footer p-5" v-if="currentOrder">
+            <div class="ml-auto">
+            <button class="button is-outlined is-danger" v-if="currentOrder.order_status=='in queue'" @click="cancelOrder($event,currentOrder)">Cancel</button>
+            </div>
+          </footer>
         </div>
 
       </div>
@@ -321,6 +326,9 @@ export default {
 body {
   background-color: rgb(50, 119, 80);
   height: 100vh;
+}
+.blankstyle{
+  min-height: 80vh;
 }
 
 </style>
