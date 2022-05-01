@@ -13,7 +13,10 @@ import {
   FontAwesomeLayersText,
 } from "@fortawesome/vue-fontawesome";
 
+
 import "bulma/css/bulma.css";
+import '@splidejs/splide/dist/css/themes/splide-sea-green.min.css';
+
 
 library.add(fas, fab, far);
 

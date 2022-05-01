@@ -1,46 +1,46 @@
 <template>
-  <div class="container is-fluid">
-    <h1>gd</h1>
-    <font-awesome-icon icon="fa-solid fa-heart" beat />
-    <font-awesome-icon icon="fa-solid fa-circle-info" beat-fade />
-    <font-awesome-icon icon="fa-solid fa-basketball" bounce />
-    <font-awesome-icon icon="fa-solid fa-triangle-exclamation" fade />
-    <font-awesome-icon icon="fa-solid fa-compact-disc" flip />
-    <font-awesome-icon icon="fa-solid fa-bell" shake />
-    <font-awesome-icon icon="fa-solid fa-cog" spin />
-    <font-awesome-icon icon="fa-solid fa-compass" spin spin-reverse />
-    <font-awesome-icon icon="fa-solid fa-spinner" spin-pulse />
-    <div class="columns is-centered">
-      <div class="column is-6">{{ name }}</div>
-      <font-awesome-layers full-width class="fa-4x">
-        <font-awesome-icon icon="fa-solid fa-envelope" />
-        <font-awesome-layers-text counter value="1" position="top-right" />
-      </font-awesome-layers>
-    </div>
-    <font-awesome-layers full-width class="fa-4x">
-      <font-awesome-icon icon="fa-solid fa-certificate" inverse />
-      <font-awesome-layers-text
-        class="gray8"
-        transform="down-2 shrink-8"
-        value="New!"
-      />
-    </font-awesome-layers>
+  <div>
+    <section class="hero is-fullheight">
+    <Splide class="is-fluid" :options="{ cover: true, type:'loop', heightRatio: 0.4, autoplay: true, arrows: false }">
+      <SplideSlide>
+        <img
+          src="https://s.isanook.com/hm/0/rp/rc/w850h510/yatxacm1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL2htLzAvdWQvNC8yNDY0Ny96YWtrYWhvbWUuanBn.jpg"
+          alt="Sample 1"
+        />
+      </SplideSlide>
+      <SplideSlide>
+        <img
+          src="https://www.forfur.com/img/I78/t_7768_15834695551067208599.jpg"
+          alt="Sample 2"
+        />
+      </SplideSlide>
+      <SplideSlide>
+        <img
+          src="https://thejourneymoment.com/wp-content/uploads/2019/12/cover-cafe-no-text.jpg"
+          alt="Sample 2"
+        />
+      </SplideSlide>
+    </Splide>
+    </section>
   </div>
 </template>
 
+
 <script>
+import { Splide, SplideSlide } from "@splidejs/vue-splide";
+
 export default {
   name: "HomePage",
+  components: {
+    Splide,
+    SplideSlide,
+  },
   data() {
     return {
       name: "Nook Nut Art",
+      carousel_items: [],
     };
   },
 };
 </script>
 
-<style>
-body {
-  background-color: aquamarine;
-}
-</style>
