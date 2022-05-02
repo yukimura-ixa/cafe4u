@@ -45,10 +45,10 @@
             </a>
             <a class="button is-light"> ออกจากระบบ </a>
             <div class="buttons">
-              <a class="button is-primary">
+              <a class="button is-primary" href="#/signup">
                 <strong>สมัครสมาชิก</strong>
               </a>
-              <a class="button is-light"> เข้าสู่ระบบ </a>
+              <a class="button is-light" href="#/login"> เข้าสู่ระบบ </a>
             </div>
           </div>
         </div>
