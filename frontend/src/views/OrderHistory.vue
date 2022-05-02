@@ -37,7 +37,7 @@
                       <span v-if="order.order_status=='in queue'" class="box has-text-centered has-background-warning has-text-black-ter  is-uppercase" style="padding:0.5em">{{order.order_status}}</span>
 
                     </div>
-                    <div class="column is-4 is-offset-4 has-text-right">{{order.order_datetime}}<br>
+                    <div class="column is-4 is-offset-4 has-text-right">{{order.order_datetime.substring(0,10)}} {{order.order_datetime.substring(11,19)}}<br>
                       <button class="button is-outlined is-danger" v-if="order.order_status=='in queue'" @click="cancelOrder($event,order)">Cancel</button>
                       
                     </div>
@@ -77,7 +77,7 @@
                       <span v-if="order.order_status=='cancelled'" class="has-text-centered has-text-danger has-text-light is-uppercase" style="padding:0.5em;display:block">{{order.order_status}}</span>
 
                     </div>
-                    <div class="column is-4 is-offset-4 has-text-right">{{order.order_datetime}}<br>
+                    <div class="column is-4 is-offset-4 has-text-right">{{order.order_datetime.substring(0,10)}} {{order.order_datetime.substring(11,19)}}<br>
                     </div>
 
                   </div>
@@ -98,11 +98,11 @@
                   <div>Order#{{currentOrder.order_id}}</div>
                   <div>Cafe: {{currentOrder.cafe_name}}</div>
                   <div>Location: {{currentOrder.cafe_location}}</div>
-                  <div>By Employee: {{currentOrder.emp_id}}</div>
+                  <div>By Employee: {{currentOrder.fname}} {{currentOrder.lname}}</div>
                   
                 </div>
                 <div class="column is-4 has-text-right">
-                  <div>Date: {{currentOrder.order_datetime.split(' ')[0]}}&nbsp;&nbsp;Time: {{currentOrder.order_datetime.split(' ')[1]}}</div>
+                  <div>Date: {{currentOrder.order_datetime.substring(0,10)}}&nbsp;&nbsp;Time: {{currentOrder.order_datetime.substring(11,19)}}</div>
                   <div>
 
                     Status:
@@ -143,7 +143,7 @@
                       </tr>
                   </tbody>
               </table>
-              <div v-if="currentOrder.pro_id">Promotion Used: {{currentOrder.pro_id}}</div>
+              <div v-if="currentOrder.pro_id">Promotion Used: {{currentOrder.pro_detail}}</div>
               
 
 
@@ -162,28 +162,57 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "OrderHistory",
   data() {
     return {
       selectedOrder:-1,
+      user:{user_id:10},
       sortPending:'status_d',
       sortHistory:'status_a',
-      orders:[{order_id:1,order_datetime:'2021-07-15 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      {order_id:14,order_datetime:'2021-05-9 12:43:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'sold',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      {order_id:15,order_datetime:'2021-04-10 12:42:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'in queue',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe2',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      {order_id:111,order_datetime:'2021-03-11 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      {order_id:151,order_datetime:'2021-02-01 12:42:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'in queue',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe2',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      {order_id:112,order_datetime:'2021-01-30 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
+    //   orders:[{order_id:1,order_datetime:'2021-07-15 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
+    //   {order_id:14,order_datetime:'2021-05-9 12:43:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'sold',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
+    //   {order_id:15,order_datetime:'2021-04-10 12:42:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'in queue',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe2',cafe_desc:'11111111111',cafe_theme:'Cool'},
+    //   {order_id:111,order_datetime:'2021-03-11 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
+    //   {order_id:151,order_datetime:'2021-02-01 12:42:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'in queue',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe2',cafe_desc:'11111111111',cafe_theme:'Cool'},
+    //   {order_id:112,order_datetime:'2021-01-30 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
       
-      {order_id:12,order_datetime:'2021-07-13 12:41:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'finished',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe3',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      {order_id:13,order_datetime:'2021-07-15 12:40:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'cancelled',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'}],
-    //   when add db    orders join cafe join emp join promotion  maybe join user                        orders_item join product
-      orders_item:[{item_no:1,product_price:80,order_amount:1,item_totalprice:80,product_id:1,order_id:1,product_name:'Nitro',product_desc:'Nitrooo :D',product_type:'drink',product_status:'available',product_amount:45},
-      {item_no:20,product_price:80,order_amount:2,item_totalprice:160,product_id:2,order_id:1,product_name:'Nitrox',product_desc:'NitroooX',product_type:'drink',product_status:'available',product_amount:60}]
+    //   {order_id:12,order_datetime:'2021-07-13 12:41:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'finished',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe3',cafe_desc:'11111111111',cafe_theme:'Cool'},
+    //   {order_id:13,order_datetime:'2021-07-15 12:40:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'cancelled',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'}],
+    // //   when add db    orders join cafe join emp join promotion  maybe join user                        orders_item join product
+    //   orders_item:[{item_no:1,product_price:80,order_amount:1,item_totalprice:80,product_id:1,order_id:1,product_name:'Nitro',product_desc:'Nitrooo :D',product_type:'drink',product_status:'available',product_amount:45},
+    //   {item_no:20,product_price:80,order_amount:2,item_totalprice:160,product_id:2,order_id:1,product_name:'Nitrox',product_desc:'NitroooX',product_type:'drink',product_status:'available',product_amount:60}]
+    orders:null,
+    orders_item:null
 
 
     };
+  },
+  created(){
+    this.getOrder()
+  },
+  methods:{
+    getOrder(){
+      console.log("work")
+      axios
+        .get(`http://localhost:3000/orders/${this.user.user_id}`)
+        .then((response) => {
+          console.log(response)
+          this.orders = response.data.orders;
+          this.orders_item = response.data.order_item;
+        })
+        .catch((error) => {
+          this.error = error.response.data.message;
+        });
+    },
+    selectOrder(order){
+      this.selectedOrder = order.order_id
+    },
+    cancelOrder(e,order){
+      e.stopPropagation()
+      console.log(order)
+    }
   },
   computed: {
         currentOrder() {
@@ -206,6 +235,7 @@ export default {
             },0)
         },
         pendingOrder(){
+          if(this.orders == null){return }
           let order = this.orders.filter((order)=>{
                 return order.order_status == 'pending' || order.order_status == 'in queue' || order.order_status == 'finished'
             })
@@ -258,6 +288,7 @@ export default {
           return order
         },
         historyOrder(){
+          if(this.orders == null){return }
           let order =this.orders.filter((order)=>{
                 return order.order_status != 'pending' && order.order_status != 'in queue' && order.order_status != 'finished'
           })
@@ -310,15 +341,7 @@ export default {
           return order
         }
   },
-  methods:{
-    selectOrder(order){
-      this.selectedOrder = order.order_id
-    },
-    cancelOrder(e,order){
-      e.stopPropagation()
-      console.log(order)
-    }
-  }
+  
 };
 </script>
 

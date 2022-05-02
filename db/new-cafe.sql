@@ -70,38 +70,6 @@ INSERT INTO `cafe_promotion` VALUES (1,1),(3,1),(4,1),(11,1),(12,1),(13,1),(1,2)
 UNLOCK TABLES;
 
 --
--- Table structure for table `employee`
---
-
-DROP TABLE IF EXISTS `employee`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `employee` (
-  `emp_id` int NOT NULL,
-  `emp_fname` varchar(255) NOT NULL,
-  `emp_lname` varchar(255) NOT NULL,
-  `emp_age` int NOT NULL,
-  `emp_phone` char(10) NOT NULL,
-  `emp_address` tinytext NOT NULL,
-  `emp_login` varchar(255) NOT NULL,
-  `emp_email` varchar(255) NOT NULL,
-  PRIMARY KEY (`emp_id`),
-  UNIQUE KEY `emp_login_UNIQUE` (`emp_login`),
-  UNIQUE KEY `emp_email_UNIQUE` (`emp_email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `employee`
---
-
-LOCK TABLES `employee` WRITE;
-/*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,'ชลนิภา','แท่งทิพย์',25,'0813254512','603 หมู่5 ต.อุ้มผาง อ.อุ้มผาง จ.ตาก63170','lewlew','lewlew@gmaill.com'),(2,'โชคชัย','เจริญทิพย์',31,'0941573215','576/5 หมู่4 ต.บึงคำพร้อย อ.ลำลูกกา จ.ปทุมธานี 12150','chokchai','ckoc@gmaill.com'),(3,'สุรศักดิ์','วงศ์สวัสดิ์',19,'0871598904','182/9 หมู่10 ถ.ท้าวอู่ทอง ต.ปากท่อ อ.ปากท่อ จ.ราชบุรี 70140','sainttt','SaintJimmy@gmaill.com'),(4,'รติมา','เรืองรังสรรค์',25,'0941362401','50/8 หมู่1 ต.ไร่ขิง อ.สามพราน จ.นครปฐม 73210','Ratima','rarata@gmaill.com'),(5,'พงศ์พัฒน์','ภัชรปรีดา',22,'0860487070','214/5 หมู่1 ต.พรหมโลก อ.พรหมคีรี จ.นครศรีธรรมราช 80320','Benz12','benzaza@gmaill.com'),(6,'ฝนแก้ว','พงศ์พิโรจ',30,'0821543211','85/12 หมู่5 ถ.ดอนสัก-ขนอม ต.ดอนสัก อ.ดอนสัก จ.สุราษฎร์ธานี84220','puifaifon','puifainarak@gmaill.com'),(7,'ณิชนันทน์','ทรัพย์ธารา',18,'0899871515','90/5 หมู่4 ต.ทะเลทรัพย์ อ.ปะทิว จ.ชุมพร 86160','nit18','niteiei@gmaill.com'),(8,'บุณพจน์','ธารางาม',20,'0841574580','185/1 หมู่1 ถ.เพชรเกษม ต.ลำไพล อ.เทพา จ.สงขลา 90260','Bun93','bunpod@gmaill.com'),(9,'เทวิกา','โตศิลา',21,'0981532498','34/5 หมู่1 ถ.อคัรมาศอุทิศ อ.รือเสาะ จ.นราธิวาส 96150','TeTo','teto@gmaill.com'),(10,'ภูดิส','รัตนาอรุณ',27,'0944564538','15/5 ม.4 ถ.เพชรเกษม ต.ท้ายเมือง อ.ท้ายเมือง จ.พังงา 82120','Phudit458','phudit458@gmaill.com'),(11,'จักรภพ','แก้วมาลา',25,'0843259648','80/25 ถนนกรุงเทพกรีฑา ต.หัวหมาก อ.บางกะปิ จ.กรุงเทพมหานคร 10240','jkp01','jkp01@gmaill.com'),(12,'วิสาข์','สุวรรณปิติ',23,'0857853256','2999/240 ถนนสุขุมวิท109 ต.สำโรงเหนือ อ.เมืองสมุทรปราการ จ.สมุทรปราการ 10270','Wisa42','wisa42@gmaill.com'),(13,'มาริญา','เจริญทิพย์',30,'0984716157','123 หมู่5 ถ.อู่ทอง ต.หอรัตนไชย อ.พระนครศรีอยธุยา จ.พระนครศรีอยธุยา 13000','Mariya01','mariya@gmaill.com'),(14,'กาญจนี','ก้องเกษมทรัพย์',32,'0645862459','58/2 หมู่9 ถ.พหลโยธิน ต.คลองหนึ่ง อ.คลองหลวง จ.ปทุมธานี12120','Karn32','karn32@gmaill.com'),(15,'บวรรัช','พัฒนปรีชา',27,'0971598904','750 ถ.นครสวรรค์ ต.ตลาด อ.เมือง จ.มหาสารคาม 44000','Brp27','brp27@gmaill.com');
-/*!40000 ALTER TABLE `employee` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `image`
 --
 
@@ -153,7 +121,7 @@ CREATE TABLE `order` (
   KEY `cafe_branchid_fk_order_idx` (`cafe_branchid`),
   KEY `pro_id_fk_order_idx` (`pro_id`),
   CONSTRAINT `cafe_branchid_fk_order` FOREIGN KEY (`cafe_branchid`) REFERENCES `cafe` (`cafe_branchid`),
-  CONSTRAINT `emp_id_fk_order` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`),
+  CONSTRAINT `emp_id_fk_order` FOREIGN KEY (`emp_id`) REFERENCES `user` (`user_id`),
   CONSTRAINT `pro_id_fk_order` FOREIGN KEY (`pro_id`) REFERENCES `promotion` (`pro_id`),
   CONSTRAINT `user_id_fk_order` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -165,7 +133,7 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
-INSERT INTO `order` VALUES (1,'2021-07-15 12:44:01',80.00,5,1,3,NULL,'sold'),(2,'2021-07-15 13:23:55',175.00,2,10,6,NULL,'sold'),(3,'2021-07-15 15:01:25',165.00,10,5,1,NULL,'sold'),(4,'2021-08-04 11:05:29',119.00,9,2,10,14,'sold'),(5,'2021-09-07 12:17:38',265.00,1,12,2,13,'sold'),(6,'2021-09-25 10:30:45',165.00,4,6,3,NULL,'sold'),(7,'2021-11-10 16:45:05',185.00,7,2,10,NULL,'sold'),(8,'2021-12-09 11:15:25',80.00,9,3,4,NULL,'sold'),(9,'2021-12-29 18:03:00',99.50,8,10,6,14,'sold'),(10,'2022-02-25 12:05:15',95.00,10,12,7,NULL,'sold'),(11,'2022-04-16 18:23:02',140.00,3,5,10,NULL,'pending'),(12,'2022-04-20 10:20:12',185.00,10,7,9,5,'pending'),(13,'2022-05-03 17:00:04',255.00,11,4,9,8,'pending'),(14,'2022-05-15 09:33:42',274.50,4,9,3,7,'pending'),(15,'2022-05-22 12:15:30',115.00,5,8,14,6,'pending');
+INSERT INTO `order` VALUES (1,'2021-07-15 12:44:01',80.00,5,16,3,NULL,'sold'),(2,'2021-07-15 13:23:55',175.00,2,25,6,NULL,'sold'),(3,'2021-07-15 15:01:25',165.00,10,20,1,NULL,'sold'),(4,'2021-08-04 11:05:29',119.00,9,17,10,14,'sold'),(5,'2021-09-07 12:17:38',265.00,1,27,2,13,'sold'),(6,'2021-09-25 10:30:45',165.00,4,21,3,NULL,'sold'),(7,'2021-11-10 16:45:05',185.00,7,17,10,NULL,'sold'),(8,'2021-12-09 11:15:25',80.00,9,18,4,NULL,'sold'),(9,'2021-12-29 18:03:00',99.50,8,25,6,14,'sold'),(10,'2022-02-25 12:05:15',95.00,10,27,7,NULL,'sold'),(11,'2022-04-16 18:23:02',140.00,3,20,10,NULL,'pending'),(12,'2022-04-20 10:20:12',185.00,10,22,9,5,'pending'),(13,'2022-05-03 17:00:04',255.00,11,21,9,8,'pending'),(14,'2022-05-15 09:33:42',274.50,4,24,3,7,'pending'),(15,'2022-05-22 12:15:30',115.00,5,23,14,6,'pending');
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -383,6 +351,31 @@ INSERT INTO `review` VALUES (1,'Good ',4,'2021-05-15 12:44:01',1,2),(2,'Cool',
 UNLOCK TABLES;
 
 --
+-- Table structure for table `token`
+--
+
+DROP TABLE IF EXISTS `token`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `token` (
+  `token` varchar(255) NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`token`),
+  KEY `user_id_fk_token_idx` (`user_id`),
+  CONSTRAINT `user_id_fk_token` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `token`
+--
+
+LOCK TABLES `token` WRITE;
+/*!40000 ALTER TABLE `token` DISABLE KEYS */;
+/*!40000 ALTER TABLE `token` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -427,4 +420,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-02 12:44:58
+-- Dump completed on 2022-05-02 16:26:05
