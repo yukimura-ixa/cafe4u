@@ -8,64 +8,49 @@
           <div class="field">
             <div class="field">
               <label class="label">Username</label>
-              <div class="control has-icons-left">
+              <div class="control">
                 <input class="input" type="text" />
-                <span class="icon is-small is-left">
-                  <i class="fas fa-user"></i>
-                </span>
               </div>
             </div>
 
             <div class="field">
               <label class="label">Password</label>
-              <div class="control has-icons-left has-icons-right">
+              <div class="control">
                 <input class="input" type="password" />
-                <span class="icon is-small is-left">
-                  <i class="fas fa-lock"></i>
-                </span>
               </div>
             </div>
 
             <div class="field">
               <label class="label">Confirm Password</label>
-              <div class="control has-icons-left has-icons-right">
+              <div class="control">
                 <input class="input" type="password" />
-                <span class="icon is-small is-left">
-                  <i class="fas fa-lock"></i>
-                </span>
               </div>
             </div>
 
             <div class="field">
               <label class="label">Email</label>
-              <div class="control has-icons-left has-icons-right">
+              <div class="control">
                 <input class="input" type="text" />
-                <span class="icon is-small is-left">
-                  <i class="fas fa-envelope"></i>
-                </span>
               </div>
             </div>
 
             <div class="field">
               <label class="label">Mobile Number</label>
-              <div class="control has-icons-left has-icons-right">
+              <div class="control">
                 <input class="input" type="text" />
-                <span class="icon is-small is-left">
-                  <i class="fas fa-mobile"></i>
-                </span>
               </div>
             </div>
 
             <div class="field">
               <label class="label">First Name</label>
-              <div class="control has-icons-left has-icons-right">
+              <div class="control">
                 <input class="input" type="text" />
               </div>
             </div>
 
             <div class="field">
               <label class="label">Last Name</label>
-              <div class="control has-icons-left has-icons-right">
+              <div class="control">
                 <input class="input" type="text" />
               </div>
             </div>
