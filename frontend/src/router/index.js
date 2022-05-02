@@ -44,6 +44,11 @@ const routes = [
     name: 'map',
     component: () => import('../views/CafeMap.vue')
   },
+  {
+    path: '/promotion',
+    name: 'promotion',
+    component: () => import('../views/Promotion.vue')
+  },
 //   {
 //     path: '/user/login',
 //     name: 'login',
