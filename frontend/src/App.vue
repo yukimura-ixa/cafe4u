@@ -20,10 +20,15 @@
       </div>
 
       <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start ">
-          <div class="field navbar-item ">
+        <div class="navbar-start">
+          <div class="field navbar-item">
             <p class="control has-icons-right">
-              <input class="input" type="text" placeholder="ค้นหาร้าน" v-model="searchText"/>
+              <input
+                class="input"
+                type="text"
+                placeholder="ค้นหาร้าน"
+                v-model="searchText"
+              />
               <span class="icon is-small is-right">
                 <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
               </span>
@@ -54,8 +59,21 @@
         </div>
       </div>
     </nav>
+    <notifications />
+    <notifications
+      group="app"
+      position="bottom right"
+      classes="notification is-success m-1 p-3"
+    />
+    <notifications
+      group="danger"
+      position="bottom right"
+      classes="notification is-danger m-1 p-3"
+    />
 
-    <router-view :key="$route.fullPath" :user="localUser" :cart="localCart"/>
+   
+
+    <router-view :key="$route.fullPath" :user="localUser" :cart="localCart" />
   </div>
 </template>
 
@@ -67,7 +85,7 @@ export default {
   props: ["user", "cart"],
   data() {
     return {
-      searchText: '',
+      searchText: "",
       localUser: null,
       localCart: null,
     };

@@ -57,19 +57,30 @@
         </div>
       </div>
 
-      <div class="buttons are-large">
-        <button class="button is-primary is-light is-outlined">
-          <font-awesome-icon icon="fa-solid fa-cart-shopping" />สั่งเมนูเลย
-        </button>
-        <button class="button is-link is-light is-outlined">
-          <font-awesome-icon icon="fa-solid fa-map-location-dot" />
-          ดูเส้นทางไปร้าน
-        </button>
-
-        <button class="button is-warning is-light is-right is-outlined">
-          <font-awesome-icon icon="fa-regular fa-pen-to-square" />
-          แก้ไขรายละเอียด
-        </button>
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <div class="buttons are-large">
+              <button class="button is-primary is-light is-outlined">
+                <font-awesome-icon
+                  icon="fa-solid fa-cart-shopping"
+                />สั่งเมนูเลย
+              </button>
+              <button class="button is-link is-light is-outlined">
+                <font-awesome-icon icon="fa-solid fa-map-location-dot" />
+                ดูเส้นทางไปร้าน
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <button class="button is-warning is-light is-right is-outlined is-large">
+              <font-awesome-icon icon="fa-regular fa-pen-to-square" />
+              แก้ไขรายละเอียด
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="card">
@@ -190,8 +201,11 @@
                   <template v-for="star in review.rating">
                     <font-awesome-icon icon="fa-solid fa-star" :key="star" />
                   </template>
-                  <template v-for="nostar in (5 - review.rating)">
-                    <font-awesome-icon icon="fa-regular fa-star" :key="nostar" />
+                  <template v-for="nostar in 5 - review.rating">
+                    <font-awesome-icon
+                      icon="fa-regular fa-star"
+                      :key="nostar"
+                    />
                   </template>
                 </div>
                 <div class="list-item-title">{{ review.comment }}</div>
@@ -299,9 +313,12 @@ export default {
       newStarClicked: false,
     };
   },
-  computed:{
-    averageRating(){
-      return (this.reviews.reduce((prev, next) => prev + next.rating, 0) / this.reviews.length).toFixed(1);
+  computed: {
+    averageRating() {
+      return (
+        this.reviews.reduce((prev, next) => prev + next.rating, 0) /
+        this.reviews.length
+      ).toFixed(1);
     },
   },
   methods: {
@@ -318,7 +335,7 @@ export default {
         rating: this.newStar,
         review_user: "this.user",
         datetime: new Date(),
-      })
+      });
       this.newComment = "";
     },
   },

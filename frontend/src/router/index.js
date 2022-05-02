@@ -54,6 +54,11 @@ const routes = [
     name: 'manageOrder',
     component: () => import('../views/ManageOrder.vue')
   },
+  {
+    path: '/cafe/product',
+    name: 'product',
+    component: () => import('../views/CafeProduct.vue')
+  },
 //   {
 //     path: '/user/login',
 //     name: 'login',
