@@ -1,7 +1,7 @@
 {
-  "name": "week09-exercise",
+  "name": "cafe4u",
   "version": "1.0.0",
-  "description": "แบบฝึกหัดสัปดาห์ที่ 9 Express / MySql",
+  "description": "my cafe",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

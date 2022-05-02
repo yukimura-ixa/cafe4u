@@ -49,6 +49,11 @@ const routes = [
     name: 'promotion',
     component: () => import('../views/Promotion.vue')
   },
+  {
+    path: '/admin/order/:cafeId',
+    name: 'manageOrder',
+    component: () => import('../views/ManageOrder.vue')
+  },
 //   {
 //     path: '/user/login',
 //     name: 'login',
