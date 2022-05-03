@@ -22,7 +22,7 @@
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
           <div class="field navbar-item">
-            <p class="control has-icons-right">
+            <p class="control has-icons-right" @keydown.enter="search()">
               <input
                 class="input"
                 type="text"
@@ -73,12 +73,12 @@
 
    
 
-    <router-view :key="$route.fullPath" :user="localUser" :cart="localCart" />
+    <router-view :key="$route.fullPath" :user="localUser" :cart="localCart" :searchCafe="[searchText, searchResult, searchImageResult,cafeType]" />
   </div>
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 
 export default {
   name: "App",
@@ -88,12 +88,29 @@ export default {
       searchText: "",
       localUser: null,
       localCart: null,
+      searchResult:null,
+      searchImageResult:null,
+      cafeType:null
     };
   },
   mounted() {
     // this.onAuthChange();
+    this.search()
   },
   methods: {
+    search(){
+      if(this.$route.fullPath != '/search'){this.$router.push({ path: "/search" })}
+      axios
+        .get(`http://localhost:3000/search?like=`+this.searchText)
+        .then((response) => {
+          this.searchResult = response.data.cafe;
+          this.searchImageResult = response.data.image;
+          this.cafeType = response.data.type
+        })
+        .catch((error) => {
+          this.error = error.response.data.message;
+      });
+    },
     // onAuthChange() {
     //   const token = localStorage.getItem("token");
     //   if (token) {
