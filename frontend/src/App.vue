@@ -95,7 +95,7 @@ export default {
   },
   mounted() {
     // this.onAuthChange();
-    this.search()
+    // this.search()
   },
   methods: {
     search(){
