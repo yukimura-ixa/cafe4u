@@ -59,6 +59,11 @@ const routes = [
     name: 'product',
     component: () => import('../views/CafeProduct.vue')
   },
+  {
+    path: '/cafe/add',
+    name: 'addNewCafe',
+    component: () => import('../views/AddCafe.vue')
+  },
 //   {
 //     path: '/user/login',
 //     name: 'login',

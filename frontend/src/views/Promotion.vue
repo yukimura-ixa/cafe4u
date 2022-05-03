@@ -111,7 +111,6 @@ export default {
   props: [],
   data() {
     return {
-      name: "Nook",
       newproList: {
         id: null,
         name: "",

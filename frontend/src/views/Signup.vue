@@ -140,10 +140,8 @@ export default {
   },
   methods: {
     submit() {
-      // Validate all fields
       this.$v.$touch();
 
-      // เช็คว่าในฟอร์มไม่มี error
       if (!this.$v.$invalid) {
         let data = {
           username: this.username,
