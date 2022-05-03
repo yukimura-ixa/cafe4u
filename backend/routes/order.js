@@ -13,7 +13,7 @@ router.get("/orders/:user_id", async function (req, res, next) {
 
   try {
     let results = await conn.query(
-      "select * from `order` o join cafe using (cafe_branchid) join user u on (emp_id = u.user_id) left outer join promotion using (pro_id) where o.user_id = ?;",
+      "select * from `order` o join cafe using (cafe_branchid) join user u on (emp_id = u.user_id) left outer join promotion p using (pro_id) left outer join product p2 on (p.product_free = p2.product_id) where o.user_id = ?;",
       [parseInt(req.params.user_id)]
     );
     let results2 = await conn.query(
@@ -43,7 +43,7 @@ router.get("/admin/orders/:cafeId", async function (req, res, next) {
   
     try {
       let results = await conn.query(
-        "select * from `order` o join cafe using (cafe_branchid) join user u on (emp_id = u.user_id) left outer join promotion using (pro_id) where o.cafe_branchid = ?;",
+        "select * from `order` o join cafe using (cafe_branchid) join user u on (emp_id = u.user_id) left outer join promotion p using (pro_id) left outer join product p2 on (p.product_free = p2.product_id) where o.cafe_branchid = ?;",
         [parseInt(req.params.cafeId)]
       );
       let results2 = await conn.query(

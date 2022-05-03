@@ -134,6 +134,20 @@
                           <td>{{item.order_amount}}</td>
                           <td>{{item.item_totalprice}}</td>
                       </tr>
+                      <tr v-if="currentOrder.pro_type == 'free'">
+                          <td>{{currentOrderItem.length+1}}</td>
+                          <td>(PROMOTION){{currentOrder.product_name}}</td>
+                          <td>FREE</td>
+                          <td>1</td>
+                          <td>FREE</td>
+                      </tr>
+                      <tr v-if="currentOrder.pro_type != 'free' && currentOrder.pro_type != null">
+                          <td>{{currentOrderItem.length+1}}</td>
+                          <td>(PROMOTION){{currentOrder.pro_detail}}</td>
+                          <td></td>
+                          <td></td>
+                          <td>-{{currentOrder.discount}}</td>
+                      </tr>
                       <tr>
                           <td></td>
                           <td></td>
@@ -288,9 +302,13 @@ export default {
         },
         totalPrice(){
 
-          return this.currentOrderItem.reduce((total,item)=>{
+          let toreturn = this.currentOrderItem.reduce((total,item)=>{
                 return total + (item.product_price * item.order_amount)
             },0)
+          if(this.currentOrder.pro_type != 'free' && this.currentOrder.pro_type != null){
+            toreturn -= this.currentOrder.discount
+          }
+          return toreturn
         },
         pendingOrder(){
           if(this.orders == null){return }
