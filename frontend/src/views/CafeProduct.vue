@@ -1,16 +1,22 @@
 <template>
-  <div style="background-color: rgb(78, 153, 110)">
+  <div class="mt-3">
     <section class="container">
       <div class="card mb-3">
         <div class="card-content">
           <div class="content">
             <p class="title is-4">
-              <a class="mr-1 has-text-info" href="">
+              <a
+                class="mr-1 has-text-info"
+                @click="$router.push(`/cafe/${cafe.cafe_branchid}`)"
+              >
                 <font-awesome-icon icon="fa-solid fa-angle-left" />
               </a>
-              Cafe name
+              {{ cafe.cafe_name }}
               <span class="is-pulled-right" v-if="isEmployee">
-                <button class="button is-primary" @click="addProductModal()">
+                <button
+                  class="button is-primary"
+                  @click="addProductModalToggle = true"
+                >
                   <span class="icon is-small">
                     <font-awesome-icon icon="fa-solid fa-plus" /> </span
                   ><span>เพิ่มสินค้า</span>
@@ -18,14 +24,10 @@
               </span>
             </p>
             <div class="tags">
-              <span class="tag">Theme</span>
-              <span class="tag">Medium</span>
+              <span class="tag is-capitalized">{{ cafe.cafe_theme }}</span>
             </div>
             <div class="block">
-              Lorem ipsum leo risus, porta ac consectetur ac, vestibulum at
-              eros. Donec id elit non mi porta gravida at eget metus. Cum sociis
-              natoque penatibus et magnis dis parturient montes, nascetur
-              ridiculus mus. Cras mattis consectetur purus sit amet fermentum.
+              {{ cafe.cafe_desc }}
             </div>
           </div>
         </div>
@@ -36,24 +38,47 @@
     <section class="container box">
       <div class="tabs is-boxed">
         <ul>
-          <li class="is-active">
-            <a @click="showType = 'drink'">
+          <li
+            :class="{ 'is-active': showType === 'drink' }"
+            @click="showType = 'drink'"
+          >
+            <a>
               <span class="icon is-small"
                 ><font-awesome-icon icon="fa-solid fa-blender"
               /></span>
               <span>เครื่องดื่ม</span>
             </a>
           </li>
-          <li>
-            <a @click="showType = 'bakery'">
+          <li
+            :class="{ 'is-active': showType === 'bakery' }"
+            @click="showType = 'bakery'"
+          >
+            <a>
               <span class="icon is-small"
                 ><font-awesome-icon icon="fa-solid fa-bread-slice"
               /></span>
               <span>เบเกอรี่</span>
             </a>
           </li>
-          <li>
-            <a @click="showType = ''">
+
+          <li
+            v-if="isEmployee"
+            :class="{ 'is-active': showType === 'option' }"
+            @click="showType = 'option'"
+          >
+            <a>
+              <span class="icon is-small"
+                ><font-awesome-icon icon="fa-solid fa-cubes-stacked"
+              /></span>
+              <span>ท็อปปิ้ง</span>
+            </a>
+          </li>
+
+          <li
+            :class="{ 'is-active': showType === null }"
+            @click="showType = null"
+          >
+            <a>
               <span class="icon is-small"
                 ><font-awesome-icon icon="fa-solid fa-ellipsis"
               /></span>
@@ -61,38 +86,19 @@
             </a>
           </li>
         </ul>
-        <div class="buttons is-pulled-right">
-          <button class="button" @click="!isSortNameAsc">
-            <font-awesome-icon
-              v-show="isSortNameAsc"
-              icon="fa-solid fa-arrow-down-a-z"
-            />
-            <font-awesome-icon
-              v-show="!isSortNameAsc"
-              icon="fa-solid fa-arrow-down-z-a"
-            />
-          </button>
-
-          <button class="button" @click="!isSortPriceAsc">
-            <font-awesome-icon
-              v-show="isSortPriceAsc"
-              icon="fa-solid fa-arrow-down-1-9"
-            />
-            <font-awesome-icon
-              v-show="!isSortPriceAsc"
-              icon="fa-solid fa-arrow-down-9-1"
-            />
-          </button>
-        </div>
       </div>
 
       <div class="columns is-multiline m-2">
-        <template v-for="(product, index) in products">
-          <div class="column is-one-third" :key="product.id">
+        <template v-for="(product, index) in filteredProducts">
+          <div class="column is-one-third" :key="product.product_id">
             <div class="card">
               <div class="card-image">
                 <figure class="image is-4by3">
-                  <img :src="product.image" alt="Placeholder image" />
+                  <img
+                    :src="product.image_path"
+                    alt="Placeholder image"
+                    onerror="this.onerror=null; this.src='https://bulma.io/images/placeholders/640x480.png'"
+                  />
                 </figure>
               </div>
               <div class="card-content" style="min-height: 30vh">
@@ -112,12 +118,11 @@
                   <div class="field">
                     <label class="label">รายละเอียดสินค้า</label>
                     <div class="control">
-                      <input
-                        class="input"
-                        type="text"
-                        placeholder="Product Detail"
+                      <textarea
+                        class="textarea"
+                        placeholder="รายละเอียด"
                         v-model="editProductDesc"
-                      />
+                      ></textarea>
                     </div>
                   </div>
 
@@ -152,14 +157,14 @@
                       <div class="columns is-vcentered">
                         <div class="column is-8">
                           <p class="title is-5">
-                            <span>{{ product.name }}</span>
+                            <span>{{ product.product_name }}</span>
                           </p>
                         </div>
                         <div class="column">
                           <span
                             class="is-pulled-right tag is-primary is-medium"
                           >
-                            {{ product.price }}฿</span
+                            {{ product.product_price }}฿</span
                           >
                         </div>
                       </div>
@@ -167,7 +172,7 @@
                   </div>
 
                   <div class="content is-small">
-                    {{ product.desc }}
+                    {{ product.product_desc }}
 
                     <br />
                   </div>
@@ -176,7 +181,7 @@
 
               <footer class="card-footer">
                 <a
-                  @click="addToCart()"
+                  @click="addToCart(product)"
                   class="card-footer-item has-background-success has-text-white"
                   v-if="!isEmployee"
                 >
@@ -207,7 +212,7 @@
 
                 <template v-else-if="isEmployee">
                   <a
-                    @click="editToggle = index"
+                    @click="editProduct(index, product)"
                     class="
                       card-footer-item
                       has-background-warning has-text-black
@@ -219,7 +224,7 @@
                     ><span>แก้ไข</span></a
                   >
                   <a
-                    @click="deleteProduct()"
+                    @click="deleteProduct(product)"
                     class="
                       card-footer-item
                       has-background-danger has-text-white
@@ -236,99 +241,274 @@
         </template>
       </div>
     </section>
-      <div class="modal" :class="{'is-active' : addProductModalToggle}">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-          <header class="modal-card-head">
-            <p class="modal-card-title">Modal title</p>
-            <button class="delete" aria-label="close" @click="addProductModalToggle=false"></button>
-          </header>
-          <section class="modal-card-body">
-            <!-- Content ... -->
-          </section>
-          <footer class="modal-card-foot">
-            <button class="button is-success">Save changes</button>
-            <button class="button">Cancel</button>
-          </footer>
+    <div class="modal" :class="{ 'is-active': addProductModalToggle }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">เพิ่มสินค้า</p>
+          <button
+            class="delete"
+            aria-label="close"
+            @click="addProductModalToggle = false"
+          ></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="card-image">
+            <figure class="image is-4by3">
+              <img
+                v-if="newProductImage === ''"
+                src="https://bulma.io/images/placeholders/640x480.png"
+                alt="Placeholder image"
+              />
+              <img v-else :src="newProductImage" alt="Placeholder image" />
+            </figure>
+          </div>
+          <div class="field">
+            <label class="label">ชื่อสินค้า</label>
+            <div class="control">
+              <input
+                class="input"
+                v-model="newProductName"
+                type="text"
+                placeholder="Product Name"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">รายละเอียด</label>
+            <div class="control">
+              <textarea
+                v-model="newProductDesc"
+                class="textarea"
+                placeholder="Product Detail"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="columns is-vcentered">
+            <div class="column">
+              <div class="field">
+                <label class="label">ราคา</label>
+                <div class="control">
+                  <input
+                    class="input"
+                    type="text"
+                    placeholder="Product Price"
+                    v-model.number="newProductPrice"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="column">
+              <div class="field">
+                <label class="label">ประเภท</label>
+                <div class="control">
+                  <div class="select">
+                    <select v-model="newProductType">
+                      <option value="drink">เครื่องดื่ม</option>
+                      <option value="bakery">เบเกอรี่</option>
+                      <option value="option">ท็อปปิ้ง</option>
+                      <option value="">อื่น ๆ</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="column">
+              <label class="label">รูปสินค้า</label>
+              <div class="file">
+                <label class="file-label">
+                  <input class="file-input" type="file" @change="onFileChange"/>
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <font-awesome-icon icon="fa-solid fa-upload" />
+                    </span>
+                    <span class="file-label"> เปลี่ยนรูป </span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" @click="addProduct()">เพิ่ม</button>
+          <button class="button is-danger" @click="clearProductData()">ล้างข้อมูล</button>
+        </footer>
+      </div>
+    </div>
+
+    <div class="modal" :class="{ 'is-active': addDrinkClicked }">
+      <div class="modal-background" @click="cancelAddDrink()"></div>
+      <div class="modal-content">
+        <div class="list box">
+          <p class="modal-card-title">เลือกท็อปปิ้ง</p>
+
+          <template
+            v-for="option in products.filter(
+              (ele) => ele.product_type === 'option'
+            )"
+          >
+            <div class="list-item" :key="option.product_id">
+              <div class="list-item-image">
+                <figure class="image is-64x64">
+                  <img
+                    class="is-rounded"
+                    :src="option.image_path"
+                    onerror="this.onerror=null; this.src='https://via.placeholder.com/128x128.png?text=Image'"
+                  />
+                </figure>
+              </div>
+
+              <div class="list-item-content">
+                <div class="list-item-title">
+                  <span>{{ option.product_name }}</span>
+                </div>
+                <div class="list-item-description">
+                  {{ option.product_desc }}
+                </div>
+                <p>{{ option.product_price }}฿</p>
+              </div>
+
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  :value="option.product_id"
+                  v-model="selectedOptions"
+                />
+              </label>
+            </div>
+          </template>
+          <div class="buttons is-right mt-3">
+            <button class="button is-success" @click="confirmAddDrink()">
+              เพิ่มเข้าตะกร้า
+            </button>
+            <button class="button" @click="cancelAddDrink()">ยกเลิก</button>
+          </div>
         </div>
       </div>
+      <button
+        class="modal-close is-large"
+        aria-label="close"
+        @click="cancelAddDrink()"
+      ></button>
+    </div>
   </div>
-  
 </template>
 
 <script>
+// import axios from "@/plugins/axios";
+import axios from "axios";
+
 export default {
   name: "CafeProduct",
   props: ["user", "cart"],
   data() {
     return {
+      newProductName: "",
+      newProductPrice: "",
+      newProductDesc: "",
+      newProductType: "",
+      newProductImage: "",
       addProductModalToggle: false,
+
       editProductName: "",
       editProductPrice: "",
       editProductDesc: "",
-      showType: "drink",
-      isSortNameAsc: true,
-      isSortPriceAsc: true,
-      isEmployee: true,
+      editProductImage: "",
       editToggle: -1,
-      products: [
-        {
-          id: 1,
-          name: "asdasdasadfadsfdafdsaf",
-          desc: "Lorem ipsum leo risus, porta ac consectetur ac, vestibulum at eros. Donec id elit non mi porta gravida at eget metus. Cum sociisnatoque penatibus et magnis dis parturient montes, nascetur",
-          type: "drink",
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/1200px-A_small_cup_of_coffee.JPG",
-          price: 25.0,
-        },
-        {
-          id: 2,
-          name: "asdasdas",
-          desc: "LOREM",
-          type: "drink",
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/1200px-A_small_cup_of_coffee.JPG",
-          price: 25.0,
-        },
-        {
-          id: 3,
-          name: "asdasdas",
-          desc: "LOREM",
-          type: "drink",
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/1200px-A_small_cup_of_coffee.JPG",
-          price: 25.0,
-        },
-        {
-          id: 4,
-          name: "asdasdas",
-          desc: "LOREM",
-          type: "drink",
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/1200px-A_small_cup_of_coffee.JPG",
-          price: 25.0,
-        },
-        {
-          id: 5,
-          name: "asdasdas",
-          desc: "LOREM",
-          type: "drink",
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/1200px-A_small_cup_of_coffee.JPG",
-          price: 25.0,
-        },
-      ],
+
+      showType: "drink",
+      isEmployee: true,
+
+      addDrinkClicked: false,
+      selectedProduct: null,
+      selectedOptions: [],
+
+      products: [],
+      cafe: {},
+
+      error: null,
     };
   },
+  mounted() {
+    this.getProducts(this.$route.params.id);
+  },
+  computed: {
+    filteredProducts() {
+      return this.products.filter((ele) => {
+        return ele.product_type == this.showType;
+      });
+    },
+  },
   methods: {
-    addToCart() {
-      this.$notify({ type: "success", text: "The operation completed" });
+    getProducts(cafe_id) {
+      axios
+        .get(`http://localhost:3000/cafe/${cafe_id}/product/`)
+        .then((res) => {
+          this.products = res.data.products;
+          this.cafe = res.data.cafe;
+        })
+        .catch((err) => {
+          this.error = err.response.data.message;
+        });
     },
-    deleteProduct() {
-      confirm("Are you sure?");
+
+    addToCart(product) {
+      if (product.product_type === "drink") {
+        this.addDrinkClicked = true;
+        this.selectedProduct = product;
+      }
     },
-    editProduct() {
-      return;
+    confirmAddDrink() {
+      const cartItem = {
+        drink: this.selectedProduct,
+        options: this.selectedOptions,
+      };
+      var sessionCart = JSON.parse(sessionStorage.getItem("cart"));
+      var addCart = [];
+      if (sessionCart !== null) {
+        addCart = sessionCart;
+        addCart.push(cartItem);
+      } else {
+        addCart.push(cartItem);
+      }
+      // console.log(addCart);
+      sessionStorage.setItem("cart", JSON.stringify(addCart));
+      this.$notify({ group: "app", text: "เพิ่มเข้าตะกร้าสินค้าแล้ว" });
+      this.cancelAddDrink();
+    },
+    cancelAddDrink() {
+      this.addDrinkClicked = false;
+      this.selectedProduct = null;
+      this.selectedOptions = [];
+    },
+    deleteProduct(product) {
+      if (confirm(`ต้องการจะลบสินค้า ${product.product_name} หรือไม่?`)) {
+        axios
+          .delete(`http://localhost:3000/product/${product.product_id}`)
+          .then((res) => {
+            var index = this.products.indexOf(product);
+            this.products.splice(index, 1);
+            this.$notify({
+              group: "app",
+              text: `ลบสินค้า ${product.product_name} แล้ว`,
+            });
+            console.log(res);
+          })
+          .catch((err) => {
+            this.error = err.response.data.message;
+            this.$notify({ group: "danger", text: this.error });
+          });
+      }
+    },
+    editProduct(index, product) {
+      this.editToggle = index;
+      this.editProductName = product.product_name;
+      this.editProductDesc = product.product_desc;
+      this.editProductPrice = product.product_price;
     },
     cancelEdit() {
       this.editToggle = -1;
@@ -336,10 +516,36 @@ export default {
       this.editProductDesc = "";
       this.editProductPrice = "";
     },
-    addProductModal() {
-      // this.addProductModalToggle = true;
-      //   this.$notify({group:"app",text: "Hello user!" });
-      this.addProductModalToggle = true;
+    onFileChange(e) {
+      const file = e.target.files[0];
+      this.newProductImage = URL.createObjectURL(file);
+      console.log(this.newProductImage);
+    },
+    addProduct() {
+      let formData = new FormData();
+      formData.append("name", this.newProductName);
+      formData.append("desc", this.newProductDesc);
+      formData.append("price", this.newProductPrice);
+      formData.append("type", this.newProductType);
+      formData.append("productImage", this.newProductImage);
+      axios
+        .post(`http://localhost:3000/product/${this.cafe.cafe_branchid}`, formData)
+        // eslint-disable-next-line
+        .then((res) => {
+          this.$route.go();
+          this.$notify({ group: "app", text: "เพิ่มสินค้าแล้ว" });
+        })
+        .catch((err) => {
+          this.error = err.response.data.message;
+          this.$notify({ group: "danger", text: this.error });
+        });
+    },
+    clearProductData(){
+      this.newProductName = ""
+      this.newProductPrice = ""
+      this.newProductDesc = ""
+      this.newProductType = ""
+      this.newProductImage = null
     },
   },
 };

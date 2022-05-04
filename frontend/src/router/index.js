@@ -30,7 +30,7 @@ const routes = [
     component: () => import('../views/OrderHistory.vue')
   },
   {
-    path: '/cafe',
+    path: '/cafe/:id',
     name: 'cafe',
     component: () => import('../views/CafeDetail.vue')
   },
@@ -55,7 +55,7 @@ const routes = [
     component: () => import('../views/ManageOrder.vue')
   },
   {
-    path: '/cafe/product',
+    path: '/cafe/:id/product',
     name: 'product',
     component: () => import('../views/CafeProduct.vue')
   },

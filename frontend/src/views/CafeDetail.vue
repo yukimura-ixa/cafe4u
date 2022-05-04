@@ -36,23 +36,83 @@
       <div class="card mb-3">
         <div class="card-content">
           <div class="content">
-            <p class="title is-4">
-              Cafe name
-              <span class="is-pulled-right"
-                ><span class="mx-2">{{ averageRating }}</span>
-                <font-awesome-icon icon="fa-solid fa-star"
-              /></span>
-            </p>
-            <div class="tags">
-              <span class="tag">Theme</span>
-              <span class="tag">Medium</span>
-            </div>
-            <div class="block">
-              Lorem ipsum leo risus, porta ac consectetur ac, vestibulum at
-              eros. Donec id elit non mi porta gravida at eget metus. Cum sociis
-              natoque penatibus et magnis dis parturient montes, nascetur
-              ridiculus mus. Cras mattis consectetur purus sit amet fermentum.
-            </div>
+            <template v-if="editCafeToggle">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label">ชื่อร้าน</label>
+                    <div class="control">
+                      <input
+                        class="input"
+                        type="text"
+                        placeholder="Cafe Name"
+                        v-model="editCafeName"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="column">
+                  <div class="field">
+                    <label class="label">ธีมร้าน</label>
+                    <div class="control">
+                      <input
+                        class="input"
+                        type="text"
+                        placeholder="Theme"
+                        v-model="editCafeTheme"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                
+
+                <div class="column">
+                  <div class="field">
+                    <label class="label">ที่ตั้ง</label>
+                    <div class="control">
+                      <input
+                        class="input"
+                        type="text"
+                        placeholder="Google Map Coordinate"
+                        v-model="editCafeLoc"
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label">รายละเอียด</label>
+                    <div class="control">
+                      <textarea
+                        class="textarea"
+                        placeholder="Detail"
+                        v-model="editCafeDesc"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <p class="title is-4">
+                {{ cafe.cafe_name }}
+                <span class="is-pulled-right"
+                  ><span class="mx-2">{{ averageRating }}</span>
+                  <font-awesome-icon icon="fa-solid fa-star"
+                /></span>
+              </p>
+              <div class="tags">
+                <span class="tag is-capitalized">{{ cafe.cafe_theme }}</span>
+              </div>
+              <div class="block">
+                {{ cafe.cafe_desc }}
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -73,9 +133,12 @@
             </div>
           </div>
         </div>
-        <div class="level-right">
+        <div class="level-right" v-if="isEmployee">
           <div class="level-item">
-            <button class="button is-warning is-light is-right is-outlined is-large">
+            <button
+              @click="editCafeToggle = true"
+              class="button is-warning is-light is-right is-outlined is-large"
+            >
               <font-awesome-icon icon="fa-regular fa-pen-to-square" />
               แก้ไขรายละเอียด
             </button>
@@ -233,7 +296,7 @@
                     <span class="icon is-small">
                       <font-awesome-icon icon="fa-solid fa-xmark" />
                     </span>
-                    <span>Delete</span>
+                    <span>ลบ</span>
                   </button>
 
                   <button
@@ -272,6 +335,7 @@
 
 <script>
 import { Splide, SplideSlide } from "@splidejs/vue-splide";
+import axios from "axios";
 
 export default {
   name: "CafePage",
@@ -283,35 +347,24 @@ export default {
   data() {
     return {
       cafe: {},
-      reviews: [
-        {
-          id: 1,
-          comment: "ASDASDSADasss",
-          rating: 3,
-          datetime: "2020/12/1",
-          review_user: "Lores",
-        },
-        {
-          id: 2,
-          comment: "ASDASDSAD",
-          rating: 5,
-          datetime: "2020/12/1",
-          review_user: "Lores",
-        },
-        {
-          id: 3,
-          comment: "ASDASDSADasdasda",
-          rating: 4,
-          datetime: "2020/12/1",
-          review_user: "Lores",
-        },
-      ],
+      reviews: [],
+      images: [],
       editToggle: -1,
       editComment: "",
       newComment: "",
       newStar: 0,
       newStarClicked: false,
+
+      isEmployee: true,
+      editCafeToggle: false,
+      editCafeName: "",
+      editCafeDesc: "",
+      editCafeLoc: "",
+      editCafeTheme: "",
     };
+  },
+  mounted() {
+    this.getCafe(this.$route.params.id);
   },
   computed: {
     averageRating() {
@@ -328,6 +381,18 @@ export default {
       //   return comment.comment_by_id === this.user.id;
     },
     isCafeOwner() {},
+    getCafe(cafe_id) {
+      axios
+        .get(`http://localhost:3000/cafe/${cafe_id}`)
+        .then((res) => {
+          this.cafe = res.data.cafe;
+          this.reviews = res.data.reviews;
+          this.images = res.data.images;
+        })
+        .catch((err) => {
+          this.error = err.response.data.message;
+        });
+    },
     addComment() {
       this.reviews.push({
         id: this.reviews.length + 1,
