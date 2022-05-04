@@ -22,25 +22,15 @@
 
             <div class="field">
               <label class="label">Cafe Theme</label>
-              <div class="select">
-                <select v-model="theme">
-                  <option>Dark</option>
-                  <option>Nature</option>
-                  <option>Book Shop</option>
-                </select>
+              <div class="control">
+                <input class="input" type="text" />
               </div>
             </div>
             <div class="field">
               <label class="label">Theme Describe</label>
-              <label v-if="this.theme == 'Dark'"
-                >คาเฟ่สไตล์มืดๆ ให้ความรู้สึกคูลๆ</label
-              >
-              <label v-if="this.theme == 'Nature'"
-                >คาเฟ่สไตล์ธรรมชาติ บรรยากาศดี</label
-              >
-              <label v-if="this.theme == 'Book Shop'"
-                >คาเฟ่ร้านหนังสือ อ่านกาแฟไปจิบหนังสือไป</label
-              >
+              <div class="control">
+                <textarea class="textarea" type="text" />
+              </div>
             </div>
 
             <div class="field">
@@ -76,7 +66,7 @@ export default {
       mobile: "",
       first_name: "",
       last_name: "",
-      theme: "Dark",
+      theme: "",
     };
   },
 };

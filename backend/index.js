@@ -20,6 +20,7 @@ const productRouter = require('./routes/product');
 const cafeRouter = require('./routes/cafe')
 const userRouter = require('./routes/user')
 const receiptRouter = require('./routes/receipt')
+const promotionRouter = require('./routes/promotion')
 
 
 app.use(indexRouter.router)
@@ -29,6 +30,7 @@ app.use(productRouter.router)
 app.use(cafeRouter.router)
 app.use(userRouter.router)
 app.use(receiptRouter.router)
+app.use(promotionRouter.router)
 
 app.listen(3000, () => {
   console.log(`Example app listening at http://localhost:3000`)

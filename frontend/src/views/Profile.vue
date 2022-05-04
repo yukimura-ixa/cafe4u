@@ -23,7 +23,10 @@
             </tr>
           </table>
           <div class="card-content column is-12 px-6 pt-6">
-            <button class="button is-warning is-medium is-fullwidth" @click="showEditPassword()">
+            <button
+              class="button is-warning is-medium is-fullwidth"
+              @click="showEditPassword()"
+            >
               Change Password
             </button>
           </div>
@@ -35,18 +38,60 @@
 
           <label class="label">Username:</label>
           <div class="control">
-            <input class="input" type="username" />
+            <input
+              class="input"
+              type="username"
+              v-model="$v.username.$model"
+              :class="{ 'is-danger': $v.username.$error }"
+            />
           </div>
+          <template v-if="$v.username.$error">
+            <p class="help is-danger" v-if="!$v.username.required">
+              This field is required
+            </p>
+            <p class="help is-danger" v-if="!$v.username.minLength">
+              Must be at least 5 characters
+            </p>
+            <p class="help is-danger" v-if="!$v.username.maxLength">
+              Must be less than 20 characters
+            </p>
+          </template>
 
           <label class="label">First Name:</label>
           <div class="control">
-            <input class="input" name="fname" />
+            <input
+              class="input"
+              name="fname"
+              v-model="$v.first_name.$model"
+              :class="{ 'is-danger': $v.first_name.$error }"
+            />
           </div>
+          <template v-if="$v.first_name.$error">
+            <p class="help is-danger" v-if="!$v.first_name.required">
+              This field is required
+            </p>
+            <p class="help is-danger" v-if="!$v.first_name.maxLength">
+              Must be less than 150 characters
+            </p>
+          </template>
 
           <label class="label">Last Name:</label>
           <div class="control">
-            <input class="input" name="lname" />
+            <input
+              class="input"
+              name="lname"
+              v-model="$v.last_name.$model"
+              :class="{ 'is-danger': $v.last_name.$error }"
+            />
           </div>
+          <template v-if="$v.last_name.$error">
+            <p class="help is-danger" v-if="!$v.last_name.required">
+              This field is required
+            </p>
+            <p class="help is-danger" v-if="!$v.last_name.maxLength">
+              Must be less than 150 characters
+            </p>
+          </template>
 
           <label class="label">Address:</label>
           <div class="control">
@@ -55,26 +100,76 @@
 
           <label class="label">Phone:</label>
           <div class="control">
-            <input class="input" type="phone" />
+            <input
+              class="input"
+              type="phone"
+              v-model="$v.mobile.$model"
+              :class="{ 'is-danger': $v.mobile.$error }"
+            />
           </div>
+          <template v-if="$v.mobile.$error">
+            <p class="help is-danger" v-if="!$v.mobile.required">
+              This field is required
+            </p>
+            <p class="help is-danger" v-if="!$v.mobile.mobile">
+              Invalid Mobile Number
+            </p>
+          </template>
 
           <label class="label">Email:</label>
           <div class="control">
-            <input class="input" type="email" />
+            <input
+              class="input"
+              type="email"
+              v-model="$v.email.$model"
+              :class="{ 'is-danger': $v.email.$error }"
+            />
           </div>
+          <template v-if="$v.email.$error">
+            <p class="help is-danger" v-if="!$v.email.required">
+              This field is required
+            </p>
+            <p class="help is-danger" v-if="!$v.email.email">Invalid Email</p>
+          </template>
 
           <div v-if="this.passwordToggle == true">
             <label class="label">Password:</label>
             <div class="control">
-              <input class="input" type="password" />
+              <input
+                class="input"
+                type="password"
+                v-model="$v.password.$model"
+                :class="{ 'is-danger': $v.password.$error }"
+              />
             </div>
+            <template v-if="$v.password.$error">
+              <p class="help is-danger" v-if="!$v.password.required">
+                This field is required
+              </p>
+              <p class="help is-danger" v-if="!$v.password.minLength">
+                Must be at least 8 character
+              </p>
+              <p class="help is-danger" v-if="!$v.password.complex">
+                Password too easy
+              </p>
+            </template>
           </div>
 
           <div v-if="this.passwordToggle == true">
             <label class="label">Confirm Password</label>
             <div class="control">
-              <input class="input" type="password" />
+              <input
+                class="input"
+                type="password"
+                v-model="$v.confirm_password.$model"
+                :class="{ 'is-danger': $v.confirm_password.$error }"
+              />
             </div>
+            <template v-if="$v.confirm_password.$error">
+              <p class="help is-danger" v-if="!$v.confirm_password.sameAs">
+                Password not match
+              </p>
+            </template>
           </div>
 
           <div class="card-content column is-12 px-6 pt-6">
@@ -89,14 +184,67 @@
 </template>
 
 <script>
+import {
+  required,
+  email,
+  minLength,
+  maxLength,
+  sameAs,
+} from "vuelidate/lib/validators";
+function mobile(value) {
+  return !!value.match(/0[0-9]{9}/);
+}
+function complexPassword(value) {
+  if (!(value.match(/[a-z]/) && value.match(/[A-Z]/) && value.match(/[0-9]/))) {
+    return false;
+  }
+  return true;
+}
 export default {
   name: "ProfilePage",
   data() {
     return {
-      password: "",
       username: "",
+      password: "",
+      confirm_password: "",
+      email: "",
+      mobile: "",
+      first_name: "",
+      last_name: "",
+      address:"",
       passwordToggle: false,
     };
+  },
+  validations: {
+    username: {
+      required,
+      minLength: minLength(5),
+      maxLength: maxLength(20),
+    },
+    first_name: {
+      required,
+      maxLength: maxLength(150),
+    },
+    last_name: {
+      required,
+      maxLength: maxLength(150),
+    },
+    email: {
+      required,
+      email,
+    },
+    mobile: {
+      required: required,
+      mobile: mobile,
+    },
+    password: {
+      required: required,
+      minLength: minLength(8),
+      complex: complexPassword,
+    },
+    confirm_password: {
+      sameAs: sameAs("password"),
+    },
   },
   methods: {
     showEditPassword() {
