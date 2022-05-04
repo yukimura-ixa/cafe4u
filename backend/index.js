@@ -18,7 +18,7 @@ const orderRouter = require('./routes/order')
 const searchRouter = require('./routes/search')
 const productRouter = require('./routes/product');
 const cafeRouter = require('./routes/cafe')
-const userRouter = require('./routes/reference/user')
+const userRouter = require('./routes/user')
 
 
 app.use(indexRouter.router)
