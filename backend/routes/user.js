@@ -3,7 +3,8 @@ const pool = require("../config")
 const Joi = require('joi')
 const bcrypt = require('bcrypt');
 const { generateToken } = require("../utils/token");
-const { isLoggedIn } = require('../middlewares')
+const { isLoggedIn } = require('../middlewares');
+
 
 router = express.Router();
 
@@ -88,7 +89,7 @@ router.post('/user/login', async (req, res, next) => {
     try {
         // Check if username is correct
         const [users] = await conn.query(
-            'SELECT * FROM users WHERE username=?',
+            'SELECT * FROM user WHERE user_login=?',
             [username]
         )
         const user = users[0]
@@ -103,16 +104,16 @@ router.post('/user/login', async (req, res, next) => {
 
         // Check if token already existed
         const [tokens] = await conn.query(
-            'SELECT * FROM tokens WHERE user_id=?',
-            [user.id]
+            'SELECT * FROM token WHERE user_id=?',
+            [user.user_id]
         )
         let token = tokens[0]?.token
         if (!token) {
             // Generate and save token into database
             token = generateToken()
             await conn.query(
-                'INSERT INTO tokens(user_id, token) VALUES (?, ?)',
-                [user.id, token]
+                'INSERT INTO token(user_id, token) VALUES (?, ?)',
+                [user.user_id, token]
             )
         }
 
@@ -128,7 +129,10 @@ router.post('/user/login', async (req, res, next) => {
 
 router.get('/user/me', isLoggedIn, async (req, res, next) => {
      // req.user ถูก save ข้อมูล user จาก database ใน middleware function "isLoggedIn"
+     
      res.json(req.user)
  })
+
+
 
 exports.router = router

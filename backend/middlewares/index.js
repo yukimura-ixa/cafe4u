@@ -21,7 +21,7 @@ async function isLoggedIn(req, res, next) {
     }
 
     // Check token
-    const [tokens] = await pool.query('SELECT * FROM tokens WHERE token = ?', [part2])
+    const [tokens] = await pool.query('SELECT * FROM token WHERE token = ?', [part2])
     const token = tokens[0]
     if (!token) {
         return res.status(401).send('You are not logged in')
@@ -29,8 +29,8 @@ async function isLoggedIn(req, res, next) {
 
     // Set user
     const [users] = await pool.query(
-        'SELECT id, username, first_name, last_name, email, picture, mobile, join_date,role ' +
-        'FROM users WHERE id = ?', [token.user_id]
+        'SELECT *' +
+        'FROM user WHERE user_id = ?', [token.user_id]
     )
     req.user = users[0]
 

@@ -280,6 +280,7 @@
     </div>
 
     <router-view
+      @auth-change="onAuthChange"
       :key="$route.fullPath"
       :user="user"
       :cart="cart"
@@ -289,7 +290,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from '@/plugins/axios'
 
 export default {
   name: "App",
@@ -306,7 +307,7 @@ export default {
     };
   },
   mounted() {
-    // this.onAuthChange();
+    this.onAuthChange();
     this.search(false);
   },
   methods: {
@@ -325,17 +326,17 @@ export default {
           this.error = error.response.data.message;
         });
     },
-    // onAuthChange() {
-    //   const token = localStorage.getItem("token");
-    //   if (token) {
-    //     this.getUser();
-    //   }
-    // },
-    // getUser() {
-    //   axios.get("/user/me", {}).then((res) => {
-    //     this.user = res.data;
-    //   });
-    // },
+    onAuthChange() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.getUser();
+      }
+    },
+    getUser() {
+      axios.get("http://localhost:3000/user/me").then((res) => {
+        this.user = res.data;
+      });
+    },
     // logout() {
     //   localStorage.removeItem("token");
     //   this.$router.go();
