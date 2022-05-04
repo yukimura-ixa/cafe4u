@@ -1,16 +1,20 @@
 <template>
   <div class="container is-fluid mt-5">
     <div class="columns is-centered">
-
       <!-- left element -->
       <div class="column is-4">
         <div class="card">
-          <header class="card-header"  style="background-color:rgb(13, 56, 11)">
-            <p class="card-header-title has-text-success-light">Pending Order</p>
+          <header class="card-header" style="background-color: rgb(13, 56, 11)">
+            <p class="card-header-title has-text-success-light">
+              Pending Order
+            </p>
             <div class="card-header-icon">
               <div class="control has-icons-left">
-                <div class="select is-primary" >
-                  <select style="background-color:rgb(219, 255, 217)" v-model="sortPending">
+                <div class="select is-primary">
+                  <select
+                    style="background-color: rgb(219, 255, 217)"
+                    v-model="sortPending"
+                  >
                     <option value="status_d">Status DESC</option>
                     <option value="status_a">Status ASC</option>
                     <option value="date_d">Date DESC</option>
@@ -18,41 +22,93 @@
                   </select>
                 </div>
                 <div class="icon is-left">
-                  <font-awesome-icon icon="fa-solid fa-arrow-down-wide-short" class="has-text-black-ter"  />
+                  <font-awesome-icon
+                    icon="fa-solid fa-arrow-down-wide-short"
+                    class="has-text-black-ter"
+                  />
                 </div>
               </div>
-              
             </div>
           </header>
           <div class="card-content has-background-grey-lighter">
-            <div class="content" style="max-height: 40vh;overflow-y: auto;">
-
+            <div class="content" style="max-height: 40vh; overflow-y: auto">
               <!-- Pending Order -->
-              <div class="card mb-5" v-for='order in pendingOrder' :key="order.order_id">
-                <div class="card-content" style="padding: 0.9em;"  @click="selectOrder(order)">
-                  <div class="content columns" >
-                    <div class="column is-4">Order#{{order.order_id}} &nbsp; <strong>({{order.order_totalprice}} B)</strong><br>
-                    <span v-if="order.order_status=='finished'" class="box has-text-centered has-background-success has-text-light is-uppercase" style="padding:0.5em">{{order.order_status}}</span>
-                      <span v-if="order.order_status=='pending'" class="box has-text-centered has-background-info has-text-light is-uppercase" style="padding:0.5em">{{order.order_status}}</span>
-                      <span v-if="order.order_status=='in queue'" class="box has-text-centered has-background-warning has-text-black-ter  is-uppercase" style="padding:0.5em">{{order.order_status}}</span>
-
+              <div
+                class="card mb-5"
+                v-for="order in pendingOrder"
+                :key="order.order_id"
+              >
+                <div
+                  class="card-content"
+                  style="padding: 0.9em"
+                  @click="selectOrder(order)"
+                >
+                  <div class="content columns">
+                    <div class="column is-4">
+                      Order#{{ order.order_id }} &nbsp;
+                      <strong>({{ order.order_totalprice }} B)</strong><br />
+                      <span
+                        v-if="order.order_status == 'finished'"
+                        class="
+                          box
+                          has-text-centered
+                          has-background-success
+                          has-text-light
+                          is-uppercase
+                        "
+                        style="padding: 0.5em"
+                        >{{ order.order_status }}</span
+                      >
+                      <span
+                        v-if="order.order_status == 'pending'"
+                        class="
+                          box
+                          has-text-centered has-background-info has-text-light
+                          is-uppercase
+                        "
+                        style="padding: 0.5em"
+                        >{{ order.order_status }}</span
+                      >
+                      <span
+                        v-if="order.order_status == 'in queue'"
+                        class="
+                          box
+                          has-text-centered
+                          has-background-warning
+                          has-text-black-ter
+                          is-uppercase
+                        "
+                        style="padding: 0.5em"
+                        >{{ order.order_status }}</span
+                      >
                     </div>
-                    <div class="column is-4 is-offset-4 has-text-right">{{order.order_datetime.substring(0,10)}} {{order.order_datetime.substring(11,19)}}<br>
-                      <button class="button is-outlined is-danger" v-if="order.order_status=='in queue'" @click="cancelOrder($event,order)">Cancel</button>
-                      
+                    <div class="column is-4 is-offset-4 has-text-right">
+                      {{ order.order_datetime.substring(0, 10) }}
+                      {{ order.order_datetime.substring(11, 19) }}<br />
+                      <button
+                        class="button is-outlined is-danger"
+                        v-if="order.order_status == 'in queue'"
+                        @click="cancelOrder($event, order)"
+                      >
+                        Cancel
+                      </button>
                     </div>
-
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <header class="card-header"  style="background-color:rgb(13, 56, 11)">
-            <p class="card-header-title has-text-success-light">Order History</p>
-              <div class="card-header-icon">
+          <header class="card-header" style="background-color: rgb(13, 56, 11)">
+            <p class="card-header-title has-text-success-light">
+              Order History
+            </p>
+            <div class="card-header-icon">
               <div class="control has-icons-left">
-                <div class="select is-primary" >
-                  <select style="background-color:rgb(219, 255, 217)" v-model="sortHistory">
+                <div class="select is-primary">
+                  <select
+                    style="background-color: rgb(219, 255, 217)"
+                    v-model="sortHistory"
+                  >
                     <option value="status_d">Status DESC</option>
                     <option value="status_a">Status ASC</option>
                     <option value="date_d">Date DESC</option>
@@ -60,26 +116,51 @@
                   </select>
                 </div>
                 <div class="icon is-left">
-                  <font-awesome-icon icon="fa-solid fa-arrow-down-wide-short" class="has-text-black-ter"  />
+                  <font-awesome-icon
+                    icon="fa-solid fa-arrow-down-wide-short"
+                    class="has-text-black-ter"
+                  />
                 </div>
               </div>
-              
             </div>
           </header>
           <div class="card-content has-background-grey-lighter">
-            <div class="content" style="max-height: 40vh;overflow-y: auto;">
-                            <!-- History Order -->
-              <div class="card mb-5" v-for='order in historyOrder' :key="order.order_id">
-                <div class="card-content" style="padding: 0.9em;"  @click="selectOrder(order)">
-                  <div class="content columns" >
-                    <div class="column is-4">Order#{{order.order_id}} &nbsp; <strong>({{order.order_totalprice}} B)</strong><br>
-                      <span v-if="order.order_status=='sold'" class="has-text-centered has-text-success is-uppercase" style="padding:0.5em;display:block">{{order.order_status}}</span>
-                      <span v-if="order.order_status=='cancelled'" class="has-text-centered has-text-danger has-text-light is-uppercase" style="padding:0.5em;display:block">{{order.order_status}}</span>
-
+            <div class="content" style="max-height: 40vh; overflow-y: auto">
+              <!-- History Order -->
+              <div
+                class="card mb-5"
+                v-for="order in historyOrder"
+                :key="order.order_id"
+              >
+                <div
+                  class="card-content"
+                  style="padding: 0.9em"
+                  @click="selectOrder(order)"
+                >
+                  <div class="content columns">
+                    <div class="column is-4">
+                      Order#{{ order.order_id }} &nbsp;
+                      <strong>({{ order.order_totalprice }} B)</strong><br />
+                      <span
+                        v-if="order.order_status == 'sold'"
+                        class="has-text-centered has-text-success is-uppercase"
+                        style="padding: 0.5em; display: block"
+                        >{{ order.order_status }}</span
+                      >
+                      <span
+                        v-if="order.order_status == 'cancelled'"
+                        class="
+                          has-text-centered has-text-danger has-text-light
+                          is-uppercase
+                        "
+                        style="padding: 0.5em; display: block"
+                        >{{ order.order_status }}</span
+                      >
                     </div>
-                    <div class="column is-4 is-offset-4 has-text-right">{{order.order_datetime.substring(0,10)}} {{order.order_datetime.substring(11,19)}}<br>
+                    <div class="column is-4 is-offset-4 has-text-right">
+                      {{ order.order_datetime.substring(0, 10) }}
+                      {{ order.order_datetime.substring(11, 19) }}<br />
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -90,244 +171,433 @@
 
       <!-- right element -->
       <div class="column is-8">
-           <div class="card" :class="[!currentOrder?'blankstyle':'']">   
-          <div class="card-content has-background-white" style="min-height: 80vh;" v-if="currentOrder">
-               <div class="content">
-                 <div class="columns">
+        <div class="card" :class="[!currentOrder ? 'blankstyle' : '']">
+          <div
+            class="card-content has-background-white"
+            style="min-height: 80vh"
+            v-if="currentOrder"
+          >
+            <div class="content">
+              <div class="columns">
                 <div class="column is-8">
-                  <div>Order#{{currentOrder.order_id}}</div>
-                  <div>Cafe: {{currentOrder.cafe_name}}</div>
-                  <div>Location: {{currentOrder.cafe_location}}</div>
-                  <div>By Employee: {{currentOrder.fname}} {{currentOrder.lname}}</div>
-                  
-                </div>
-                <div class="column is-4 has-text-right">
-                  <div>Date: {{currentOrder.order_datetime.substring(0,10)}}&nbsp;&nbsp;Time: {{currentOrder.order_datetime.substring(11,19)}}</div>
+                  <div>Order#{{ currentOrder.order_id }}</div>
+                  <div>Cafe: {{ currentOrder.cafe_name }}</div>
+                  <div>Location: {{ currentOrder.cafe_location }}</div>
                   <div>
-
-                    Status:
-                    <span v-if="currentOrder.order_status=='finished'" class="box has-text-centered has-background-success has-text-light is-uppercase px-5" style="padding:0.5em;display:inline-block">{{currentOrder.order_status}}</span>
-                    <span v-if="currentOrder.order_status=='pending'" class="box has-text-centered has-background-info has-text-light is-uppercase px-5" style="padding:0.5em;display:inline-block">{{currentOrder.order_status}}</span>
-                    <span v-if="currentOrder.order_status=='in queue'" class="box has-text-centered has-background-warning has-text-black-ter  is-uppercase px-5" style="padding:0.5em;display:inline-block">{{currentOrder.order_status}}</span>
-                    <span v-if="currentOrder.order_status=='sold'" class="has-text-centered has-text-success is-uppercase px-5" style="padding:0.5em;display:inline-block">{{currentOrder.order_status}}</span>
-                    <span v-if="currentOrder.order_status=='cancelled'" class="has-text-centered has-text-danger has-text-light is-uppercase px-5" style="padding:0.5em;display:inline-block">{{currentOrder.order_status}}</span>
+                    By Employee: {{ currentOrder.fname }}
+                    {{ currentOrder.lname }}
                   </div>
                 </div>
+                <div class="column is-4 has-text-right">
+                  <div>
+                    Date:
+                    {{
+                      currentOrder.order_datetime.substring(0, 10)
+                    }}&nbsp;&nbsp;Time:
+                    {{ currentOrder.order_datetime.substring(11, 19) }}
+                  </div>
+                  <div>
+                    Status:
+                    <span
+                      v-if="currentOrder.order_status == 'finished'"
+                      class="
+                        box
+                        has-text-centered has-background-success has-text-light
+                        is-uppercase
+                        px-5
+                      "
+                      style="padding: 0.5em; display: inline-block"
+                      >{{ currentOrder.order_status }}</span
+                    >
+                    <span
+                      v-if="currentOrder.order_status == 'pending'"
+                      class="
+                        box
+                        has-text-centered has-background-info has-text-light
+                        is-uppercase
+                        px-5
+                      "
+                      style="padding: 0.5em; display: inline-block"
+                      >{{ currentOrder.order_status }}</span
+                    >
+                    <span
+                      v-if="currentOrder.order_status == 'in queue'"
+                      class="
+                        box
+                        has-text-centered
+                        has-background-warning
+                        has-text-black-ter
+                        is-uppercase
+                        px-5
+                      "
+                      style="padding: 0.5em; display: inline-block"
+                      >{{ currentOrder.order_status }}</span
+                    >
+                    <span
+                      v-if="currentOrder.order_status == 'sold'"
+                      class="
+                        has-text-centered has-text-success
+                        is-uppercase
+                        px-5
+                      "
+                      style="padding: 0.5em; display: inline-block"
+                      >{{ currentOrder.order_status }}</span
+                    >
+                    <span
+                      v-if="currentOrder.order_status == 'cancelled'"
+                      class="
+                        has-text-centered has-text-danger has-text-light
+                        is-uppercase
+                        px-5
+                      "
+                      style="padding: 0.5em; display: inline-block"
+                      >{{ currentOrder.order_status }}</span
+                    >
+                  </div>
                 </div>
-               </div>
+              </div>
+            </div>
             <div class="content">
-              <table class="table has-background-success-light is-striped is-hoverable">
-                  <thead class="has-background-success">
-                      <tr>
-                          <th>#</th>
-                          <th>Product Name</th>
-                          <th>Product Price</th>
-                          <th>Order Amount</th>
-                          <th>TotalPrice</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr v-for="(item,index) in currentOrderItem" :key="item.item_no">
-                          <td>{{index+1}}</td>
-                          <td>{{item.product_name}}</td>
-                          <td>{{item.product_price}}</td>
-                          <td>{{item.order_amount}}</td>
-                          <td>{{item.item_totalprice}}</td>
-                      </tr>
-                      <tr v-if="currentOrder.pro_type == 'free'">
-                          <td>{{currentOrderItem.length+1}}</td>
-                          <td>(PROMOTION){{currentOrder.product_name}}</td>
-                          <td>FREE</td>
-                          <td>1</td>
-                          <td>FREE</td>
-                      </tr>
-                      <tr v-if="currentOrder.pro_type != 'free' && currentOrder.pro_type != null">
-                          <td>{{currentOrderItem.length+1}}</td>
-                          <td>(PROMOTION){{currentOrder.pro_detail}}</td>
-                          <td></td>
-                          <td></td>
-                          <td>-{{currentOrder.discount}}</td>
-                      </tr>
-                      <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td>{{totalPrice}}</td>
-                      </tr>
-                  </tbody>
+              <table
+                class="
+                  table
+                  has-background-success-light
+                  is-striped is-hoverable
+                "
+              >
+                <thead class="has-background-success">
+                  <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in currentOrderItem" :key="item.item_no">
+                    <td style="vertical-align: middle">{{ index + 1 }}</td>
+                    <td style="vertical-align: middle">
+                      <div class="list-item">
+                        <div class="list-item-image">
+                          <figure class="image is-64x64">
+                            <img :src="showImage(item.product_id)" />
+                          </figure>
+                        </div>
+
+                        <div class="list-item-content">
+                          <div class="list-item-title">
+                            {{ item.product_name }}
+                          </div>
+                          <div
+                            class="list-item-description"
+                            v-if="optionOf(item.item_no) != ''"
+                          >
+                            Option: {{ optionOf(item.item_no) }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="vertical-align: middle">
+                      {{ item.product_price }}
+                    </td>
+                    <td style="vertical-align: middle">
+                      {{ item.order_amount }}
+                    </td>
+                    <td style="vertical-align: middle">
+                      {{ item.item_totalprice }}
+                      <span v-if="optionOf(item.item_no) != ''"
+                        >+ ({{ optionPrice(item.item_no) }})</span
+                      >
+                    </td>
+                  </tr>
+
+                  <tr v-if="currentOrder.pro_type == 'free'">
+                    <td style="vertical-align: middle">
+                      {{ currentOrderItem.length + 1 }}
+                    </td>
+                    <td style="vertical-align: middle">
+                      <div class="list-item">
+                        <div class="list-item-image">
+                          <figure class="image is-64x64">
+                            <img :src="showImage(currentOrder.product_id)" />
+                          </figure>
+                        </div>
+                        <div class="list-item-content">
+                          <div class="list-item-title">
+                            (PROMOTION){{ currentOrder.product_name }}
+                          </div>
+                          <div class="list-item-description">
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="vertical-align: middle">FREE</td>
+                    <td style="vertical-align: middle">1</td>
+                    <td style="vertical-align: middle">FREE</td>
+                  </tr>
+
+                  <tr v-if="currentOrder.pro_type != 'free' && currentOrder.pro_type != null">
+                    <td style="vertical-align: middle">
+                      {{ currentOrderItem.length + 1 }}
+                    </td>
+                    <td style="vertical-align: middle">
+                      <div class="list-item">
+                        <div class="list-item-content">
+                          <div class="list-item-title">
+                            (PROMOTION){{ currentOrder.pro_detail }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="vertical-align: middle"></td>
+                    <td style="vertical-align: middle"></td>
+                    <td style="vertical-align: middle">
+                      -{{ currentOrder.discount }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ totalPrice }}</td>
+                  </tr>
+                </tbody>
               </table>
-              <div v-if="currentOrder.pro_id">Promotion Used: {{currentOrder.pro_detail}}</div>
-              
-
-
+              <div v-if="currentOrder.pro_id">
+                Promotion Used: {{ currentOrder.pro_detail }}
+              </div>
             </div>
           </div>
           <footer class="card-footer p-5" v-if="currentOrder">
             <div class="ml-auto">
-            <button class="button is-outlined is-danger" v-if="currentOrder.order_status=='in queue'" @click="cancelOrder($event,currentOrder)">Cancel</button>
+              <button
+                class="button is-outlined is-danger"
+                v-if="currentOrder.order_status == 'in queue'"
+                @click="cancelOrder($event, currentOrder)"
+              >
+                Cancel
+              </button>
             </div>
           </footer>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   name: "OrderHistory",
   data() {
     return {
-      selectedOrder:-1,
-      user:{user_id:1},
-      sortPending:'status_d',
-      sortHistory:'status_a',
-    //   orders:[{order_id:1,order_datetime:'2021-07-15 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
-    //   {order_id:14,order_datetime:'2021-05-9 12:43:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'sold',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
-    //   {order_id:15,order_datetime:'2021-04-10 12:42:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'in queue',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe2',cafe_desc:'11111111111',cafe_theme:'Cool'},
-    //   {order_id:111,order_datetime:'2021-03-11 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
-    //   {order_id:151,order_datetime:'2021-02-01 12:42:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'in queue',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe2',cafe_desc:'11111111111',cafe_theme:'Cool'},
-    //   {order_id:112,order_datetime:'2021-01-30 12:44:01',order_totalprice:80,user_id:5,emp_id:1,cafe_branchid:3,pro_id:1,order_status:'pending',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570 ',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'},
-      
-    //   {order_id:12,order_datetime:'2021-07-13 12:41:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'finished',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe3',cafe_desc:'11111111111',cafe_theme:'Cool'},
-    //   {order_id:13,order_datetime:'2021-07-15 12:40:01',order_totalprice:10,user_id:5,emp_id:1,cafe_branchid:6,pro_id:null,order_status:'cancelled',cafe_location:'215/3 หมู่4 ถนนเทพารักษ์ อ.บางเสาธง จ.สมทุรปราการ 10570',cafe_name:'Cafe1',cafe_desc:'11111111111',cafe_theme:'Cool'}],
-    // //   when add db    orders join cafe join emp join promotion  maybe join user                        orders_item join product
-    //   orders_item:[{item_no:1,product_price:80,order_amount:1,item_totalprice:80,product_id:1,order_id:1,product_name:'Nitro',product_desc:'Nitrooo :D',product_type:'drink',product_status:'available',product_amount:45},
-    //   {item_no:20,product_price:80,order_amount:2,item_totalprice:160,product_id:2,order_id:1,product_name:'Nitrox',product_desc:'NitroooX',product_type:'drink',product_status:'available',product_amount:60}]
-    orders:null,
-    orders_item:null
-
-
+      selectedOrder: -1,
+      user: { user_id: 9 },
+      sortPending: "status_d",
+      sortHistory: "status_a",
+      orders: [],
+      orders_item: [],
+      images: [],
+      option: [],
     };
   },
-  created(){
-    this.getOrder()
+  created() {
+    this.getOrder();
   },
-  methods:{
-    getOrder(){
+  methods: {
+    getOrder() {
       axios
         .get(`http://localhost:3000/orders/${this.user.user_id}`)
         .then((response) => {
-          console.log(response)
+          console.log(response);
           this.orders = response.data.orders;
           this.orders_item = response.data.order_item;
+          this.images = response.data.image
+          this.option = response.data.option
         })
         .catch((error) => {
           this.error = error.response.data.message;
         });
     },
-    selectOrder(order){
-      this.selectedOrder = order.order_id
+    selectOrder(order) {
+      this.selectedOrder = order.order_id;
     },
-    cancelOrder(e,order){
-      e.stopPropagation()
-      if(!confirm('Are you sure to cancel Order#'+order.order_id)){return}
+    cancelOrder(e, order) {
+      e.stopPropagation();
+      if (!confirm("Are you sure to cancel Order#" + order.order_id)) {
+        return;
+      }
       axios
-        .put(`http://localhost:3000/admin/orders/${order.order_id}`, {toStatus:'cancelled'})
+        .put(`http://localhost:3000/admin/orders/${order.order_id}`, {
+          toStatus: "cancelled",
+        })
         .then((response) => {
-          let thisorder = this.orders.filter((order)=>{
-                return order.order_id == response.data.newstatus[0].order_id
-          })
+          let thisorder = this.orders.filter((order) => {
+            return order.order_id == response.data.newstatus[0].order_id;
+          });
           thisorder[0].order_status = response.data.newstatus[0].order_status;
         })
         .catch((error) => {
           this.error = error.response.data.message;
         });
     },
-    sortOrder(order, slot){
-        //order by Status Desc
-          var arr = ['in queue','pending','finished','sold','cancelled']
-          if(slot == 'status_d'){
-            order.sort((a,b)=>{
-              var aa, bb
-              //  weight: sold cancelled    finish pending in queue
-              for (let i = 0; i < arr.length; i++) {
-                if(a.order_status == arr[i]){aa = i}
-                if(b.order_status == arr[i]){bb = i}
-              }
-              if(aa > bb){return -1}
-              if(bb > aa){return 1}
-              return 0
-            })
+    showImage(product_id){
+      let image = this.images.filter((each) => {
+        return each.product_id == product_id;
+      });
+      if (image[0] == null) {
+        return "https://via.placeholder.com/128x128.png?text=Image";
+      }
+      return image[0].image_path;
+    },
+    optionOf(item_no){
+      let option = this.option.filter((each) => {
+        return each.item_no == item_no;
+      });
+      if(option.length > 0){
+        return option[0].product_name
+      }
+      return ''
+    },
+    optionPrice(item_no){
+      let option = this.option.filter((each) => {
+        return each.item_no == item_no;
+      });
+      if(option.length > 0){
+        return option[0].product_price
+      }
+      return 0
+    },
+    sortOrder(order, slot) {
+      //order by Status Desc
+      var arr = ["in queue", "pending", "finished", "sold", "cancelled"];
+      if (slot == "status_d") {
+        order.sort((a, b) => {
+          var aa, bb;
+          //  weight: sold cancelled    finish pending in queue
+          for (let i = 0; i < arr.length; i++) {
+            if (a.order_status == arr[i]) {
+              aa = i;
+            }
+            if (b.order_status == arr[i]) {
+              bb = i;
+            }
           }
-          //order by Status Asc
-          else if(slot == 'status_a'){
-            order.sort((a,b)=>{
-              var aa, bb
-              //  weight: sold cancelled    finish pending in queue
-              for (let i = 0; i < arr.length; i++) {
-                if(a.order_status == arr[i]){aa = i}
-                if(b.order_status == arr[i]){bb = i}
-              }
-              if(aa > bb){return 1}
-              if(bb > aa){return -1}
-              return 0
-            })
+          if (aa > bb) {
+            return -1;
           }
-          //order by Date desc
-          else if(slot == 'date_d'){
-            order.sort((a,b)=>{
-              if(a.order_datetime > b.order_datetime){return -1}
-              if(b.order_datetime > a.order_datetime){return 1}
-              return 0
-            })
+          if (bb > aa) {
+            return 1;
           }
-          //order by Date asc
-          else if(slot == 'date_a'){
-            order.sort((a,b)=>{
-              if(a.order_datetime > b.order_datetime){return 1}
-              if(b.order_datetime > a.order_datetime){return -1}
-              return 0
-            })
+          return 0;
+        });
+      }
+      //order by Status Asc
+      else if (slot == "status_a") {
+        order.sort((a, b) => {
+          var aa, bb;
+          //  weight: sold cancelled    finish pending in queue
+          for (let i = 0; i < arr.length; i++) {
+            if (a.order_status == arr[i]) {
+              aa = i;
+            }
+            if (b.order_status == arr[i]) {
+              bb = i;
+            }
           }
-          return order
-    }
+          if (aa > bb) {
+            return 1;
+          }
+          if (bb > aa) {
+            return -1;
+          }
+          return 0;
+        });
+      }
+      //order by Date desc
+      else if (slot == "date_d") {
+        order.sort((a, b) => {
+          if (a.order_datetime > b.order_datetime) {
+            return -1;
+          }
+          if (b.order_datetime > a.order_datetime) {
+            return 1;
+          }
+          return 0;
+        });
+      }
+      //order by Date asc
+      else if (slot == "date_a") {
+        order.sort((a, b) => {
+          if (a.order_datetime > b.order_datetime) {
+            return 1;
+          }
+          if (b.order_datetime > a.order_datetime) {
+            return -1;
+          }
+          return 0;
+        });
+      }
+      return order;
+    },
   },
   computed: {
-        currentOrder() {
-        let x =   this.orders.filter((order)=>{
-                return order.order_id == this.selectedOrder
-            })
-      
-        return x[0]
-          
-        },
-        currentOrderItem(){
-          return this.orders_item.filter((item)=>{
-                return item.order_id == this.selectedOrder
-            })
-        },
-        totalPrice(){
+    currentOrder() {
+      let x = this.orders.filter((order) => {
+        return order.order_id == this.selectedOrder;
+      });
 
-          let toreturn = this.currentOrderItem.reduce((total,item)=>{
-                return total + (item.product_price * item.order_amount)
-            },0)
-          if(this.currentOrder.pro_type != 'free' && this.currentOrder.pro_type != null){
-            toreturn -= this.currentOrder.discount
+      return x[0];
+    },
+    currentOrderItem() {
+      return this.orders_item.filter((item) => {
+        return item.order_id == this.selectedOrder;
+      });
+    },
+    totalPrice() {
+      
+      var toreturn = this.currentOrderItem.reduce((total, item) => {
+        let option = 0
+        for(let i =0;i<this.option.length;i++){
+          if(item.item_no == this.option[i].item_no){
+            option = this.option[i].product_price
           }
-          return toreturn
-        },
-        pendingOrder(){
-          if(this.orders == null){return }
-          let order = this.orders.filter((order)=>{
-                return order.order_status == 'pending' || order.order_status == 'in queue' || order.order_status == 'finished'
-            })
-           return this.sortOrder(order, this.sortPending)
-          
-        },
-        historyOrder(){
-          if(this.orders == null){return }
-          let order =this.orders.filter((order)=>{
-                return order.order_status != 'pending' && order.order_status != 'in queue' && order.order_status != 'finished'
-          })
-          return this.sortOrder(order, this.sortHistory)
-          
         }
+        return total + (item.product_price * item.order_amount) + option;
+      }, 0);
+      
+      if (
+        this.currentOrder.pro_type != "free" &&
+        this.currentOrder.pro_type != null
+      ) {
+        toreturn -= this.currentOrder.discount;
+      }
+      return toreturn;
+    },
+    pendingOrder() {
+      let order = this.orders.filter((order) => {
+        return (
+          order.order_status == "pending" ||
+          order.order_status == "in queue" ||
+          order.order_status == "finished"
+        );
+      });
+      return this.sortOrder(order, this.sortPending);
+    },
+    historyOrder() {
+      let order = this.orders.filter((order) => {
+        return (
+          order.order_status != "pending" &&
+          order.order_status != "in queue" &&
+          order.order_status != "finished"
+        );
+      });
+      return this.sortOrder(order, this.sortHistory);
+    },
   },
-  
 };
 </script>
 
@@ -336,8 +606,7 @@ body {
   background-color: rgb(50, 119, 80);
   height: 100vh;
 }
-.blankstyle{
+.blankstyle {
   min-height: 80vh;
 }
-
 </style>

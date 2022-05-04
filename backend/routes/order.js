@@ -20,10 +20,21 @@ router.get("/orders/:user_id", async function (req, res, next) {
         "select * from order_item  join product using (product_id) where order_id in (select order_id from `order`  where user_id = ?)",
         [parseInt(req.params.user_id)]
       );
+    let results3 = await conn.query(
+        "select * from image where product_id in (select distinct product_id from order_item  join product using (product_id) where order_id in (select order_id from `order`  where user_id = ?)) \
+        or product_id in (SELECT product_id FROM `order` join promotion_product using (pro_id)  where user_id = ?)",
+        [parseInt(req.params.user_id),parseInt(req.params.user_id)]
+    );
+    let results4 = await conn.query(
+      "select * from order_item join product_order_item p using (item_no) join product p2 on (p.product_id = p2.product_id) where order_id in (select order_id from `order`  where user_id = ?)",
+      [parseInt(req.params.user_id)]
+    );
     await conn.commit();
     res.json({
         orders:results[0],
-        order_item:results2[0]
+        order_item:results2[0],
+        image:results3[0],
+        option:results4[0]
     });
   } catch (err) {
     await conn.rollback();
@@ -50,10 +61,21 @@ router.get("/admin/orders/:cafeId", async function (req, res, next) {
           "select * from order_item  join product using (product_id) where order_id in (select order_id from `order`  where cafe_branchid = ?)",
           [parseInt(req.params.cafeId)]
         );
+      let results3 = await conn.query(
+          "select * from image where product_id in (select distinct product_id from order_item  join product using (product_id) where order_id in (select order_id from `order`  where cafe_branchid = ?)) \
+          or product_id in (SELECT product_id FROM `order` join promotion_product using (pro_id)  where cafe_branchid = ?)",
+          [parseInt(req.params.cafeId),parseInt(req.params.cafeId)]
+      );
+      let results4 = await conn.query(
+        "select * from order_item join product_order_item p using (item_no) join product p2 on (p.product_id = p2.product_id) where order_id in (select order_id from `order`  where cafe_branchid = ?)",
+        [parseInt(req.params.cafeId)]
+      );
       await conn.commit();
       res.json({
           orders:results[0],
-          order_item:results2[0]
+          order_item:results2[0],
+          image:results3[0],
+          option:results4[0]
       });
     } catch (err) {
       await conn.rollback();
