@@ -58,7 +58,7 @@
             </a>
             <a class="button is-light"> ออกจากระบบ </a>
             <div class="buttons">
-              <a class="button is-primary" href="#/signup">
+              <a class="button is-primary" href="#/user/signup">
                 <strong>สมัครสมาชิก</strong>
               </a>
               <a class="button is-light" href="#/login"> เข้าสู่ระบบ </a>

@@ -20,7 +20,7 @@ const routes = [
     component: () => import('../views/Profile.vue')
   },
   {
-    path: '/signup',
+    path: '/user/signup',
     name: 'signup',
     component: () => import('../views/Signup.vue')
   },
@@ -58,6 +58,11 @@ const routes = [
     path: '/cafe/:id/product',
     name: 'product',
     component: () => import('../views/CafeProduct.vue')
+  },
+  {
+    path: '/cafe/add',
+    name: 'addNewCafe',
+    component: () => import('../views/AddCafe.vue')
   },
 //   {
 //     path: '/user/login',

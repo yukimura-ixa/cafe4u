@@ -30,15 +30,41 @@
             <div class="field">
               <label class="label">Email</label>
               <div class="control">
-                <input class="input" type="text" />
+                <input
+                  v-model="$v.email.$model"
+                  :class="{ 'is-danger': $v.email.$error }"
+                  class="input"
+                  type="text"
+                />
               </div>
+              <template v-if="$v.email.$error">
+                <p class="help is-danger" v-if="!$v.email.required">
+                  This field is required
+                </p>
+                <p class="help is-danger" v-if="!$v.email.email">
+                  Invalid Email
+                </p>
+              </template>
             </div>
 
             <div class="field">
               <label class="label">Mobile Number</label>
               <div class="control">
-                <input class="input" type="text" />
+                <input
+                  v-model="$v.mobile.$model"
+                  :class="{ 'is-danger': $v.mobile.$error }"
+                  class="input"
+                  type="text"
+                />
               </div>
+              <template v-if="$v.mobile.$error">
+                <p class="help is-danger" v-if="!$v.mobile.required">
+                  This field is required
+                </p>
+                <p class="help is-danger" v-if="!$v.mobile.mobile">
+                  Invalid Mobile Number
+                </p>
+              </template>
             </div>
 
             <div class="field">
@@ -59,7 +85,9 @@
               Sign Up
             </button>
 
-            <p class="my-3">Already have an account? <a href="#/login">Login</a></p>
+            <p class="my-3">
+              Already have an account? <a href="#/login">Login</a>
+            </p>
           </div>
         </div>
       </div>
@@ -68,13 +96,73 @@
 </template>
 
 <script>
+import axios from "axios";
+import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
+function mobile(value) {
+  return !!value.match(/0[0-9]{9}/);
+}
+function complexPassword(value) {
+  if (!(value.match(/[a-z]/) && value.match(/[A-Z]/) && value.match(/[0-9]/))) {
+    return false;
+  }
+  return true;
+}
 export default {
   name: "signupPage",
   data() {
     return {
-      password: "",
       username: "",
+      password: "",
+      confirm_password: "",
+      email: "",
+      mobile: "",
+      first_name: "",
+      last_name: "",
     };
+  },
+  validations: {
+    email: {
+      required,
+      email,
+    },
+  },
+  mobile: {
+    required: required,
+    mobile: mobile,
+  },
+  password: {
+    required: required,
+    minLength: minLength(8),
+    complex: complexPassword,
+  },
+  confirm_password: {
+    sameAs: sameAs("password"),
+  },
+  methods: {
+    submit() {
+      this.$v.$touch();
+
+      if (!this.$v.$invalid) {
+        let data = {
+          username: this.username,
+          password: this.password,
+          confirm_password: this.confirm_password,
+          email: this.email,
+          mobile: this.mobile,
+          first_name: this.first_name,
+          last_name: this.last_name,
+        };
+
+        axios
+          .post("http://localhost:3000/user/signup", data)
+          .then(() => {
+            alert("Sign up Success");
+          })
+          .catch((err) => {
+            alert(err.response.data.details.message);
+          });
+      }
+    },
   },
 };
 </script>
