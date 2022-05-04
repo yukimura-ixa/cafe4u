@@ -55,8 +55,8 @@ router.post('/user/signup', async (req, res, next) => {
 
     try {
         await conn.query(
-            'INSERT INTO users(username, password, first_name, last_name, email, mobile) VALUES (?, ?, ?, ?, ?, ?)',
-            [username, password, first_name, last_name, email, mobile]
+            'INSERT INTO users(username, password, first_name, last_name, email, picture, mobile, join_date) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)',
+            [username, password, first_name, last_name, email, null, mobile]
         )
         conn.commit()
         res.status(201).send()

@@ -9,22 +9,64 @@
             <div class="field">
               <label class="label">Username</label>
               <div class="control">
-                <input class="input" type="text" />
+                <input
+                  v-model="$v.username.$model"
+                  :class="{ 'is-danger': $v.username.$error }"
+                  class="input"
+                  type="text"
+                />
               </div>
+              <template v-if="$v.username.$error">
+                <p class="help is-danger" v-if="!$v.username.required">
+                  This field is required
+                </p>
+                <p class="help is-danger" v-if="!$v.username.minLength">
+                  Must be at least 5 characters
+                </p>
+                <p class="help is-danger" v-if="!$v.username.maxLength">
+                  Must be less than 20 characters
+                </p>
+              </template>
             </div>
 
             <div class="field">
               <label class="label">Password</label>
               <div class="control">
-                <input class="input" type="password" />
+                <input
+                  v-model="$v.password.$model"
+                  :class="{ 'is-danger': $v.password.$error }"
+                  class="input"
+                  type="password"
+                />
               </div>
+              <template v-if="$v.password.$error">
+                <p class="help is-danger" v-if="!$v.password.required">
+                  This field is required
+                </p>
+                <p class="help is-danger" v-if="!$v.password.minLength">
+                  Must be at least 8 character
+                </p>
+                <p class="help is-danger" v-if="!$v.password.complex">
+                  Password too easy
+                </p>
+              </template>
             </div>
 
             <div class="field">
               <label class="label">Confirm Password</label>
               <div class="control">
-                <input class="input" type="password" />
+                <input
+                  v-model="$v.confirm_password.$model"
+                  :class="{ 'is-danger': $v.confirm_password.$error }"
+                  class="input"
+                  type="password"
+                />
               </div>
+              <template v-if="$v.confirm_password.$error">
+                <p class="help is-danger" v-if="!$v.confirm_password.sameAs">
+                  Password not match
+                </p>
+              </template>
             </div>
 
             <div class="field">
@@ -70,15 +112,41 @@
             <div class="field">
               <label class="label">First Name</label>
               <div class="control">
-                <input class="input" type="text" />
+                <input
+                  v-model="$v.first_name.$model"
+                  :class="{ 'is-danger': $v.first_name.$error }"
+                  class="input"
+                  type="text"
+                />
               </div>
+              <template v-if="$v.first_name.$error">
+                <p class="help is-danger" v-if="!$v.first_name.required">
+                  This field is required
+                </p>
+                <p class="help is-danger" v-if="!$v.first_name.maxLength">
+                  Must be less than 150 characters
+                </p>
+              </template>
             </div>
 
             <div class="field">
               <label class="label">Last Name</label>
               <div class="control">
-                <input class="input" type="text" />
+                <input
+                  v-model="$v.last_name.$model"
+                  :class="{ 'is-danger': $v.last_name.$error }"
+                  class="input"
+                  type="text"
+                />
               </div>
+              <template v-if="$v.last_name.$error">
+                <p class="help is-danger" v-if="!$v.last_name.required">
+                  This field is required
+                </p>
+                <p class="help is-danger" v-if="!$v.last_name.maxLength">
+                  Must be less than 150 characters
+                </p>
+              </template>
             </div>
 
             <button class="button is-primary is-fullwidth" @click="submit()">
@@ -97,7 +165,13 @@
 
 <script>
 import axios from "axios";
-import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
+import {
+  required,
+  email,
+  minLength,
+  maxLength,
+  sameAs,
+} from "vuelidate/lib/validators";
 function mobile(value) {
   return !!value.match(/0[0-9]{9}/);
 }
@@ -121,23 +195,37 @@ export default {
     };
   },
   validations: {
+    username: {
+      required,
+      minLength: minLength(5),
+      maxLength: maxLength(20),
+    },
+    first_name: {
+      required,
+      maxLength: maxLength(150),
+    },
+    last_name: {
+      required,
+      maxLength: maxLength(150),
+    },
     email: {
       required,
       email,
     },
+    mobile: {
+      required: required,
+      mobile: mobile,
+    },
+    password: {
+      required: required,
+      minLength: minLength(8),
+      complex: complexPassword,
+    },
+    confirm_password: {
+      sameAs: sameAs("password"),
+    },
   },
-  mobile: {
-    required: required,
-    mobile: mobile,
-  },
-  password: {
-    required: required,
-    minLength: minLength(8),
-    complex: complexPassword,
-  },
-  confirm_password: {
-    sameAs: sameAs("password"),
-  },
+
   methods: {
     submit() {
       this.$v.$touch();

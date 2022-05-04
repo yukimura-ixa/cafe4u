@@ -16,32 +16,110 @@
           <div class="card m-2">
             <div class="list-item">
               <div class="list-item-content">
-                <div class="list-item-title" v-if="editToggle != pro.id">{{ pro.name }}</div>
-                <div class="list-item-description" v-else>
-                  <input
-                    type="text"
-                    class="input"
-                    v-model="editPromotionName"
-                  />
-                </div>
                 <div class="list-item-description" v-if="editToggle != pro.id">
-                  {{ pro.desc }}
+                  <label class="label">{{ pro.detail }}</label>
                 </div>
                 <div class="list-item-description" v-else>
                   <input
                     type="text"
                     class="input"
+                    placeholder="Promotion Detail"
                     v-model="editPromotionDesc"
                   />
                 </div>
                 <div class="list-item-description" v-if="editToggle != pro.id">
-                  {{ pro.free_or_discount }}
+                  Start At {{ pro.start_date }}<br />
+                  End At {{ pro.stop_date }}
+                </div>
+                <div class="list-item-description" v-else>
+                  <label class="label">Start Promotion Date</label>
+                  <input type="date" v-model="Newstart_date" />
+                  <label class="label">Stop Promotion Date</label>
+                  <input type="date" v-model="Newstop_date" />
+                </div>
+                <div class="list-item-description" v-if="editToggle != pro.id">
+                  <label class="label">Type of Promotion: {{ pro.type }}</label>
+                </div>
+                <div class="list-item-description" v-else>
+                  <div class="select">
+                    <select v-model="newType">
+                      <option>Free</option>
+                      <option>Point</option>
+                      <option>Price Get Discount</option>
+                      <option>Product Get Discount</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="list-item-description" v-if="editToggle != pro.id">
+                  <label class="label" v-if="pro.type == 'Free'"
+                    >Product Free ID: {{ pro.value1 }}</label
+                  >
+                  <label class="label" v-else>Discount: {{ pro.value1 }}</label>
                 </div>
                 <div class="list-item-description" v-else>
                   <input
                     type="text"
                     class="input"
-                    v-model="editPromotionMessage"
+                    placeholder="Product Free ID"
+                    v-if="pro.type == 'Free'"
+                    v-model="product_free_id"
+                  />
+                  <input
+                    type="text"
+                    class="input"
+                    placeholder="Discount"
+                    v-else
+                    v-model="discount"
+                  />
+                </div>
+
+                <div class="list-item-description" v-if="editToggle != pro.id">
+                  <label class="label" v-if="pro.type == 'Free'"
+                    >Product Count Need: {{ pro.value2 }}</label
+                  >
+                  <label class="label" v-else-if="pro.type == 'Point'"
+                    >Need Point: {{ pro.value2 }}</label
+                  >
+                  <label
+                    class="label"
+                    v-else-if="pro.type == 'Price Get Discount'"
+                    >Need Price: {{ pro.value2 }}</label
+                  >
+                  <label
+                    class="label"
+                    v-else-if="pro.type == 'Product Get Discount'"
+                    >Buy Count Need: {{ pro.value2 }}</label
+                  >
+                </div>
+                <div class="list-item-description" v-else>
+                  <input
+                    type="text"
+                    class="input"
+                    placeholder="Product Count Need"
+                    v-if="pro.type == 'Free'"
+                    v-model="product_count_need"
+                  />
+                  <input
+                    type="text"
+                    class="input"
+                    placeholder="Need Point"
+                    v-if="pro.type == 'Point'"
+                    v-model="need_point"
+                  />
+                  <input
+                    type="text"
+                    class="input"
+                    placeholder="Need Price"
+                    v-if="pro.type == 'Price Get Discount'"
+                    v-model="need_price"
+                  />
+                  <input
+                    type="text"
+                    class="input"
+                    placeholder="Buy Count Need"
+                    v-if="pro.type == 'Product Get Discount'"
+                    v-model="buy_count_need"
                   />
                 </div>
               </div>
@@ -49,11 +127,14 @@
                 <div class="buttons is-right">
                   <button
                     class="button is-success"
-                    @click="saveEditPromotion(pro.id)"
+                    @click="saveEditPromotion(pro)"
                   >
                     <span>Edit</span>
                   </button>
-                  <button class="button is-danger" @click="deletePromotion(pro.id)">
+                  <button
+                    class="button is-danger"
+                    @click="deletePromotion(pro.id)"
+                  >
                     <span>Delete</span>
                   </button>
                 </div>
@@ -65,37 +146,71 @@
     </div>
     <br />
     <div class="columns">
-      <div class="column is-2">
-        <div class="control">
-          <input
-            class="input"
-            type="promotion_name"
-            placeholder="Promotion Name"
-            v-model="newproName"
-          />
-        </div>
+      <div class="card column is-2 m-2">
+        <label class="label">Start Promotion Date</label>
+        <input type="date" v-model="start_date" />
+        <label class="label">Stop Promotion Date</label>
+        <input type="date" v-model="stop_date" />
       </div>
-      <div class="column is-4">
+
+      <div class="card column is-4 m-2">
         <div class="control">
-          <input
-            class="input"
-            type="promotion_desc"
-            placeholder="Promotion Description"
-            v-model="newproDesc"
-          />
-        </div>
-      </div>
-      <div class="column is-4">
-        <div class="control">
-          <input
-            class="input"
+          <textarea
+            class="textarea"
             type="promotion_detail"
             placeholder="Promotion Detail"
             v-model="newproDetail"
           />
         </div>
       </div>
-      <div class="card-content column is-2">
+
+      <div class="column is-2 m-2">
+        <div class="select">
+          <select v-model="type">
+            <option>Free</option>
+            <option>Point</option>
+            <option>Price Get Discount</option>
+            <option>Product Get Discount</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card column is-2 m-2" v-if="this.type == 'Free'">
+        <label class="label">Product Free ID</label>
+        <input
+          class="input"
+          placeholder="Product ID"
+          v-model="addProductFreeId"
+        />
+        <label class="label">Product Count Need</label>
+        <input class="input" placeholder="1-9" v-model="addProductCountNeed" />
+      </div>
+
+      <div class="card column is-2 m-2" v-else-if="this.type == 'Point'">
+        <label class="label">Discount</label>
+        <input class="input" placeholder="Discount" v-model="addDiscount" />
+        <label class="label">Need Point</label>
+        <input class="input" placeholder="Point" v-model="addNeedPoint" />
+      </div>
+
+      <div
+        class="card column is-2 m-2"
+        v-else-if="this.type == 'Price Get Discount'"
+      >
+        <label class="label">Discount</label>
+        <input class="input" placeholder="Discount" v-model="addDiscount" />
+        <label class="label">Need Price</label>
+        <input class="input" placeholder="Price" v-model="addNeedPirce" />
+      </div>
+
+      <div class="card column is-2 m-2" v-else>
+        <label class="label">Discount</label>
+        <input class="input" placeholder="Discount" v-model="addDiscount" />
+        <label class="label">Buy Count Need</label>
+        <input class="input" placeholder="1-9" v-model="addBuyCountNeed" />
+      </div>
+
+      <div class="card-content column is-2 m-2">
         <button class="button is-warning" @click="addNewPromotion()">
           <span>Add Promotion</span>
         </button>
@@ -113,78 +228,141 @@ export default {
     return {
       newproList: {
         id: null,
-        name: "",
-        desc: "",
-        free_or_discount: "",
+        start_date: null,
+        stop_date: null,
+        detail: null,
+        type: null,
+        value1: null,
+        value2: null,
       },
       promotionList: [
         {
           id: 1,
-          name: "promotion1",
-          desc: "Lorem ipsum",
-          free_or_discount: "buy 1 free 1",
+          start_date: "2022-05-01",
+          stop_date: "2022-05-16",
+          detail: "hello world Cafe Restuarant",
+          type: "Free",
+          value1: 7,
+          value2: 2,
         },
         {
           id: 2,
-          name: "promotion2",
-          desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          free_or_discount: "discount 50 bath if buy orange juice",
+          start_date: "2022-05-01",
+          stop_date: "2022-05-16",
+          detail: "hello world Cafe Restuarant",
+          type: "Point",
+          value1: 10,
+          value2: 100,
         },
         {
           id: 3,
-          name: "promotion3",
-          desc: "Lorem ipsum",
-          free_or_discount: "discount 10% if buy more than 300",
+          start_date: "2022-05-01",
+          stop_date: "2022-05-16",
+          detail: "hello world Cafe Restuarant",
+          type: "Price Get Discount",
+          value1: 10,
+          value2: 150,
         },
 
         {
           id: 4,
-          name: "promotion4",
-          desc: "Lorem ipsum",
-          free_or_discount: "buy 2 free 1",
+          start_date: "2022-05-01",
+          stop_date: "2022-05-16",
+          detail: "hello world Cafe Restuarant",
+          type: "Product Get Discount",
+          value1: 10,
+          value2: 1,
         },
 
         {
           id: 5,
-          name: "promotion5",
-          desc: "Lorem ipsum",
-          free_or_discount: "buy 2 discount 15%",
+          start_date: "2022-05-01",
+          stop_date: "2022-05-16",
+          detail: "hello world Cafe Restuarant",
+          type: "Free",
+          value1: 1,
+          value2: 1,
         },
       ],
       userPoint: 500,
       selectedPromotion: [],
       editToggle: -1,
-      editPromotionName:"",
-      editPromotionMessage: "",
       editPromotionDesc: "",
-      newproName: "",
-      newproDesc: "",
-      newproDetail: "",
+      type: "Free",
+      start_date: "",
+      stop_date: "",
+      product_free_id:"",
+      discount:"",
+      product_count_need:"",
+      need_point:"",
+      need_price:"",
+      buy_count_need:"",
+      newType:"Free",
+      addProductFreeId:"",
+      addProductCountNeed:"",
+      addDiscount:"",
+      addNeedPoint:"",
+      addNeedPirce:"",
+      addBuyCountNeed:"",
+      newproDetail:"",
+      Newstop_date:"",
+      Newstart_date:"",
     };
   },
   methods: {
-    saveEditPromotion(proId) {
+    saveEditPromotion(pro) {
       let selectedPromotion = this.promotionList.filter(
-        (e) => e.id === proId
+        (e) => e.id === pro.id
       )[0];
       if (this.editToggle == -1) {
-        this.editToggle = proId;
-        this.editPromotionName = selectedPromotion.name;
-        this.editPromotionDesc = selectedPromotion.desc;
-        this.editPromotionMessage = selectedPromotion.free_or_discount;
+        this.editToggle = pro.id;
+        this.editPromotionDesc = selectedPromotion.detail;
+        this.newType = selectedPromotion.type;
+        this.start_date = selectedPromotion.start_date;
+        this.stop_date = selectedPromotion.stop_date;
+        if(pro.type == "Free"){
+          this.product_free_id = selectedPromotion.value1
+          this.product_count_need = selectedPromotion.value2
+        }
+        else if(pro.type == "Point"){
+          this.discount = selectedPromotion.value1
+          this.need_point = selectedPromotion.value2
+        }
+        else if(pro.type == "Price Get Discount"){
+          this.discount = selectedPromotion.value1
+          this.need_price = selectedPromotion.value2
+        }
+        else if(pro.type == "Product Get Discount"){
+          this.discount = selectedPromotion.value1
+          this.buy_count_need = selectedPromotion.value2
+        }
       } else {
         this.editToggle = -1;
       }
     },
     addNewPromotion() {
       this.newproList.id = this.promotionList.length + 1;
-      this.newproList.name = this.newproName;
-      this.newproList.desc = this.newproDesc;
-      this.newproList.free_or_discount = this.newproDetail;
+      /*/this.newproList.start_date = this.Newstart_date
+      this.newproList.stop_date = this.new
+      this.newproList.detail = this.newproDetail
+      this.newproList.type = this.newType
+      if(this.newproList.type == "Free"){
+        this.newproList.value1 = this.addProductFreeId
+        this.newproList.value2 = this.addProductCountNeed
+      }
+      else if(this.newproList.type == "Point"){
+        this.newproList.value1 = this.addDiscount
+        this.newproList.value2 = this.addNeedPoint
+      }
+      else if(this.newproList.type == "Price Get Discount"){
+        this.newproList.value1 = this.addDiscount
+        this.newproList.value2 = this.addNeedPirce
+      }
+      else if(this.newproList.type == "Product Get Discount"){
+        this.newproList.value1 = this.addDiscount
+        this.newproList.value2 = this.addBuyCountNeed
+      }/*/
       this.promotionList.push(this.newproList);
-      this.newproName = "";
-      this.newproDesc = "";
-      this.newproDetail = "";
     },
     //deletePromotion(proId) {
     //},
