@@ -34,25 +34,46 @@
 
     <section>
       <div class="container is-fluid">
-        <div class="columns is-multiline ">
+        <div class="columns is-multiline">
+          <div class="column is-12 has-text-right">
+            <span class="select is-primary">
+              <select
+                style="background-color: rgb(219, 255, 217)"
+                v-model="filterType"
+              >
+                <option value="none">None</option>
+                <option
+                  :value="type.cafe_theme"
+                  v-for="type in cafeType"
+                  :key="type.cafe_theme"
+                  class="is-capitalized"
+                >
+                  {{ type.cafe_theme }}
+                </option>
+              </select>
+            </span>
+          </div>
           <template v-for="cafe in cafeList">
-            <div class="column is-one-quarter" :key="cafe.id">
+            <div class="column is-one-quarter" :key="cafe.cafe_branchid">
               <div class="card">
                 <div class="card-image">
                   <figure class="image is-4by3">
-                    <img :src="cafe.image" alt="Placeholder image" />
+                    <img
+                      :src="showImage(cafe.cafe_branchid)"
+                      alt="Placeholder image"
+                    />
                   </figure>
                 </div>
-                <div class="card-content" style="min-height: 30vh;">
+                <div class="card-content" style="min-height: 30vh">
                   <div class="media">
                     <div class="media-content">
-                      <p class="title is-4">{{ cafe.name }}</p>
-                      <p class="subtitle is-6">{{ cafe.themes }}</p>
+                      <p class="title is-4">{{ cafe.cafe_name }}</p>
+                      <p class="subtitle is-6">{{ cafe.cafe_theme }}</p>
                     </div>
                   </div>
 
                   <div class="content">
-                    {{ shortContent(cafe.desc) }}
+                    {{ shortContent(cafe.cafe_desc) }}
                     <br />
                   </div>
                 </div>
@@ -72,7 +93,7 @@
 
 <script>
 import { Splide, SplideSlide } from "@splidejs/vue-splide";
-
+import axios from "@/plugins/axios";
 export default {
   name: "HomePage",
   props: ["user", "cart"],
@@ -80,54 +101,17 @@ export default {
     Splide,
     SplideSlide,
   },
+  mounted() {
+    this.search();
+  },
   data() {
     return {
       name: "Nook Nut Art",
       carousel_items: [],
-      cafeList: [
-        {
-          id: 1,
-          name: "cafe",
-          desc: "Lorem ipsum",
-          themes: "cool, loft, nature",
-          image:
-            "https://www.paiduaykan.com/travel/wp-content/uploads/2020/04/1-SON09231.jpg",
-        },
-        {
-          id: 2,
-          name: "cafe",
-          desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          themes: "cool, loft, nature",
-          image:
-            "https://www.paiduaykan.com/travel/wp-content/uploads/2020/04/1-SON09231.jpg",
-        },
-        {
-          id: 3,
-          name: "cafe",
-          desc: "Lorem ipsum",
-          themes: "cool, loft, nature",
-          image:
-            "https://www.paiduaykan.com/travel/wp-content/uploads/2020/04/1-SON09231.jpg",
-        },
-
-        {
-          id: 4,
-          name: "cafe",
-          desc: "Lorem ipsum",
-          themes: "cool, loft, nature",
-          image:
-            "https://www.paiduaykan.com/travel/wp-content/uploads/2020/04/1-SON09231.jpg",
-        },
-
-        {
-          id: 5,
-          name: "cafe",
-          desc: "Lorem ipsum",
-          themes: "cool, loft, nature",
-          image:
-            "https://www.paiduaykan.com/travel/wp-content/uploads/2020/04/1-SON09231.jpg",
-        },
-      ],
+      image: [],
+      cafeType: [],
+      filterType:'none',
+      cafeArr:[]
     };
   },
   methods: {
@@ -137,11 +121,43 @@ export default {
       }
       return content;
     },
+    search() {
+      axios
+        .get(`http://localhost:3000/search?like=`)
+        .then((response) => {
+          this.cafeArr = response.data.cafe;
+          this.image = response.data.image;
+          this.cafeType = response.data.type;
+        })
+        .catch((error) => {
+          this.error = error.response.data.message;
+        });
+    },
+    showImage(cafe_id) {
+      let image = this.image.filter((each) => {
+        return each.cafe_id == cafe_id;
+      });
+      if (image[0] == null) {
+        return "https://www.paiduaykan.com/travel/wp-content/uploads/2020/04/1-SON09231.jpg";
+      }
+      return image[0].image_path;
+    },
   },
+  computed: {
+    cafeList() {
+      if (this.filterType == "none") {
+        return this.cafeArr;
+      }
+
+      return this.cafeArr.filter((cafe) => {
+        return cafe.cafe_theme == this.filterType;
+      });
+    }
+  }
 };
 </script>
 <style>
-section{
+section {
   background-color: rgb(78, 153, 110);
 }
 </style>

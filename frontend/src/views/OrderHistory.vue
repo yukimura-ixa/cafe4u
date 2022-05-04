@@ -392,10 +392,10 @@
 import axios from "axios";
 export default {
   name: "OrderHistory",
+  props: ["user"],
   data() {
     return {
       selectedOrder: -1,
-      user: { user_id: 9 },
       sortPending: "status_d",
       sortHistory: "status_a",
       orders: [],
