@@ -5,26 +5,26 @@
         <div class="card-content column is-4 px-6 pt-6">
           <h1 class="title is-3 has-text-centered">Profile</h1>
           <hr style="background-color: rgb(3, 51, 35)" />
-          <table style="width: 60%">
+          <table style="width: 100%">
             <tr style="height: 50px">
-              <th>Username:</th>
+              <th>Username: {{ userDetail[0].user_login }}</th>
             </tr>
             <tr style="height: 50px">
-              <th>Full Name:</th>
+              <th>Full Name: {{ userDetail[0].fname }} {{ userDetail[0].lname }}</th>
             </tr>
             <tr style="height: 50px">
-              <th>Address:</th>
+              <th>Address: {{ userDetail[0].address }}</th>
             </tr>
             <tr style="height: 50px">
-              <th>Phone:</th>
+              <th>Phone: {{ userDetail[0].phone }}</th>
             </tr>
             <tr style="height: 50px">
-              <th>Email:</th>
+              <th>Email: {{ userDetail[0].email }}</th>
             </tr>
           </table>
           <div class="card-content column is-12 px-6 pt-6">
             <button
-              class="button is-warning is-medium is-fullwidth"
+              class="button is-warning"
               @click="showEditPassword()"
             >
               Change Password
@@ -36,7 +36,7 @@
           <hr style="background-color: rgb(3, 51, 35)" />
           <div class="field"></div>
 
-          <label class="label">Username:</label>
+          <label class="label">Username: {{ userDetail.user_login }}</label>
           <div class="control">
             <input
               class="input"
@@ -184,6 +184,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import {
   required,
   email,
@@ -204,6 +205,7 @@ export default {
   name: "ProfilePage",
   data() {
     return {
+      userDetail:[],
       username: "",
       password: "",
       confirm_password: "",
@@ -211,7 +213,7 @@ export default {
       mobile: "",
       first_name: "",
       last_name: "",
-      address:"",
+      address: "",
       passwordToggle: false,
     };
   },
@@ -246,6 +248,9 @@ export default {
       sameAs: sameAs("password"),
     },
   },
+  mounted() {
+    this.getProfileDetail(this.$route.params.id);
+  },
   methods: {
     showEditPassword() {
       if (this.passwordToggle == true) {
@@ -253,6 +258,16 @@ export default {
       } else {
         this.passwordToggle = true;
       }
+    },
+    getProfileDetail(userId) {
+      axios
+        .get(`http://localhost:3000/profile/${userId}`)
+        .then((response) => {
+          this.userDetail = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
