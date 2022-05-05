@@ -3,167 +3,168 @@
     <div class="card column is-12 px-6 pt-6">
       <h1 class="title is-3 has-text-centered">Promotion</h1>
       <hr style="background-color: rgb(3, 51, 35)" />
-      <template v-for="pro in promotionList">
-        <div class="list has-visible-pointer-controls" :key="pro.pro_id">
-          <div class="card m-2">
-            <div class="list-item">
-              <div class="list-item-content">
-                <div
-                  class="list-item-description"
-                  v-if="editToggle != pro.pro_id"
-                >
-                  <label class="label">{{ pro.pro_detail }}</label>
-                </div>
-                <div class="list-item-description" v-else>
-                  <input
-                    type="text"
-                    class="input"
-                    placeholder="Promotion Detail"
-                    v-model="editPromotionDesc"
-                  />
-                </div>
-                <div
-                  class="list-item-description"
-                  v-if="editToggle != pro.pro_id"
-                >
-                  Start At {{ new Date(Date.parse(pro.start_date)) }}<br />
-                  End At {{ new Date(Date.parse(pro.expired_date)) }}
-                </div>
-                <div class="list-item-description" v-else>
-                  <label class="label">Start Promotion Date</label>
-                  <input type="date" v-model="start_date" />
-                  <label class="label">Stop Promotion Date</label>
-                  <input type="date" v-model="stop_date" />
-                </div>
-                <div
-                  class="list-item-description"
-                  v-if="editToggle != pro.pro_id"
-                >
-                  <label class="label"
-                    >Type of Promotion: {{ pro.pro_type }}</label
-                  >
-                </div>
-                <div class="list-item-description" v-else>
-                  <div class="select">
-                    <select v-model="newType">
-                      <option>free</option>
-                      <option>point</option>
-                      <option>price_get_discount</option>
-                      <option>product_get_discount</option>
-                    </select>
-                  </div>
-                </div>
 
-                <div
-                  class="list-item-description"
-                  v-if="editToggle != pro.pro_id"
+      <div
+        class="list has-visible-pointer-controls"
+        v-for="pro in promotionList"
+        :key="pro.pro_id"
+      >
+        <div class="card m-2">
+          <div class="list-item">
+            <div class="list-item-content">
+              <div
+                class="list-item-description"
+                v-if="editToggle != pro.pro_id"
+              >
+                <label class="label">{{ pro.pro_detail }}</label>
+              </div>
+              <div class="list-item-description" v-else>
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Promotion Detail"
+                  v-model="editPromotionDesc"
+                />
+              </div>
+              <div
+                class="list-item-description"
+                v-if="editToggle != pro.pro_id"
+              >
+                Start At {{ new Date(Date.parse(pro.start_date)) }}<br />
+                End At {{ new Date(Date.parse(pro.expired_date)) }}
+              </div>
+              <div class="list-item-description" v-else>
+                <label class="label">Start Promotion Date</label>
+                <input type="date" v-model="start_date" />
+                <label class="label">Stop Promotion Date</label>
+                <input type="date" v-model="stop_date" />
+              </div>
+              <div
+                class="list-item-description"
+                v-if="editToggle != pro.pro_id"
+              >
+                <label class="label"
+                  >Type of Promotion: {{ pro.pro_type }}</label
                 >
-                  <label class="label" v-if="pro.pro_type == 'free'"
-                    >Product Free ID: {{ pro.product_free }}</label
-                  >
-                  <label class="label" v-else
-                    >Discount: {{ pro.discount }}</label
-                  >
-                </div>
-                <div class="list-item-description" v-else>
-                  <input
-                    type="text"
-                    class="input"
-                    placeholder="Product Free ID"
-                    v-if="pro.pro_type == 'free'"
-                    v-model="product_free_id"
-                  />
-                  <input
-                    type="text"
-                    class="input"
-                    placeholder="Discount"
-                    v-else
-                    v-model="discount"
-                  />
-                </div>
-
-                <div
-                  class="list-item-description"
-                  v-if="editToggle != pro.pro_id"
-                >
-                  <label class="label" v-if="pro.pro_type == 'free'"
-                    >Product Count Need: {{ pro.product_count_need }}</label
-                  >
-                  <label class="label" v-else-if="pro.pro_type == 'point'"
-                    >Need Point: {{ pro.point_need }}</label
-                  >
-                  <label
-                    class="label"
-                    v-else-if="pro.pro_type == 'price_get_discount'"
-                    >Need Price: {{ pro.buy_price_need }}</label
-                  >
-                  <label
-                    class="label"
-                    v-else-if="pro.pro_type == 'product_get_discount'"
-                    >Buy Count Need: {{ pro.buy_count_need }}<br />
-                    Product ID: {{ pro.product_id }}</label
-                  >
-                </div>
-                <div class="list-item-description" v-else>
-                  <input
-                    type="text"
-                    class="input"
-                    placeholder="Product Count Need"
-                    v-if="pro.pro_type == 'free'"
-                    v-model="product_count_need"
-                  />
-                  <input
-                    type="text"
-                    class="input"
-                    placeholder="Need Point"
-                    v-if="pro.pro_type == 'point'"
-                    v-model="need_point"
-                  />
-                  <input
-                    type="text"
-                    class="input"
-                    placeholder="Need Price"
-                    v-if="pro.pro_type == 'price_get_discount'"
-                    v-model="need_price"
-                  />
-                  <input
-                    type="text"
-                    class="input"
-                    placeholder="Buy Count Need"
-                    v-if="pro.pro_type == 'product_get_discount'"
-                    v-model="buy_count_need"
-                  />
-                  <input
-                    type="text"
-                    class="input"
-                    placeholder="Product ID"
-                    v-if="pro.pro_type == 'product_get_discount'"
-                    v-model="product_id"
-                  />
+              </div>
+              <div class="list-item-description" v-else>
+                <div class="select">
+                  <select v-model="newType">
+                    <option>free</option>
+                    <option>point</option>
+                    <option>price_get_discount</option>
+                    <option>product_get_discount</option>
+                  </select>
                 </div>
               </div>
-              <div class="list-item-controls">
-                <div class="buttons is-right">
-                  <button
-                    class="button is-success"
-                    @click="saveEditPromotion(pro.pro_id)"
-                    v-if="user.user_type == 'employee'"
-                  >
-                    <span>Edit</span>
-                  </button>
-                  <button
-                    class="button is-danger"
-                    @click="deletePromotion(pro.pro_id)"
-                    v-if="user.user_type == 'employee'"
-                  >
-                    <span>Delete</span>
-                  </button>
-                </div>
+
+              <div
+                class="list-item-description"
+                v-if="editToggle != pro.pro_id"
+              >
+                <label class="label" v-if="pro.pro_type == 'free'"
+                  >Product Free ID: {{ pro.product_free }}</label
+                >
+                <label class="label" v-else>Discount: {{ pro.discount }}</label>
+              </div>
+              <div class="list-item-description" v-else>
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Product Free ID"
+                  v-if="pro.pro_type == 'free'"
+                  v-model="product_free_id"
+                />
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Discount"
+                  v-else
+                  v-model="discount"
+                />
+              </div>
+
+              <div
+                class="list-item-description"
+                v-if="editToggle != pro.pro_id"
+              >
+                <label class="label" v-if="pro.pro_type == 'free'"
+                  >Product Count Need: {{ pro.product_count_need }}</label
+                >
+                <label class="label" v-else-if="pro.pro_type == 'point'"
+                  >Need Point: {{ pro.point_need }}</label
+                >
+                <label
+                  class="label"
+                  v-else-if="pro.pro_type == 'price_get_discount'"
+                  >Need Price: {{ pro.buy_price_need }}</label
+                >
+                <label
+                  class="label"
+                  v-else-if="pro.pro_type == 'product_get_discount'"
+                  >Buy Count Need: {{ pro.buy_count_need }}<br />
+                  Product ID: {{ pro.product_id }}</label
+                >
+              </div>
+              <div class="list-item-description" v-else>
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Product Count Need"
+                  v-if="pro.pro_type == 'free'"
+                  v-model="product_count_need"
+                />
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Need Point"
+                  v-if="pro.pro_type == 'point'"
+                  v-model="need_point"
+                />
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Need Price"
+                  v-if="pro.pro_type == 'price_get_discount'"
+                  v-model="need_price"
+                />
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Buy Count Need"
+                  v-if="pro.pro_type == 'product_get_discount'"
+                  v-model="buy_count_need"
+                />
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Product ID"
+                  v-if="pro.pro_type == 'product_get_discount'"
+                  v-model="product_id"
+                />
+              </div>
+            </div>
+            <div class="list-item-controls">
+              <div class="buttons is-right">
+                <button
+                  class="button is-success"
+                  @click="saveEditPromotion(pro.pro_id)"
+                  v-if="user.user_type == 'employee'"
+                >
+                  <span>Edit</span>
+                </button>
+                <button
+                  class="button is-danger"
+                  @click="deletePromotion(pro.pro_id)"
+                  v-if="user.user_type == 'employee'"
+                >
+                  <span>Delete</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </template>
+      </div>
     </div>
     <br />
 
@@ -235,7 +236,10 @@
       </div>
 
       <div class="card-content column is-2 m-2">
-        <button class="button is-warning" @click="addNewPromotion(promotionList.length+1)">
+        <button
+          class="button is-warning"
+          @click="addNewPromotion(promotionList.length + 1)"
+        >
           <span>Add Promotion</span>
         </button>
       </div>
