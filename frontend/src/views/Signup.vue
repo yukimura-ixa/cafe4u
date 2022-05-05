@@ -187,6 +187,42 @@
               </template>
             </div>
 
+            <div class="field">
+              <div class="control">
+                <label class="label">You Are a/an</label>
+                <div class="select">
+                  <select v-model="checkRole">
+                    <option>customer</option>
+                    <option>employee</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field" v-if="checkRole == 'employee'">
+              <label class="label">Cafe Branch ID</label>
+              <div class="control">
+                <input
+                  v-model="$v.cafe_branchid.$model"
+                  :class="{ 'is-danger': $v.cafe_branchid.$error }"
+                  class="input"
+                  type="text"
+                  placeholder="Enter 2 digits"
+                />
+              </div>
+              <template v-if="$v.cafe_branchid.$error">
+                <p class="help is-danger" v-if="!$v.cafe_branchid.required">
+                  This field is required
+                </p>
+                <p class="help is-danger" v-if="!$v.cafe_branchid.ageNbranchid">
+                  Invalid Cafe Branch ID
+                </p>
+                <p class="help is-danger" v-if="!$v.cafe_branchid.maxLength">
+                  Must be less than 3 characters
+                </p>
+              </template>
+            </div>
+
             <button class="button is-primary is-fullwidth" @click="submit()">
               Sign Up
             </button>
@@ -213,7 +249,7 @@ import {
 function mobile(value) {
   return !!value.match(/0[0-9]{9}/);
 }
-function age(value) {
+function ageNbranchid(value) {
   return !!value.match(/[0-9]{2}/);
 }
 function complexPassword(value) {
@@ -235,6 +271,8 @@ export default {
       last_name: "",
       address: "",
       age: "",
+      checkRole: "customer",
+      cafe_branchid: null,
     };
   },
   validations: {
@@ -257,7 +295,7 @@ export default {
     },
     age: {
       required,
-      age,
+      ageNbranchid,
       maxLength: maxLength(2),
     },
     mobile: {
@@ -274,6 +312,11 @@ export default {
     },
     address: {
       required: required,
+    },
+    cafe_branchid: {
+      required,
+      ageNbranchid,
+      maxLength: maxLength(2),
     },
   },
 
@@ -292,12 +335,25 @@ export default {
           last_name: this.last_name,
           age: this.age,
           address: this.address,
+          user_type: this.checkRole,
+          cafe_branchid: this.cafe_branchid,
         };
 
         axios
           .post("http://localhost:3000/user/signup", data)
           .then(() => {
             alert("Sign up Success");
+            this.username = "";
+            this.password = "";
+            this.confirm_password = "";
+            this.email = "";
+            this.mobile = "";
+            this.first_name = "";
+            this.last_name = "";
+            this.address = "";
+            this.age = "";
+            this.checkRole = "customer";
+            this.cafe_branchid = null;
           })
           .catch((err) => {
             alert(err.response.data.details.message);
