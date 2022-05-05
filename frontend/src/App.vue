@@ -99,7 +99,6 @@
           ></button>
         </header>
         <section class="modal-card-body">
-          <!-- Content ... -->
           <table
             class="
               table

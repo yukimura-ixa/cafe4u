@@ -16,7 +16,6 @@ import {
 
 import "bulma-list/css/bulma-list.css";
 import "bulma/css/bulma.css";
-import "@splidejs/splide/dist/css/themes/splide-sea-green.min.css";
 
 import Notifications from "vue-notification";
 

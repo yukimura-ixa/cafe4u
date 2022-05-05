@@ -12,15 +12,7 @@ const storage = multer.diskStorage({
   filename: function (req, file, callback) {
     callback(
       null,
-      file.fieldname +
-        "-" +
-        new Date().getDate +
-        new Date().getMonth +
-        new Date().getFullYear +
-        "-" +
-        new Date().getHours +
-        new Date().getMinutes +
-        path.extname(file.originalname)
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
     );
   },
 });
@@ -52,6 +44,7 @@ router.get("/cafe/:id/product", function (req, res, next) {
     });
 });
 
+//add product
 router.post(
   "/product/:cafe_id",
   upload.single("productImage"),
@@ -63,9 +56,10 @@ router.post(
     const price = req.body.price;
     var type = req.body.type;
 
-    // console.log(cid, file, name, desc, price);
+    console.log("INSERTING", cid, file, name, desc, price, type);
     if (type === "") {
       type = null;
+      console.log("type is null");
     }
 
     if (!file) {
@@ -77,15 +71,17 @@ router.post(
 
     try {
       const [add, f1] = await conn.query(
-        "INSERT INTO product(product_name, product_desc, product_price, product_type, cafe_id)",
-        [name, desc, parseFloat(price), type, cid]
+        "INSERT INTO `product`(product_name, product_desc, product_price, product_type, cafe_id) VALUES (?,?,?,?,?)",
+        [name, desc, price, type, cid]
       );
+
       let inserted = add.insertId;
       const [img, f2] = await conn.query(
-        "INSERT INTO `image`(image_path, product_id, cafe_id)",
+        "INSERT INTO `image`(image_path, product_id, cafe_id) VALUES (?,?,?)",
         [file.path.substring(6), inserted, cid]
       );
 
+      res.send('Inserted ID' + inserted)
       await conn.commit();
     } catch (err) {
       console.log(err);
@@ -96,7 +92,7 @@ router.post(
     }
   }
 );
-
+//update product
 router.put(
   "/product/:id",
   upload.single("productImage"),
@@ -107,10 +103,10 @@ router.put(
     const price = req.body.price;
     const pid = req.params.id;
 
-    console.log(pid, file, name, desc, price);
     const conn = await pool.getConnection();
     await conn.beginTransaction();
     try {
+      console.log(name, desc, price, pid, file);
       const [update, f] = await conn.query(
         "UPDATE `product` SET product_name =?, product_desc =?, product_price=? WHERE product_id=?",
         [name, desc, price, pid]
@@ -122,9 +118,8 @@ router.put(
           [file.path.substring(6), pid]
         );
       }
-
+      res.send('Updated ID' + pid)
       await conn.commit();
-      
     } catch (err) {
       console.log(err);
       await conn.rollback();

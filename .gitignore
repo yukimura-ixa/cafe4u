@@ -2,6 +2,8 @@
 node_modules
 docs/
 /dist
+backend/config.js
+*.png
 
 
 # local env files
@@ -23,3 +25,4 @@ pnpm-debug.log*
 *.sln
 *.sw?
 backend/config.js
+*.png

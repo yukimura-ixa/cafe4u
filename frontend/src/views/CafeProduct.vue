@@ -95,7 +95,7 @@
               <div class="card-image">
                 <figure class="image is-4by3">
                   <img
-                    :src="product.image_path"
+                    :src="'http://localhost:3000' + product.image_path"
                     alt="Placeholder image"
                     onerror="this.onerror=null; this.src='https://bulma.io/images/placeholders/640x480.png'"
                   />
@@ -362,7 +362,7 @@
                 <figure class="image is-64x64">
                   <img
                     class="is-rounded"
-                    :src="option.image_path"
+                    :src="'http://localhost:3000' + option.image_path"
                     onerror="this.onerror=null; this.src='https://via.placeholder.com/128x128.png?text=Image'"
                   />
                 </figure>
@@ -428,7 +428,7 @@ export default {
       editToggle: -1,
 
       showType: "drink",
-      isEmployee: true,
+      isEmployee: false,
 
       addDrinkClicked: false,
       selectedProduct: null,
@@ -470,9 +470,13 @@ export default {
     },
 
     addToCart(product) {
-      if (product.product_type === "drink") {
-        this.addDrinkClicked = true;
-        this.selectedProduct = product;
+      if (!this.user) {
+        this.$notify({ group: "danger", text: "กรุณาเข้าสู่ระบบก่อนสั่งซื้อ" });
+      } else {
+        if (product.product_type === "drink") {
+          this.addDrinkClicked = true;
+          this.selectedProduct = product;
+        }
       }
     },
     confirmUpdate(product) {
@@ -485,13 +489,13 @@ export default {
         .put(`http://localhost:3000/product/${product.product_id}`, formData)
         // eslint-disable-next-line
         .then((res) => {
+          // this.$route.push(`/cafe/${this.cafe.cafe_branchid}/product`);
+          this.$router.go();
           this.cancelEdit();
           this.$notify({
             group: "app",
             text: `อัพเดทสินค้ารหัส ${product.product_id} แล้ว`,
           });
-          this.$route.go();
-          // history.replaceState({}, null, this.$route.path);
         })
         .catch((err) => {
           this.error = err.response.data.message;
@@ -572,8 +576,9 @@ export default {
         )
         // eslint-disable-next-line
         .then((res) => {
-          this.$route.go();
+          this.$router.go();
           this.$notify({ group: "app", text: "เพิ่มสินค้าแล้ว" });
+          // this.$route.push(`/cafe/${this.cafe.cafe_branchid}/product`);
         })
         .catch((err) => {
           this.error = err.response.data.message;
