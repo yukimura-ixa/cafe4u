@@ -70,6 +70,8 @@ router.put('/profile/update/:id', async (req, res, next) => {
         conn.commit()
         res.status(201).send()
     } catch (err) {
+        console.log(req.body)
+        console.log(err)
         conn.rollback()
         res.status(400).json(err.toString());
     } finally {
