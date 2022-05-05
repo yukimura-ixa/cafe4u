@@ -1,6 +1,5 @@
 const express = require("express");
 const pool = require("../config");
-const Joi = require('joi')
 
 router = express.Router();
 
@@ -34,20 +33,10 @@ router.get("/cafe/:id", function (req, res, next) {
     });
 });
 
-const cafeSchema = Joi.object({
-  cafe_name: Joi.string().required(),
-  cafe_desc: Joi.string().required(),
-  cafe_location: Joi.string().required(),
-  cafe_theme: Joi.string().required(),
-})
 
 router.post("/cafe/add", async function (req, res, next) {
-  try {
-    await cafeSchema.validateAsync(req.body, { abortEarly: false })
-  } catch (err) {
-    return res.status(400).send(err)
-  }
 
+  const cafe_id = req.body.cafe_branchid;
   const cafe_location = req.body.cafe_location;
   const cafe_desc = req.body.cafe_desc;
   const cafe_name = req.body.cafe_name;
@@ -57,8 +46,8 @@ router.post("/cafe/add", async function (req, res, next) {
   await conn.beginTransaction();
   try {
     await conn.query(
-      "INSERT INTO cafe(cafe_location, cafe_name, cafe_desc, cafe_theme VALUES(?, ?, ?, ?);",
-      [cafe_location, cafe_name, cafe_desc, cafe_theme]
+      "INSERT INTO cafe(cafe_branchid, cafe_location, cafe_name, cafe_desc, cafe_theme) VALUES(?, ?, ?, ?, ?);",
+      [cafe_id, cafe_location, cafe_name, cafe_desc, cafe_theme]
     );
 
     await conn.commit();
@@ -70,5 +59,15 @@ router.post("/cafe/add", async function (req, res, next) {
     conn.release();
   }
 });
+
+router.get("/cafe", async function (req, res, next) {
+  try {
+      const [rows, fields] = await pool.query("SELECT * FROM cafe");
+      return res.json(rows);
+  } catch (err) {
+      return res.status(500).json(err)
+  }
+});
+
 
 exports.router = router;

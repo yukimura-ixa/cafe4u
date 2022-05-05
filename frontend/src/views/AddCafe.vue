@@ -3,6 +3,9 @@
     <div class="columns is-centered">
       <div class="card is-5 column columns my-5" style="padding: 0">
         <div class="card-content column is-12 px-6 pt-6">
+          <router-link :to="'/'" class="mr-1 has-text-info">
+            <font-awesome-icon icon="fa-solid fa-angle-left" />
+          </router-link>
           <h1 class="title is-3 has-text-centered">Add New Cafe</h1>
           <hr style="background-color: rgb(3, 51, 35)" />
           <div class="field">
@@ -38,7 +41,10 @@
               <input type="file" multiple accept="image/*" class="input-file" />
             </div>
 
-            <button class="button is-primary is-fullwidth" @click="submit()">
+            <button
+              class="button is-primary is-fullwidth"
+              @click="submit(cafeId.length + 1)"
+            >
               Add New Cafe
             </button>
           </div>
@@ -49,20 +55,36 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "@/plugins/axios";
 export default {
   name: "AddCafePage",
+  props: ["user"],
   data() {
     return {
+      cafeId: [],
       cafe_name: "",
       location: "",
       cafe_theme: "",
       cafe_desc: "",
     };
   },
+  mounted() {
+    this.getCafeId();
+  },
   methods: {
-    submit() {
+    getCafeId() {
+      axios
+        .get("http://localhost:3000/cafe")
+        .then((response) => {
+          this.cafeId = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    submit(countId) {
       let data = {
+        cafe_branchid: countId,
         cafe_name: this.cafe_name,
         cafe_theme: this.cafe_theme,
         cafe_desc: this.cafe_desc,
@@ -73,6 +95,11 @@ export default {
         .post("http://localhost:3000/cafe/add", data)
         .then(() => {
           alert("Add Cafe Success");
+          this.getCafeId();
+          this.cafe_name = "";
+          this.cafe_desc = "";
+          this.location = "";
+          this.cafe_theme = "";
         })
         .catch((err) => {
           alert(err.response.data.details.message);
