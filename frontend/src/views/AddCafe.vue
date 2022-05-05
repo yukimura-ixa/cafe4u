@@ -36,11 +36,6 @@
               </div>
             </div>
 
-            <div class="field">
-              <label class="label">Cafe Picture</label>
-              <input type="file" multiple accept="image/*" class="input-file" />
-            </div>
-
             <button
               class="button is-primary is-fullwidth"
               @click="submit(cafeId.length + 1)"
