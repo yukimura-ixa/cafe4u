@@ -46,7 +46,7 @@
 
         <div class="navbar-end">
           <div class="navbar-item">
-            <a class="button is-light" @click="openCart = true">
+            <a class="button is-light" @click="openCart = true" v-if="user">
               <font-awesome-layers class="fa-2x">
                 <font-awesome-icon icon="fa-solid fa-cart-shopping" />
                 <font-awesome-layers-text
@@ -56,12 +56,17 @@
                 />
               </font-awesome-layers>
             </a>
-            <a class="button is-light"> ออกจากระบบ </a>
-            <div class="buttons">
-              <a class="button is-primary" href="#/user/signup">
+            <a class="button is-light" @click="logout" v-if="user"> ออกจากระบบ </a>
+            <div class="buttons mb-0" v-if="!user">
+              <a class="button is-primary m-auto" href="#/user/signup">
                 <strong>สมัครสมาชิก</strong>
               </a>
-              <a class="button is-light" href="#/login"> เข้าสู่ระบบ </a>
+              <a class="button is-light m-auto" href="#/login"> เข้าสู่ระบบ </a>
+            </div>
+            <div v-if="user" class="ml-5">
+              <p class="title is-5 has-text-right">{{user.user_login}}</p>
+              <p class="subtitle has-text-right is-6" v-if="user.user_type == 'customer'">Point: {{user.user_point}}</p>
+              <p class="subtitle has-text-right is-6 is-capitalized	" v-else>{{user.user_type}}</p>
             </div>
           </div>
         </div>
@@ -337,10 +342,11 @@ export default {
         this.user = res.data;
       });
     },
-    // logout() {
-    //   localStorage.removeItem("token");
-    //   this.$router.go();
-    // },
+    logout() {
+      localStorage.removeItem("token");
+      this.user = null
+      this.$router.push('/login')
+    },
   },
 };
 </script>

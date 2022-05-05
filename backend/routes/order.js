@@ -94,12 +94,21 @@ router.put("/admin/orders/:orderId", async function (req, res, next) {
     await conn.beginTransaction();
   
     try {
+      if(req.body.toStatus == 'pending'){
+        await conn.query(
+          "update `order` set order_status = ?, emp_id = ? where order_id = ?",
+          [req.body.toStatus,req.body.user.user_id,parseInt(req.params.orderId)]
+        );
+      }
+      else{
+
         await conn.query(
           "update `order` set order_status = ?  where order_id = ?",
           [req.body.toStatus,parseInt(req.params.orderId)]
         );
+      }
         let results = await conn.query(
-            "select order_id,order_status from `order`  where order_id = ?",
+            "select * from `order` o join cafe using (cafe_branchid) join user u on (emp_id = u.user_id) left outer join promotion p using (pro_id) left outer join product p2 on (p.product_free = p2.product_id) where o.order_id = ?;",
             [parseInt(req.params.orderId)]
         );
       await conn.commit();

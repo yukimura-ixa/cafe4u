@@ -548,13 +548,13 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "@/plugins/axios";
 export default {
   name: "ManageOrder",
+  props:['user'],
   data() {
     return {
       selectedOrder: -1,
-      user: { user_id: 1 },
       sortQueue: "date_a",
       sortPending: "date_a",
       sortFinish: "date_a",
@@ -608,13 +608,15 @@ export default {
       e.stopPropagation();
       axios
         .put(`http://localhost:3000/admin/orders/${order.order_id}`, {
-          toStatus: "pending",
+          toStatus: "pending",user:this.user
         })
         .then((response) => {
           let thisorder = this.orders.filter((order) => {
             return order.order_id == response.data.newstatus[0].order_id;
           });
-          thisorder[0].order_status = response.data.newstatus[0].order_status;
+          for (var key of Object.keys(thisorder[0])) {
+              thisorder[0][key] = response.data.newstatus[0][key]
+          }
         })
         .catch((error) => {
           this.error = error.response.data.message;
