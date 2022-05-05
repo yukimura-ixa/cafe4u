@@ -43,7 +43,7 @@
         </button>
 
         <p class="my-3">
-          Don't have an account? <a href="#/user/signup">Sign in</a>
+          Don't have an account? <a><router-link :to="'/signup'"> Sign Up</router-link></a>
         </p>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default {
         })
         .catch((error) => {
           this.error = error.response.data;
-          console.log(error.response.data);
+          this.$notify({group: "danger", text: this.error});
         });
     },
   },

@@ -66,11 +66,9 @@
                   </div>
                 </div>
 
-                
-
                 <div class="column">
                   <div class="field">
-                    <label class="label">ที่ตั้ง</label>
+                    <label class="label">พิกัด Google Map</label>
                     <div class="control">
                       <input
                         class="input"
@@ -81,7 +79,6 @@
                     </div>
                   </div>
                 </div>
-                
               </div>
               <div class="columns">
                 <div class="column">
@@ -100,6 +97,9 @@
             </template>
             <template v-else>
               <p class="title is-4">
+                <router-link :to="'/'" class="mr-1 has-text-info">
+                  <font-awesome-icon icon="fa-solid fa-angle-left" />
+                </router-link>
                 {{ cafe.cafe_name }}
                 <span class="is-pulled-right"
                   ><span class="mx-2">{{ averageRating }}</span>
@@ -121,26 +121,60 @@
         <div class="level-left">
           <div class="level-item">
             <div class="buttons are-large">
+              <router-link :to="`/cafe/${this.cafe.cafe_branchid}/product`">
               <button class="button is-primary is-light is-outlined">
                 <font-awesome-icon
                   icon="fa-solid fa-cart-shopping"
                 />สั่งเมนูเลย
               </button>
+              </router-link>
+              <router-link :to="`/cafe/${this.cafe.cafe_branchid}/map`">
               <button class="button is-link is-light is-outlined">
                 <font-awesome-icon icon="fa-solid fa-map-location-dot" />
                 ดูเส้นทางไปร้าน
               </button>
+              </router-link>
             </div>
           </div>
         </div>
-        <div class="level-right" v-if="isEmployee">
-          <div class="level-item">
-            <button
+        <div class="level-right" v-if="isCafeEmployee()">
+          <div class="level-item" v-if="!editCafeToggle">
+            <button 
               @click="editCafeToggle = true"
               class="button is-warning is-light is-right is-outlined is-large"
             >
               <font-awesome-icon icon="fa-regular fa-pen-to-square" />
               แก้ไขรายละเอียด
+            </button>
+          </div>
+
+          <div class="level-item" v-if="editCafeToggle">
+            <button 
+              @click="editCafeToggle = true"
+              class="button is-info is-light is-right is-outlined is-large"
+            >
+              <font-awesome-icon icon="fa-regular fa-image" />
+              จัดการรูปภาพ
+            </button>
+          </div>
+
+          <div class="level-item" v-if="editCafeToggle">
+            <button 
+              @click="editCafeToggle = true"
+              class="button is-success is-light is-right is-outlined is-large"
+            >
+              <font-awesome-icon icon="fa-regular fa-floppy-disk" />
+              บันทึก
+            </button>
+          </div>
+
+          <div class="level-item" v-if="editCafeToggle">
+            <button 
+              @click="editCafeToggle = false"
+              class="button is-right is-outlined is-large"
+            >
+              <font-awesome-icon icon="fa-solid fa-xmark" />
+              ยกเลิก
             </button>
           </div>
         </div>
@@ -205,7 +239,7 @@
                   <span class="icon is-small">
                     <font-awesome-icon icon="fa-solid fa-plus" />
                   </span>
-                  <span>Add</span>
+                  <span>รีวิว</span>
                 </button>
               </div>
             </div>
@@ -261,14 +295,16 @@
               </div>
               <template v-else>
                 <div class="list-item-title">
-                  <template v-for="star in review.rating">
-                    <font-awesome-icon icon="fa-solid fa-star" :key="star" />
-                  </template>
-                  <template v-for="nostar in 5 - review.rating">
-                    <font-awesome-icon
-                      icon="fa-regular fa-star"
-                      :key="nostar"
-                    />
+                  <template v-if="review.rating > 0">
+                    <template v-for="star in review.rating">
+                      <font-awesome-icon icon="fa-solid fa-star" :key="star" />
+                    </template>
+                    <template v-for="nostar in 5 - review.rating">
+                      <font-awesome-icon
+                        icon="fa-regular fa-star"
+                        :key="nostar"
+                      />
+                    </template>
                   </template>
                 </div>
                 <div class="list-item-title">{{ review.comment }}</div>
@@ -281,15 +317,14 @@
               </template>
             </div>
 
-            <!-- v-if="isCommentOwner()" -->
-            <div class="list-item-controls">
+            <div class="list-item-controls" v-if="isReviewOwner(review)">
               <div class="buttons is-right">
                 <template v-if="index === editToggle">
                   <button class="button">
                     <span class="icon is-small">
                       <font-awesome-icon icon="fa-regular fa-floppy-disk" />
                     </span>
-                    <span>Save</span>
+                    <span>บันทึก</span>
                   </button>
 
                   <button class="button">
@@ -308,7 +343,7 @@
                         icon="fa-solid fa-arrow-right-from-bracket"
                       />
                     </span>
-                    <span>Cancel</span>
+                    <span>ยกเลิก</span>
                   </button>
                 </template>
 
@@ -322,7 +357,7 @@
                   <span class="icon is-small">
                     <font-awesome-icon icon="fa-regular fa-pen-to-square" />
                   </span>
-                  <span>Edit</span>
+                  <span>แก้ไข</span>
                 </button>
               </div>
             </div>
@@ -368,19 +403,22 @@ export default {
   },
   computed: {
     averageRating() {
-      return (
-        this.reviews.reduce((prev, next) => prev + next.rating, 0) /
-        this.reviews.length
-      ).toFixed(1);
+      if (this.reviews.length > 0) {
+        return (
+          this.reviews.reduce((prev, next) => prev + next.rating, 0) /
+          this.reviews.length
+        ).toFixed(1);
+      }
+      return 0;
     },
   },
   methods: {
-    isCommentOwner() {
-      //   if (!this.user) return false;
-      //   if (this.user.role === "admin") return true;
-      //   return comment.comment_by_id === this.user.id;
+    isReviewOwner(review) {
+      if (!this.user) return false;
+      if (this.user.user_type === "admin") return true;
+      return review.user_id === this.user.user_id;
     },
-    isCafeOwner() {},
+    isCafeEmployee() { return true},
     getCafe(cafe_id) {
       axios
         .get(`http://localhost:3000/cafe/${cafe_id}`)

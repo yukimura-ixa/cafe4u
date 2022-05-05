@@ -1,35 +1,29 @@
 <template>
   <div>
-    <section class="hero is-fullheight">
-      <Splide
-        class="is-fluid"
-        :options="{
-          cover: true,
-          type: 'loop',
-          heightRatio: 0.4,
-          autoplay: true,
-          arrows: false,
-        }"
+    <section class="hero is-fullheight-with-navbar">
+      <vue-flux
+        :options="{ autoplay: true }"
+        :images="vfImages"
+        :transitions="['slide']"
+        :size="{ width: 640, height: 360 }"
+        ref="slider"
       >
-        <SplideSlide>
-          <img
-            src="https://s.isanook.com/hm/0/rp/rc/w850h510/yatxacm1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL2htLzAvdWQvNC8yNDY0Ny96YWtrYWhvbWUuanBn.jpg"
-            alt="Sample 1"
-          />
-        </SplideSlide>
-        <SplideSlide>
-          <img
-            src="https://www.forfur.com/img/I78/t_7768_15834695551067208599.jpg"
-            alt="Sample 2"
-          />
-        </SplideSlide>
-        <SplideSlide>
-          <img
-            src="https://thejourneymoment.com/wp-content/uploads/2019/12/cover-cafe-no-text.jpg"
-            alt="Sample 2"
-          />
-        </SplideSlide>
-      </Splide>
+        <template v-slot:preloader>
+          <flux-preloader />
+        </template>
+
+        <template v-slot:controls>
+          <flux-controls />
+        </template>
+
+        <template v-slot:pagination>
+          <flux-pagination />
+        </template>
+
+        <template v-slot:index>
+          <flux-index />
+        </template>
+      </vue-flux>
     </section>
 
     <section>
@@ -68,7 +62,11 @@
                   <div class="media">
                     <div class="media-content">
                       <p class="title is-4">{{ cafe.cafe_name }}</p>
-                      <p class="subtitle is-6">{{ cafe.cafe_theme }}</p>
+                      <div class="tags">
+                        <div class="tag is-capitalized">
+                          {{ cafe.cafe_theme }}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -79,7 +77,11 @@
                 </div>
 
                 <footer class="card-footer">
-                  <a href="#" class="card-footer-item">ดูร้าน</a>
+                  <router-link
+                    class="card-footer-item"
+                    :to="`/cafe/${cafe.cafe_branchid}`"
+                    >ดูร้าน</router-link
+                  >
                 </footer>
               </div>
             </div>
@@ -92,26 +94,35 @@
 
 
 <script>
-import { Splide, SplideSlide } from "@splidejs/vue-splide";
+import {
+  VueFlux,
+  FluxControls,
+  FluxIndex,
+  FluxPagination,
+  FluxPreloader,
+} from "vue-flux";
+
 import axios from "@/plugins/axios";
 export default {
   name: "HomePage",
   props: ["user", "cart"],
   components: {
-    Splide,
-    SplideSlide,
+    VueFlux,
+    FluxControls,
+    FluxIndex,
+    FluxPagination,
+    FluxPreloader,
   },
   mounted() {
     this.search();
   },
   data() {
     return {
-      name: "Nook Nut Art",
       carousel_items: [],
       image: [],
       cafeType: [],
-      filterType:'none',
-      cafeArr:[]
+      filterType: "none",
+      cafeArr: [],
     };
   },
   methods: {
@@ -138,12 +149,17 @@ export default {
         return each.cafe_id == cafe_id;
       });
       if (image[0] == null) {
-        return "https://www.paiduaykan.com/travel/wp-content/uploads/2020/04/1-SON09231.jpg";
+        return "https://bulma.io/images/placeholders/640x480.png";
       }
       return image[0].image_path;
     },
   },
   computed: {
+    vfImages() {
+      return this.image.map((ele) => {
+        return ele.image_path;
+      });
+    },
     cafeList() {
       if (this.filterType == "none") {
         return this.cafeArr;
@@ -152,13 +168,8 @@ export default {
       return this.cafeArr.filter((cafe) => {
         return cafe.cafe_theme == this.filterType;
       });
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-section {
-  background-color: rgb(78, 153, 110);
-}
-</style>
 

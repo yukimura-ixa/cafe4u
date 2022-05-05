@@ -12,7 +12,15 @@ const storage = multer.diskStorage({
   filename: function (req, file, callback) {
     callback(
       null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+      file.fieldname +
+        "-" +
+        new Date().getDate +
+        new Date().getMonth +
+        new Date().getFullYear +
+        "-" +
+        new Date().getHours +
+        new Date().getMinutes +
+        path.extname(file.originalname)
     );
   },
 });
@@ -49,12 +57,16 @@ router.post(
   upload.single("productImage"),
   async function (req, res, next) {
     const cid = req.params.cafe_id;
-
     const file = req.file;
-    const name = req.body.product_name;
-    const desc = req.body.product_desc;
-    const price = req.body.product_price;
-    const type = req.body.product_type;
+    const name = req.body.name;
+    const desc = req.body.desc;
+    const price = req.body.price;
+    var type = req.body.type;
+
+    // console.log(cid, file, name, desc, price);
+    if (type === "") {
+      type = null;
+    }
 
     if (!file) {
       return res.status(400).json({ message: "Please upload a file" });
@@ -65,16 +77,54 @@ router.post(
 
     try {
       const [add, f1] = await conn.query(
-        "INSERT INTO `product`(product_name, product_desc, product_price, product_type, cafe_id)",
-        [name, desc, price, type, cid]
+        "INSERT INTO product(product_name, product_desc, product_price, product_type, cafe_id)",
+        [name, desc, parseFloat(price), type, cid]
       );
-        let inserted = add.insertId
+      let inserted = add.insertId;
       const [img, f2] = await conn.query(
         "INSERT INTO `image`(image_path, product_id, cafe_id)",
-        [file.path.substr(6), inserted, cid]
+        [file.path.substring(6), inserted, cid]
       );
 
       await conn.commit();
+    } catch (err) {
+      console.log(err);
+      await conn.rollback();
+      return res.status(500).json(err);
+    } finally {
+      conn.release();
+    }
+  }
+);
+
+router.put(
+  "/product/:id",
+  upload.single("productImage"),
+  async function (req, res, next) {
+    const file = req.file;
+    const name = req.body.name;
+    const desc = req.body.desc;
+    const price = req.body.price;
+    const pid = req.params.id;
+
+    console.log(pid, file, name, desc, price);
+    const conn = await pool.getConnection();
+    await conn.beginTransaction();
+    try {
+      const [update, f] = await conn.query(
+        "UPDATE `product` SET product_name =?, product_desc =?, product_price=? WHERE product_id=?",
+        [name, desc, price, pid]
+      );
+
+      if (file) {
+        const [img, f] = await conn.query(
+          "UPDATE `image` SET image_path =? WHERE product_id=?",
+          [file.path.substring(6), pid]
+        );
+      }
+
+      await conn.commit();
+      
     } catch (err) {
       console.log(err);
       await conn.rollback();

@@ -192,7 +192,7 @@
 
                 <template v-if="isEmployee && editToggle === index">
                   <a
-                    @click="confirmEditProduct()"
+                    @click="confirmUpdate(product)"
                     class="
                       card-footer-item
                       has-background-success has-text-white
@@ -256,11 +256,11 @@
           <div class="card-image">
             <figure class="image is-4by3">
               <img
-                v-if="newProductImage === ''"
+                v-if="previewImg === '' || previewImg === null"
                 src="https://bulma.io/images/placeholders/640x480.png"
                 alt="Placeholder image"
               />
-              <img v-else :src="newProductImage" alt="Placeholder image" />
+              <img v-else :src="previewImg" alt="Placeholder image" />
             </figure>
           </div>
           <div class="field">
@@ -321,12 +321,16 @@
               <label class="label">รูปสินค้า</label>
               <div class="file">
                 <label class="file-label">
-                  <input class="file-input" type="file" @change="onFileChange"/>
+                  <input
+                    class="file-input"
+                    type="file"
+                    @change="onFileChange"
+                  />
                   <span class="file-cta">
                     <span class="file-icon">
                       <font-awesome-icon icon="fa-solid fa-upload" />
                     </span>
-                    <span class="file-label"> เปลี่ยนรูป </span>
+                    <span class="file-label"> อัพโหลดรูป </span>
                   </span>
                 </label>
               </div>
@@ -335,7 +339,9 @@
         </section>
         <footer class="modal-card-foot">
           <button class="button is-success" @click="addProduct()">เพิ่ม</button>
-          <button class="button is-danger" @click="clearProductData()">ล้างข้อมูล</button>
+          <button class="button is-danger" @click="clearProductData()">
+            ล้างข้อมูล
+          </button>
         </footer>
       </div>
     </div>
@@ -413,6 +419,7 @@ export default {
       newProductType: "",
       newProductImage: "",
       addProductModalToggle: false,
+      previewImg: "",
 
       editProductName: "",
       editProductPrice: "",
@@ -433,6 +440,12 @@ export default {
       error: null,
     };
   },
+  // validation: {
+  //   newProductPrice: {
+  //     required,
+
+  //   }
+  // },
   mounted() {
     this.getProducts(this.$route.params.id);
   },
@@ -461,6 +474,29 @@ export default {
         this.addDrinkClicked = true;
         this.selectedProduct = product;
       }
+    },
+    confirmUpdate(product) {
+      let formData = new FormData();
+      formData.append("name", this.editProductName);
+      formData.append("desc", this.editProductDesc);
+      formData.append("price", this.editProductPrice);
+      formData.append("productImage", this.editProductImage);
+      axios
+        .put(`http://localhost:3000/product/${product.product_id}`, formData)
+        // eslint-disable-next-line
+        .then((res) => {
+          this.cancelEdit();
+          this.$notify({
+            group: "app",
+            text: `อัพเดทสินค้ารหัส ${product.product_id} แล้ว`,
+          });
+          this.$route.go();
+          // history.replaceState({}, null, this.$route.path);
+        })
+        .catch((err) => {
+          this.error = err.response.data.message;
+          this.$notify({ group: "danger", text: this.error });
+        });
     },
     confirmAddDrink() {
       const cartItem = {
@@ -515,11 +551,12 @@ export default {
       this.editProductName = "";
       this.editProductDesc = "";
       this.editProductPrice = "";
+      this.editProductImage = null;
     },
     onFileChange(e) {
       const file = e.target.files[0];
-      this.newProductImage = URL.createObjectURL(file);
-      console.log(this.newProductImage);
+      this.newProductImage = file;
+      this.previewImg = URL.createObjectURL(file);
     },
     addProduct() {
       let formData = new FormData();
@@ -529,7 +566,10 @@ export default {
       formData.append("type", this.newProductType);
       formData.append("productImage", this.newProductImage);
       axios
-        .post(`http://localhost:3000/product/${this.cafe.cafe_branchid}`, formData)
+        .post(
+          `http://localhost:3000/product/${this.cafe.cafe_branchid}`,
+          formData
+        )
         // eslint-disable-next-line
         .then((res) => {
           this.$route.go();
@@ -540,12 +580,13 @@ export default {
           this.$notify({ group: "danger", text: this.error });
         });
     },
-    clearProductData(){
-      this.newProductName = ""
-      this.newProductPrice = ""
-      this.newProductDesc = ""
-      this.newProductType = ""
-      this.newProductImage = null
+    clearProductData() {
+      this.newProductName = "";
+      this.newProductPrice = "";
+      this.newProductDesc = "";
+      this.newProductType = "";
+      this.newProductImage = null;
+      this.previewImg = null;
     },
   },
 };

@@ -20,7 +20,7 @@ const routes = [
     component: () => import('../views/Profile.vue')
   },
   {
-    path: '/user/signup',
+    path: '/signup',
     name: 'signup',
     component: () => import('../views/Signup.vue')
   },
@@ -40,7 +40,7 @@ const routes = [
     component: () => import('../views/SearchPage.vue')
   },
   {
-    path: '/map',
+    path: '/cafe/:id/map',
     name: 'map',
     component: () => import('../views/CafeMap.vue')
   },
