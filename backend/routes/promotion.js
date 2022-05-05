@@ -29,10 +29,10 @@ router.post("/promotion/add/:id", async function (req, res, next) {
 
     try {
         await conn.query(
-            "INSERT INTO promotion(pro_detail, pro_type, discount, buy_count_need, buy_price_need, point_need, product_free, product_count_need VALUES(?, ?, ?, ?, ?, ?, ?, ?);",
-            [pro_detail, pro_type, discount, buy_count_need, need_price, need_point, product_free_id, product_count_need]
+            "INSERT INTO promotion(pro_id, pro_detail, pro_type, discount, buy_count_need, buy_price_need, point_need, product_free, product_count_need) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);",
+            [req.params.id, pro_detail, pro_type, discount, buy_count_need, need_price, need_point, product_free_id, product_count_need]
         );
-        if (pro_type == "free" || pro_type == "product_get_discount") {
+        if (product_id != null) {
             await conn.query(
                 "INSERT INTO promotion_product(pro_id, product_id) VALUES(?, ?);",
                 [req.params.id, product_id]
@@ -43,10 +43,24 @@ router.post("/promotion/add/:id", async function (req, res, next) {
         res.send("success!");
     } catch (err) {
         console.log(req.body)
+        console.log(req.params.id)
         await conn.rollback();
         return res.status(400).json(err);
     } finally {
         conn.release();
+    }
+});
+
+router.delete('/promotion/:id', async function (req, res, next) {
+    try {
+        const [rows1, _] = await pool.query('SELECT * FROM promotion_product WHERE pro_id=?;', [req.params.id])
+        if (rows1.length > 0) {
+            await pool.query("DELETE FROM promotion_product WHERE pro_id=?;",[req.params.id])
+        }
+        await pool.query('DELETE FROM promotion WHERE pro_id=?;', [req.params.id])
+        res.json("success")
+    } catch (error) {
+        res.status(500).json(error)
     }
 });
 

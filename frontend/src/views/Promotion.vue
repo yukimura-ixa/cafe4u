@@ -249,7 +249,7 @@
 
 
 <script>
-import axios from "axios";
+import axios from "@/plugins/axios";
 export default {
   name: "PromotionPage",
   props: ["user"],
@@ -262,21 +262,21 @@ export default {
       type: "free",
       start_date: "",
       stop_date: "",
-      product_free_id: "",
-      discount: "",
-      product_count_need: "",
-      need_point: "",
-      need_price: "",
-      buy_count_need: "",
-      product_id: "",
+      product_free_id: null,
+      discount: null,
+      product_count_need: null,
+      need_point: null,
+      need_price: null,
+      buy_count_need: null,
+      product_id: null,
       newType: "free",
-      addProductFreeId: "",
-      addProductCountNeed: "",
-      addDiscount: "",
-      addNeedPoint: "",
-      addNeedPirce: "",
-      addBuyCountNeed: "",
-      addProductId: "",
+      addProductFreeId: null,
+      addProductCountNeed: null,
+      addDiscount: null,
+      addNeedPoint: null,
+      addNeedPirce: null,
+      addBuyCountNeed: null,
+      addProductId: null,
       newproDetail: "",
       Newstop_date: "",
       Newstart_date: "",
@@ -332,45 +332,21 @@ export default {
           pro_type: this.type,
           product_free_id: this.addProductFreeId,
           product_count_need: this.addProductCountNeed,
-          discount: null,
-          need_point: null,
-          need_price: null,
-          buy_count_need: null,
-          product_id: this.addProductFreeId,
-        };
-      } else if (this.type == "point") {
-        data = {
-          pro_detail: this.newproDetail,
-          pro_type: this.type,
-          product_free_id: null,
-          product_count_need: null,
           discount: this.addDiscount,
           need_point: this.addNeedPoint,
-          need_price: null,
-          buy_count_need: null,
-          product_id: null,
-        };
-      } else if (this.type == "price_get_discount") {
-        data = {
-          pro_detail: this.newproDetail,
-          pro_type: this.type,
-          product_free_id: null,
-          product_count_need: null,
-          discount: this.addDiscount,
-          need_point: null,
           need_price: this.addNeedPirce,
-          buy_count_need: null,
-          product_id: null,
+          buy_count_need: this.addBuyCountNeed,
+          product_id: this.addProductFreeId,
         };
       } else {
         data = {
           pro_detail: this.newproDetail,
           pro_type: this.type,
-          product_free_id: null,
-          product_count_need: null,
+          product_free_id: this.addProductFreeId,
+          product_count_need: this.addProductCountNeed,
           discount: this.addDiscount,
-          need_point: null,
-          need_price: null,
+          need_point: this.addNeedPoint,
+          need_price: this.addNeedPirce,
           buy_count_need: this.addBuyCountNeed,
           product_id: this.addProductId,
         };
@@ -384,8 +360,20 @@ export default {
           alert(err.response.data.details.message);
         });
     },
-    //deletePromotion(proId) {
-    //},
+    deletePromotion(proId) {
+      const result = confirm(`Are you sure you want to delete this Promotion`);
+      if (result) {
+        axios
+          .delete(`http://localhost:3000/promotion/${proId}`)
+          .then(() => {
+            alert("Delete Promotion Success");
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(err.response.data.details.message);
+          });
+      }
+    },
   },
 };
 </script>

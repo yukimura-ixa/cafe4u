@@ -238,7 +238,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "@/plugins/axios";
 import {
   required,
   email,
