@@ -306,7 +306,6 @@ export default {
         let data = {
           username: this.username,
           password: this.password,
-          confirm_password: this.confirm_password,
           email: this.email,
           mobile: this.mobile,
           first_name: this.first_name,
