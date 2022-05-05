@@ -296,6 +296,17 @@ export default {
           console.log(err);
         });
     },
+    clearDetail() {
+      this.addBuyCountNeed = "";
+      this.addDiscount = "";
+      this.addNeedPirce = "";
+      this.addNeedPoint = "";
+      this.addProductCountNeed = "";
+      this.addProductFreeId = "";
+      this.addProductId = "";
+      this.type = "free";
+      this.newproDetail = "";
+    },
     saveEditPromotion(proId) {
       let selectedPromotion = this.promotionList.filter(
         (e) => e.pro_id === proId
@@ -354,7 +365,8 @@ export default {
       axios
         .post(`http://localhost:3000/promotion/add/${lengthOfPro}`, data)
         .then(() => {
-          alert("Add Promotion Success");
+          this.getPromotionDetail();
+          this.clearDetail();
         })
         .catch((err) => {
           alert(err.response.data.details.message);
@@ -366,7 +378,7 @@ export default {
         axios
           .delete(`http://localhost:3000/promotion/${proId}`)
           .then(() => {
-            alert("Delete Promotion Success");
+            this.getPromotionDetail();
           })
           .catch((err) => {
             console.log(err);
