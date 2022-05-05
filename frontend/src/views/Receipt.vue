@@ -180,7 +180,7 @@ export default {
       if (image[0] == null) {
         return "https://via.placeholder.com/128x128.png?text=Image";
       }
-      return image[0].image_path;
+      return 'http://localhost:3000'+image[0].image_path;
     },
     optionOf(item_no) {
       let option = this.option.filter((each) => {

@@ -181,7 +181,7 @@ export default {
       if (image[0] == null) {
         return "https://bulma.io/images/placeholders/640x480.png";
       }
-      return image[0].image_path;
+      return  'http://localhost:3000'+image[0].image_path;
     },
   },
   computed: {
