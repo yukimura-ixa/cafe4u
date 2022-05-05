@@ -318,7 +318,7 @@
 
     <router-view
       @auth-change="onAuthChange"
-      @myCart="print"
+      @myCart="onCartChange"
       :key="$route.fullPath"
       :user="user"
       :cart="cart"
@@ -366,6 +366,14 @@ export default {
           this.toReceipt = response.data.orderId
           this.$router.push({ path: "/receipt"})
           this.openCart = false
+        })
+        .catch((error) => {
+          this.error = error.response.data.message;
+        });
+        axios
+        .put(`http://localhost:3000/cut/userpoint`, {pro_id:this.cartPromotion})
+        .then((response) => {
+          console.log(response.data.success)
         })
         .catch((error) => {
           this.error = error.response.data.message;
@@ -505,7 +513,7 @@ export default {
 
     // Just For Test
     spawn(){
-      localStorage.setItem('cart',JSON.stringify([{product_id:1,quantity:3,option:null},{product_id:5,quantity:1,option:17},{product_id:8,quantity:1,option:null}]))
+      localStorage.setItem('cart',JSON.stringify([{product_id:1,quantity:3,option:null},{product_id:5,quantity:1,option:17},{product_id:8,quantity:1,option:null},{product_id:16,quantity:3,option:null},{product_id:10,quantity:3,option:null}]))
       console.log(JSON.parse(localStorage.getItem('cart')))
       this.onCartChange()
     },

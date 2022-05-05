@@ -5,6 +5,39 @@ const { isLoggedIn } = require('../middlewares');
 
 router = express.Router();
 
+//Add Order
+router.put("/cut/userpoint", isLoggedIn, async function (req, res, next) {
+  // Begin transaction
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+  
+  try {
+    let results = await conn.query(
+      "select * from promotion where pro_id = ?",
+      [req.body.pro_id]
+    );
+    let results2 = await conn.query(
+      "select * from user where user_id = ?",
+      [req.user.user_id]
+    );
+    if(results[0].pro_type == 'point'){
+      await conn.query(
+        "update user set user_point = ? where user_id = ?",
+        [results2[0].user_point-results[0].point_need,req.user.user_id]
+      );
+    }
+    await conn.commit();
+    res.json({
+        success:'Yes',
+
+    });
+  } catch (err) {
+    await conn.rollback();
+    return res.status(400).json(err);
+  } finally {
+    conn.release();
+  }
+});
 
 //Add Order
 router.post("/add/order", isLoggedIn, async function (req, res, next) {
