@@ -25,8 +25,8 @@
             </tr>
           </table>
           <div class="card-content column is-12 px-6 pt-6">
-            <button class="button is-warning" @click="showEditPassword()">
-              Change Password
+            <button class="button is-warning" @click="getDetail(userDetail)">
+              Get Information of Profile
             </button>
           </div>
         </div>
@@ -94,8 +94,12 @@
 
           <label class="label">Address:</label>
           <div class="control">
-            <input class="input" type="address" v-model="$v.address.$model"
-              :class="{ 'is-danger': $v.address.$error }"/>
+            <input
+              class="input"
+              type="address"
+              v-model="$v.address.$model"
+              :class="{ 'is-danger': $v.address.$error }"
+            />
           </div>
           <template v-if="$v.address.$error">
             <p class="help is-danger" v-if="!$v.address.required">
@@ -137,7 +141,7 @@
             <p class="help is-danger" v-if="!$v.email.email">Invalid Email</p>
           </template>
 
-          <div v-if="this.passwordToggle == true">
+          <div>
             <label class="label">Password:</label>
             <div class="control">
               <input
@@ -160,7 +164,7 @@
             </template>
           </div>
 
-          <div v-if="this.passwordToggle == true">
+          <div>
             <label class="label">Confirm Password</label>
             <div class="control">
               <input
@@ -178,7 +182,10 @@
           </div>
 
           <div class="card-content column is-12 px-6 pt-6">
-            <button class="button is-success is-medium is-fullwidth" @click="submit(userDetail[0].user_id)">
+            <button
+              class="button is-success is-medium is-fullwidth"
+              @click="submit(userDetail[0].user_id)"
+            >
               Submit
             </button>
           </div>
@@ -234,7 +241,6 @@ export default {
       first_name: "",
       last_name: "",
       address: "",
-      passwordToggle: false,
     };
   },
   validations: {
@@ -267,7 +273,7 @@ export default {
     confirm_password: {
       sameAs: sameAs("password"),
     },
-    address:{
+    address: {
       required: required,
     },
   },
@@ -275,12 +281,13 @@ export default {
     this.getProfileDetail(this.$route.params.id);
   },
   methods: {
-    showEditPassword() {
-      if (this.passwordToggle == true) {
-        this.passwordToggle = false;
-      } else {
-        this.passwordToggle = true;
-      }
+    getDetail() {
+      this.username = this.userDetail[0].user_login;
+      this.email = this.userDetail[0].email;
+      this.mobile = this.userDetail[0].phone;
+      this.first_name = this.userDetail[0].fname;
+      this.last_name = this.userDetail[0].lname;
+      this.address = this.userDetail[0].address;
     },
     getProfileDetail(userId) {
       axios
@@ -308,7 +315,7 @@ export default {
         };
 
         axios
-          .put(`http://localhost:3000/user/update/${userId}`, data)
+          .put(`http://localhost:3000/profile/update/${userId}`, data)
           .then(() => {
             alert("Update Profile Success");
           })
