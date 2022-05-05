@@ -64,7 +64,7 @@ router.put('/profile/update/:id', async (req, res, next) => {
 
     try {
         await conn.query(
-            'UPDATE `user` SET user_login = ? password = ? fname = ? lname = ? address = ? phone = ? email = ? WHERE user_id = ',
+            'UPDATE `user` SET user_login = ? password = ? fname = ? lname = ? address = ? phone = ? email = ? WHERE `user_id` = ?',
             [username, password, first_name, last_name, address, mobile, email, req.params.id]
         )
         conn.commit()

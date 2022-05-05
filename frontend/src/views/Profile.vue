@@ -24,9 +24,14 @@
               <th>Email: {{ userDetail[0].email }}</th>
             </tr>
           </table>
-          <div class="card-content column is-12 px-6 pt-6">
-            <button class="button is-warning" @click="getDetail(userDetail)">
+          <div class="card-content column">
+            <button class="button is-info" @click="getDetail()">
               Get Information of Profile
+            </button>
+          </div>
+          <div class="card-content column">
+            <button class="button is-warning" @click="clearDetail()">
+              Clear Information
             </button>
           </div>
         </div>
@@ -289,6 +294,14 @@ export default {
       this.last_name = this.userDetail[0].lname;
       this.address = this.userDetail[0].address;
     },
+    clearDetail() {
+      this.username = "";
+      this.email = "";
+      this.mobile = "";
+      this.first_name = "";
+      this.last_name = "";
+      this.address = "";
+    },
     getProfileDetail(userId) {
       axios
         .get(`http://localhost:3000/profile/${userId}`)
@@ -312,6 +325,8 @@ export default {
           last_name: this.last_name,
           address: this.address,
         };
+
+        console.log(data);
 
         axios
           .put(`http://localhost:3000/profile/update/${userId}`, data)
