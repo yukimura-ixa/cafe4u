@@ -1,7 +1,9 @@
 const express = require("express");
 const pool = require("../config");
+const Joi = require('joi')
 
 router = express.Router();
+
 
 router.get("/cafe/:id", function (req, res, next) {
   const promise1 = pool.query("SELECT * FROM `cafe` WHERE cafe_branchid=?", [
@@ -30,6 +32,44 @@ router.get("/cafe/:id", function (req, res, next) {
     .catch((err) => {
       return res.status(500).json(err);
     });
+});
+
+const cafeSchema = Joi.object({
+  cafe_name: Joi.string().required(),
+  cafe_desc: Joi.string().required(),
+  cafe_location: Joi.string().required(),
+  cafe_theme: Joi.string().required(),
+})
+
+router.post("/cafe/add", async function (req, res, next) {
+  try {
+    await cafeSchema.validateAsync(req.body, { abortEarly: false })
+  } catch (err) {
+    return res.status(400).send(err)
+  }
+
+  const cafe_location = req.body.cafe_location;
+  const cafe_desc = req.body.cafe_desc;
+  const cafe_name = req.body.cafe_name;
+  const cafe_theme = req.body.cafe_theme;
+
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+  try {
+    await conn.query(
+      "INSERT INTO cafe(cafe_location, cafe_name, cafe_desc, cafe_theme" +
+      "VALUES(?, ?, ?, ?);",
+      [cafe_location, cafe_name, cafe_desc, cafe_theme]
+    );
+
+    await conn.commit();
+    res.send("success!");
+  } catch (err) {
+    await conn.rollback();
+    return res.status(400).json(err);
+  } finally {
+    conn.release();
+  }
 });
 
 exports.router = router;

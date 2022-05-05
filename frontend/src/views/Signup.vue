@@ -148,6 +148,44 @@
                 </p>
               </template>
             </div>
+            <div class="field">
+              <label class="label">Address</label>
+              <div class="control">
+                <textarea
+                  v-model="$v.address.$model"
+                  :class="{ 'is-danger': $v.address.$error }"
+                  class="textarea"
+                  type="text"
+                />
+              </div>
+              <template v-if="$v.address.$error">
+                <p class="help is-danger" v-if="!$v.address.required">
+                  This field is required
+                </p>
+              </template>
+            </div>
+
+            <div class="field">
+              <label class="label">Age</label>
+              <div class="control">
+                <input
+                  v-model="$v.age.$model"
+                  :class="{ 'is-danger': $v.age.$error }"
+                  class="input"
+                  type="text"
+                  placeholder="Enter 2 digits"
+                />
+              </div>
+              <template v-if="$v.age.$error">
+                <p class="help is-danger" v-if="!$v.age.required">
+                  This field is required
+                </p>
+                <p class="help is-danger" v-if="!$v.age.age">Invalid Age</p>
+                <p class="help is-danger" v-if="!$v.age.maxLength">
+                  Must be less than 3 characters
+                </p>
+              </template>
+            </div>
 
             <button class="button is-primary is-fullwidth" @click="submit()">
               Sign Up
@@ -175,6 +213,9 @@ import {
 function mobile(value) {
   return !!value.match(/0[0-9]{9}/);
 }
+function age(value) {
+  return !!value.match(/[0-9]{2}/);
+}
 function complexPassword(value) {
   if (!(value.match(/[a-z]/) && value.match(/[A-Z]/) && value.match(/[0-9]/))) {
     return false;
@@ -192,6 +233,8 @@ export default {
       mobile: "",
       first_name: "",
       last_name: "",
+      address: "",
+      age: "",
     };
   },
   validations: {
@@ -212,6 +255,11 @@ export default {
       required,
       email,
     },
+    age: {
+      required,
+      age,
+      maxLength: maxLength(2),
+    },
     mobile: {
       required: required,
       mobile: mobile,
@@ -223,6 +271,9 @@ export default {
     },
     confirm_password: {
       sameAs: sameAs("password"),
+    },
+    address: {
+      required: required,
     },
   },
 
@@ -239,6 +290,8 @@ export default {
           mobile: this.mobile,
           first_name: this.first_name,
           last_name: this.last_name,
+          age: this.age,
+          address: this.address,
         };
 
         axios

@@ -56,6 +56,7 @@
                 />
               </font-awesome-layers>
             </a>
+            <a class="button is-light m-auto" @click="goProfile(user.user_id)"> Profile </a>
             <a class="button is-light" @click="logout" v-if="user"> ออกจากระบบ </a>
             <div class="buttons mb-0" v-if="!user">
               <a class="button is-primary m-auto" href="#/user/signup">
@@ -346,6 +347,9 @@ export default {
       localStorage.removeItem("token");
       this.user = null
       this.$router.push('/login')
+    },
+    goProfile(userId) {
+      this.$router.push(`/profile/${userId}`)
     },
   },
 };
