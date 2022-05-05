@@ -210,7 +210,7 @@
                     <div class="list-item-image">
                       <figure class="image is-64x64">
                         <img
-                          src=""
+                          :src="showImage(selectedPromotion.product_id)"
                         />
                       </figure>
                     </div>
@@ -311,7 +311,7 @@
         </section>
         <footer class="modal-card-foot">
           <button class="button is-warning ml-auto" @click="spawn()">Spawn Item</button>
-          <button class="button is-success ml-auto">Checkout</button>
+          <button class="button is-success ml-auto" @click="checkout()">Checkout</button>
         </footer>
       </div>
     </div>
@@ -323,6 +323,7 @@
       :user="user"
       :cart="cart"
       :searchCafe="[searchText, searchResult, searchImageResult, cafeType]"
+      :receipt="toReceipt"
     />
   </div>
 </template>
@@ -346,7 +347,8 @@ export default {
       cartImage:[],
       cartOption:[],
       Promotion:[],
-      cafeId:null
+      cafeId:null,
+      toReceipt:null
 
 
     };
@@ -356,6 +358,20 @@ export default {
     this.search(false);
   },
   methods: {
+    checkout(){
+      if(this.cartProduct.length > 0){
+        axios
+        .post(`http://localhost:3000/add/order`, {cafeId:this.cafeId, product:this.cartProduct, info:this.cart, pro_id:this.cartPromotion, totalprice:this.totalprice})
+        .then((response) => {
+          this.toReceipt = response.data.orderId
+          this.$router.push({ path: "/receipt"})
+          this.openCart = false
+        })
+        .catch((error) => {
+          this.error = error.response.data.message;
+        });
+      }
+    },
     search(bool) {
       if (this.$route.fullPath != "/search" && bool) {
         this.$router.push({ path: "/search" });

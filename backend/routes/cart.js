@@ -27,8 +27,8 @@ router.put("/cart", async function (req, res, next) {
         [product]
     );
     let results2 = await conn.query(
-        "select * from image where product_id in (?)",
-        [product]
+        "select * from image where product_id in (?) or product_id in (?)",
+        [product, option]
     );
     let results3 = await conn.query(
         "select * from product where product_id in (?)",[option]
@@ -37,7 +37,7 @@ router.put("/cart", async function (req, res, next) {
         "select * from promotion  left outer join promotion_product p using (pro_id) left outer join product p2 on (p.product_id = p2.product_id) where pro_id in (select pro_id from cafe_promotion where cafe_branchid in (select cafe_id from product where product_id in (?)))",[product]
     )
     let results5 = await conn.query(
-        "select cafe_branchid from cafe_promotion where cafe_branchid in (select cafe_id from product where product_id in (?))",[product]
+        "select distinct cafe_branchid from cafe_promotion where cafe_branchid in (select cafe_id from product where product_id in (?))",[product]
     )
     await conn.commit();
     res.json({

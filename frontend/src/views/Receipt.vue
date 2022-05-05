@@ -144,6 +144,7 @@
 import axios from "axios";
 export default {
   name: "ReceiptPage",
+  props:['receipt'],
   data() {
     return {
       orderid: 13,
@@ -159,7 +160,7 @@ export default {
   methods: {
     getOrder() {
       axios
-        .get(`http://localhost:3000/order/${this.orderid}`)
+        .get(`http://localhost:3000/order/${this.receipt}`)
         .then((response) => {
           console.log(response);
           this.order = response.data.order[0];
@@ -172,6 +173,7 @@ export default {
         });
     },
     showImage(product_id) {
+      console.log(this.$route.body)
       let image = this.images.filter((each) => {
         return each.product_id == product_id;
       });

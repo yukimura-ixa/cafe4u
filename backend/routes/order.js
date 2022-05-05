@@ -1,9 +1,56 @@
 const express = require("express");
-const pool = require("../config");
 
+const pool = require("../config");
+const { isLoggedIn } = require('../middlewares');
 
 router = express.Router();
 
+
+//Add Order
+router.post("/add/order", isLoggedIn, async function (req, res, next) {
+  // Begin transaction
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+  
+  try {
+    var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    console.log(date,req.body.totalprice,req.user.user_id,1,req.body.cafeId[0].cafe_branchid,req.body.pro_id=="none"?null:req.body.pro_id,'in queue')
+    let results = await conn.query(
+      "insert into `order`(order_datetime,order_totalprice,user_id,emp_id,cafe_branchid,pro_id,order_status) \
+      values (?,?,?,?,?,?,?)",
+      [date,req.body.totalprice,req.user.user_id,null,req.body.cafeId[0].cafe_branchid,req.body.pro_id=="none"?null:req.body.pro_id,'in queue']
+    );
+    for(var i=0;i<req.body.product.length;i++){
+      for(var y=0;y<req.body.info.length;y++){
+        if(req.body.product[i].product_id == req.body.info[y].product_id){
+          let results2 = await conn.query(
+            "insert into `order_item`(product_price,order_amount,item_totalprice,product_id,order_id) \
+            values (?,?,?,?,?)",
+            [req.body.product[i].product_price,req.body.info[y].quantity,req.body.product[i].product_price*req.body.info[y].quantity,req.body.info[y].product_id,results[0].insertId]
+          );
+          if(req.body.info[y].option != null){
+            let results = await conn.query(
+              "insert into `product_order_item`(item_no,product_id) \
+              values (?,?)",
+              [results2[0].insertId, req.body.info[y].option]
+            );
+          }
+        }
+      }
+    }
+    
+    await conn.commit();
+    res.json({
+        orderId:results[0].insertId,
+
+    });
+  } catch (err) {
+    await conn.rollback();
+    return res.status(400).json(err);
+  } finally {
+    conn.release();
+  }
+});
 
 // Customer
 router.get("/orders/:user_id", async function (req, res, next) {
