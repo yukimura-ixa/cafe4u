@@ -38,9 +38,8 @@ const updateProfileSchema = Joi.object({
     mobile: Joi.string().required().pattern(/0[0-9]{9}/),
     first_name: Joi.string().required().max(150),
     last_name: Joi.string().required().max(150),
-    password: Joi.string().required().custom(passwordValidator),
-    confirm_password: Joi.string().required().valid(Joi.ref('password')),
     username: Joi.string().required().min(5).max(20).external(usernameValidator),
+    password: Joi.string().required().custom(passwordValidator),
     address: Joi.string().required(),
 })
 
@@ -55,7 +54,7 @@ router.put('/profile/update/:id', async (req, res, next) => {
     await conn.beginTransaction()
 
     const username = req.body.username
-    const password = await bcrypt.hash(req.body.password, 5)
+    const password = req.body.password
     const first_name = req.body.first_name
     const last_name = req.body.last_name
     const email = req.body.email
@@ -64,8 +63,8 @@ router.put('/profile/update/:id', async (req, res, next) => {
 
     try {
         await conn.query(
-            'UPDATE `user` SET user_login = ? password = ? fname = ? lname = ? address = ? phone = ? email = ? WHERE `user_id` = ?',
-            [username, password, first_name, last_name, address, mobile, email, req.params.id]
+            'UPDATE `user` SET user_id = ?, user_login = ?, fname = ?, lname = ?, address = ?, phone = ?, email = ?, password = ? WHERE `user_id` = ?',
+            [req.params.id, username, first_name, last_name, address, mobile, email, password, req.params.id]
         )
         conn.commit()
         res.status(201).send()

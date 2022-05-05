@@ -255,15 +255,6 @@ export default {
   props: ["user"],
   data() {
     return {
-      /*/newproList: {
-        id: null,
-        start_date: null,
-        stop_date: null,
-        detail: null,
-        type: null,
-        value1: null,
-        value2: null,
-      },/*/
       promotionList: [],
       selectedPromotion: [],
       editToggle: -1,

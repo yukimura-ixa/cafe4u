@@ -3,6 +3,9 @@
     <div class="columns is-centered">
       <div class="card is-10 column columns my-5" style="padding: 0">
         <div class="card-content column is-4 px-6 pt-6">
+          <router-link :to="'/'" class="mr-1 has-text-info">
+            <font-awesome-icon icon="fa-solid fa-angle-left" />
+          </router-link>
           <h1 class="title is-3 has-text-centered">Profile</h1>
           <hr style="background-color: rgb(3, 51, 35)" />
           <table style="width: 100%">
@@ -301,6 +304,8 @@ export default {
       this.first_name = "";
       this.last_name = "";
       this.address = "";
+      this.password = "";
+      this.confirm_password = "";
     },
     getProfileDetail(userId) {
       axios
@@ -332,6 +337,8 @@ export default {
           .put(`http://localhost:3000/profile/update/${userId}`, data)
           .then(() => {
             alert("Update Profile Success");
+            this.getProfileDetail(this.$route.params.id);
+            this.clearDetail()
           })
           .catch((err) => {
             alert(err.response.data.details.message);
