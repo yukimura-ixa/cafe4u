@@ -56,18 +56,40 @@
                 />
               </font-awesome-layers>
             </a>
-            <a class="button is-light m-auto" @click="goProfile(user.user_id)" v-if="user"> Profile </a>
-            <a class="button is-light" @click="logout" v-if="user"> ออกจากระบบ </a>
+            <router-link to="/order"
+              ><a class="button is-light" v-if="user">
+                <font-awesome-layers class="fa-2x">
+                  <font-awesome-icon icon="fa-solid fa-clock-rotate-left" />
+                </font-awesome-layers> </a
+            ></router-link>
+
+            <a
+              class="button is-light m-auto"
+              @click="goProfile(user.user_id)"
+              v-if="user"
+            >
+              Profile
+            </a>
+            <a class="button is-light" @click="logout" v-if="user">
+              ออกจากระบบ
+            </a>
             <div class="buttons mb-0" v-if="!user">
-              <a class="button is-primary m-auto" href="#/user/signup">
+              <a class="button is-primary m-auto" href="#/signup">
                 <strong>สมัครสมาชิก</strong>
               </a>
               <a class="button is-light m-auto" href="#/login"> เข้าสู่ระบบ </a>
             </div>
             <div v-if="user" class="ml-5">
-              <p class="title is-5 has-text-right">{{user.user_login}}</p>
-              <p class="subtitle has-text-right is-6" v-if="user.user_type == 'customer'">Point: {{user.user_point}}</p>
-              <p class="subtitle has-text-right is-6 is-capitalized	" v-else>{{user.user_type}}</p>
+              <p class="title is-5 has-text-right">{{ user.user_login }}</p>
+              <p
+                class="subtitle has-text-right is-6"
+                v-if="user.user_type == 'customer'"
+              >
+                Point: {{ user.user_point }}
+              </p>
+              <p class="subtitle has-text-right is-6 is-capitalized" v-else>
+                {{ user.user_type }}
+              </p>
             </div>
           </div>
         </div>
@@ -306,7 +328,7 @@
 </template>
 
 <script>
-import axios from '@/plugins/axios'
+import axios from "@/plugins/axios";
 
 export default {
   name: "App",
@@ -362,11 +384,11 @@ export default {
     },
     logout() {
       localStorage.removeItem("token");
-      this.user = null
-      this.$router.push('/login')
+      this.user = null;
+      this.$router.push("/login");
     },
     goProfile(userId) {
-      this.$router.push(`/profile/${userId}`)
+      this.$router.push(`/profile/${userId}`);
     },
     onCartChange(){
       this.cart = JSON.parse(localStorage.getItem('cart'))

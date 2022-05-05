@@ -138,7 +138,7 @@
     </div>
     <br />
     <div class="columns">
-      <div class="card column is-2 m-2">
+      <div class="card column is-2 is-offset-2 m-2">
         <label class="label">Start Promotion Date</label>
         <input type="date" v-model="Newstart_date" />
         <label class="label">Stop Promotion Date</label>
@@ -216,7 +216,7 @@
 import axios from "axios";
 export default {
   name: "PromotionPage",
-  props: [],
+  props: ["user"],
   data() {
     return {
       /*/newproList: {
@@ -229,7 +229,6 @@ export default {
         value2: null,
       },/*/
       promotionList: [],
-      userPoint: 500,
       selectedPromotion: [],
       editToggle: -1,
       editPromotionDesc: "",

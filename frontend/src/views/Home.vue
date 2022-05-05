@@ -26,6 +26,25 @@
       </vue-flux>
     </section>
 
+    <br />
+    <div class="container is-fluid mt-5 mb-6">
+      <div class="columns">
+        <div class="card column is-2 is-offset-3">
+          <router-link to="/addcafe"
+            ><button class="button is-fullwidth">
+              Go To Add New Cafe
+            </button></router-link
+          >
+        </div>
+        <div class="card column is-2 is-offset-2">
+          <router-link to="/promotion"
+            ><button class="button is-fullwidth">
+              Go To Promotion
+            </button></router-link
+          >
+        </div>
+      </div>
+    </div>
     <section>
       <div class="container is-fluid">
         <div class="columns is-multiline">
