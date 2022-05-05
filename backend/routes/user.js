@@ -73,6 +73,50 @@ router.post('/user/signup', async (req, res, next) => {
     }
 })
 
+const updateProfileSchema = Joi.object({
+    email: Joi.string().required().email(),
+    mobile: Joi.string().required().pattern(/0[0-9]{9}/),
+    first_name: Joi.string().required().max(150),
+    last_name: Joi.string().required().max(150),
+    password: Joi.string().required().custom(passwordValidator),
+    confirm_password: Joi.string().required().valid(Joi.ref('password')),
+    username: Joi.string().required().min(5).max(20).external(usernameValidator),
+    address: Joi.string().required(),
+})
+
+router.put('/user/update/:id', async (req, res, next) => {
+    try {
+        await updateProfileSchema.validateAsync(req.body, { abortEarly: false })
+    } catch (err) {
+        return res.status(400).send(err)
+    }
+
+    const conn = await pool.getConnection()
+    await conn.beginTransaction()
+
+    const username = req.body.username
+    const password = await bcrypt.hash(req.body.password, 5)
+    const first_name = req.body.first_name
+    const last_name = req.body.last_name
+    const email = req.body.email
+    const mobile = req.body.mobile
+    const address = req.body.address
+
+    try {
+        await conn.query(
+            'UPDATE `user` SET user_login = ? password = ? fname = ? lname = ? address = ? phone = ? email = ? WHERE user_id = ',
+            [username, password, first_name, last_name, address, mobile, email, req.param.id]
+        )
+        conn.commit()
+        res.status(201).send()
+    } catch (err) {
+        conn.rollback()
+        res.status(400).json(err.toString());
+    } finally {
+        conn.release()
+    }
+})
+
 
 const loginSchema = Joi.object({
     username: Joi.string().required(),

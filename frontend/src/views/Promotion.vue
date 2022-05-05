@@ -1,13 +1,5 @@
 <template>
   <div class="container is-fluid mt-5 mb-6">
-    <div class="container is-fluid mt-5">
-      <div class="columns">
-        <div class="card-content column is-2 is-offset-10">
-          <div class="card title is-5">User Point: {{ userPoint }}</div>
-        </div>
-      </div>
-    </div>
-    <br />
     <div class="card column is-12 px-6 pt-6">
       <h1 class="title is-3 has-text-centered">Promotion</h1>
       <hr style="background-color: rgb(3, 51, 35)" />

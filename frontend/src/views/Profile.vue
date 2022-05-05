@@ -10,7 +10,9 @@
               <th>Username: {{ userDetail[0].user_login }}</th>
             </tr>
             <tr style="height: 50px">
-              <th>Full Name: {{ userDetail[0].fname }} {{ userDetail[0].lname }}</th>
+              <th>
+                Full Name: {{ userDetail[0].fname }} {{ userDetail[0].lname }}
+              </th>
             </tr>
             <tr style="height: 50px">
               <th>Address: {{ userDetail[0].address }}</th>
@@ -23,10 +25,7 @@
             </tr>
           </table>
           <div class="card-content column is-12 px-6 pt-6">
-            <button
-              class="button is-warning"
-              @click="showEditPassword()"
-            >
+            <button class="button is-warning" @click="showEditPassword()">
               Change Password
             </button>
           </div>
@@ -36,7 +35,7 @@
           <hr style="background-color: rgb(3, 51, 35)" />
           <div class="field"></div>
 
-          <label class="label">Username: {{ userDetail.user_login }}</label>
+          <label class="label">Username:</label>
           <div class="control">
             <input
               class="input"
@@ -95,8 +94,14 @@
 
           <label class="label">Address:</label>
           <div class="control">
-            <input class="input" type="address" />
+            <input class="input" type="address" v-model="$v.address.$model"
+              :class="{ 'is-danger': $v.address.$error }"/>
           </div>
+          <template v-if="$v.address.$error">
+            <p class="help is-danger" v-if="!$v.address.required">
+              This field is required
+            </p>
+          </template>
 
           <label class="label">Phone:</label>
           <div class="control">
@@ -173,7 +178,7 @@
           </div>
 
           <div class="card-content column is-12 px-6 pt-6">
-            <button class="button is-success is-medium is-fullwidth">
+            <button class="button is-success is-medium is-fullwidth" @click="submit(userDetail[0].user_id)">
               Submit
             </button>
           </div>
@@ -205,7 +210,22 @@ export default {
   name: "ProfilePage",
   data() {
     return {
-      userDetail:[],
+      userDetail: [
+        {
+          address: "",
+          age: 0,
+          cafe_branchid: null,
+          email: "",
+          fname: "",
+          lname: "",
+          password: "",
+          phone: "",
+          user_id: 0,
+          user_login: "",
+          user_point: 0,
+          user_type: "",
+        },
+      ],
       username: "",
       password: "",
       confirm_password: "",
@@ -247,6 +267,9 @@ export default {
     confirm_password: {
       sameAs: sameAs("password"),
     },
+    address:{
+      required: required,
+    },
   },
   mounted() {
     this.getProfileDetail(this.$route.params.id);
@@ -268,6 +291,31 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    submit(userId) {
+      this.$v.$touch();
+
+      if (!this.$v.$invalid) {
+        let data = {
+          username: this.username,
+          password: this.password,
+          confirm_password: this.confirm_password,
+          email: this.email,
+          mobile: this.mobile,
+          first_name: this.first_name,
+          last_name: this.last_name,
+          address: this.address,
+        };
+
+        axios
+          .put(`http://localhost:3000/user/update/${userId}`, data)
+          .then(() => {
+            alert("Update Profile Success");
+          })
+          .catch((err) => {
+            alert(err.response.data.details.message);
+          });
+      }
     },
   },
 };

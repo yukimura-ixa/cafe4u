@@ -57,8 +57,7 @@ router.post("/cafe/add", async function (req, res, next) {
   await conn.beginTransaction();
   try {
     await conn.query(
-      "INSERT INTO cafe(cafe_location, cafe_name, cafe_desc, cafe_theme" +
-      "VALUES(?, ?, ?, ?);",
+      "INSERT INTO cafe(cafe_location, cafe_name, cafe_desc, cafe_theme VALUES(?, ?, ?, ?);",
       [cafe_location, cafe_name, cafe_desc, cafe_theme]
     );
 
