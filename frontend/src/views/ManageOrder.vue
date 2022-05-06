@@ -85,14 +85,14 @@
                       {{ order.order_datetime.substring(11, 19) }}<br />
                       <button
                         class="button is-info mr-2"
-                        v-if="order.order_status == 'in queue'"
+                        v-if="order.order_status == 'in queue' && user.user_type == 'employee'"
                         @click="doOrder($event, order)"
                       >
                         Do
                       </button>
                       <button
                         class="button is-outlined is-danger"
-                        v-if="order.order_status == 'in queue'"
+                        v-if="order.order_status == 'in queue'  && user.user_type == 'employee'"
                         @click="cancelOrder($event, order)"
                       >
                         Cancel
@@ -184,14 +184,14 @@
                       {{ order.order_datetime.substring(11, 19) }}<br />
                       <button
                         class="button is-success mr-2"
-                        v-if="order.order_status == 'pending'"
+                        v-if="order.order_status == 'pending'  && user.user_type == 'employee'"
                         @click="finishOrder($event, order)"
                       >
                         Finish
                       </button>
                       <button
                         class="button is-outlined is-danger"
-                        v-if="order.order_status == 'pending'"
+                        v-if="order.order_status == 'pending'  && user.user_type == 'employee'"
                         @click="cancelOrder($event, order)"
                       >
                         Cancel
@@ -283,14 +283,14 @@
                       {{ order.order_datetime.substring(11, 19) }}<br />
                       <button
                         class="button is-outlined is-success mr-2"
-                        v-if="order.order_status == 'finished'"
+                        v-if="order.order_status == 'finished'  && user.user_type == 'employee'"
                         @click="soldOrder($event, order)"
                       >
                         Sold
                       </button>
                       <button
                         class="button is-outlined is-danger"
-                        v-if="order.order_status == 'finished'"
+                        v-if="order.order_status == 'finished'  && user.user_type == 'employee'"
                         @click="cancelOrder($event, order)"
                       >
                         Cancel
@@ -510,21 +510,21 @@
             <div class="ml-auto">
               <button
                 class="button is-info mr-3"
-                v-if="currentOrder.order_status == 'in queue'"
+                v-if="currentOrder.order_status == 'in queue'  && user.user_type == 'employee'"
                 @click="doOrder($event, currentOrder)"
               >
                 Do
               </button>
               <button
                 class="button is-success mr-3"
-                v-if="currentOrder.order_status == 'pending'"
+                v-if="currentOrder.order_status == 'pending'  && user.user_type == 'employee'"
                 @click="finishOrder($event, currentOrder)"
               >
                 Finish
               </button>
               <button
                 class="button is-outlined is-success mr-3"
-                v-if="currentOrder.order_status == 'finished'"
+                v-if="currentOrder.order_status == 'finished'  && user.user_type == 'employee'"
                 @click="soldOrder($event, currentOrder)"
               >
                 Sold
@@ -532,8 +532,8 @@
               <button
                 class="button is-outlined is-danger"
                 v-if="
-                  currentOrder.order_status != 'cancelled' ||
-                  currentOrder.order_status != 'sold'
+                  (currentOrder.order_status != 'cancelled' ||
+                  currentOrder.order_status != 'sold') && user.user_type == 'employee'
                 "
                 @click="cancelOrder($event, currentOrder)"
               >
