@@ -47,6 +47,7 @@ router.post("/cafe/add", async function (req, res, next) {
     return res.status(400).send(err);
   }
 
+  const cafe_id = req.body.cafe_branchid;
   const cafe_location = req.body.cafe_location;
   const cafe_desc = req.body.cafe_desc;
   const cafe_name = req.body.cafe_name;
@@ -56,8 +57,8 @@ router.post("/cafe/add", async function (req, res, next) {
   await conn.beginTransaction();
   try {
     await conn.query(
-      "INSERT INTO cafe(cafe_location, cafe_name, cafe_desc, cafe_theme VALUES(?, ?, ?, ?);",
-      [cafe_location, cafe_name, cafe_desc, cafe_theme]
+      "INSERT INTO cafe(cafe_branchid, cafe_location, cafe_name, cafe_desc, cafe_theme) VALUES(?, ?, ?, ?, ?);",
+      [cafe_id, cafe_location, cafe_name, cafe_desc, cafe_theme]
     );
 
     await conn.commit();

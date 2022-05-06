@@ -398,21 +398,23 @@ export default {
     checkout() {
       if (this.cartProduct.length > 0) {
         axios
-          .post(`http://localhost:3000/add/order`, {
-            cafeId: this.cafeId,
-            product: this.cartProduct,
-            info: this.cart,
-            pro_id: this.cartPromotion,
-            totalprice: this.totalprice,
-          })
-          .then((response) => {
-            this.toReceipt = response.data.orderId;
-            this.$router.push({ path: "/receipt" });
-            this.openCart = false;
-          })
-          .catch((error) => {
-            this.error = error.response.data.message;
-          });
+        .post(`http://localhost:3000/add/order`, {cafeId:this.cafeId, product:this.cartProduct, info:this.cart, pro_id:this.cartPromotion, totalprice:this.totalprice})
+        .then((response) => {
+          this.toReceipt = response.data.orderId
+          this.$router.push({ path: "/receipt"})
+          this.openCart = false
+        })
+        .catch((error) => {
+          this.error = error.response.data.message;
+        });
+        axios
+        .put(`http://localhost:3000/cut/userpoint`, {pro_id:this.cartPromotion})
+        .then((response) => {
+          console.log(response.data.success)
+        })
+        .catch((error) => {
+          this.error = error.response.data.message;
+        });
       }
     },
     search(bool) {
@@ -476,7 +478,7 @@ export default {
       if (image[0] == null) {
         return "https://via.placeholder.com/128x128.png?text=Image";
       }
-      return image[0].image_path;
+      return 'http://localhost:3000'+image[0].image_path;
     },
     optionOf(product_id) {
       let product = this.cart.filter((each) => {

@@ -3,6 +3,9 @@
     <div class="columns is-centered">
       <div class="card is-10 column columns my-5" style="padding: 0">
         <div class="card-content column is-4 px-6 pt-6">
+          <router-link :to="'/'" class="mr-1 has-text-info">
+            <font-awesome-icon icon="fa-solid fa-angle-left" />
+          </router-link>
           <h1 class="title is-3 has-text-centered">Profile</h1>
           <hr style="background-color: rgb(3, 51, 35)" />
           <table style="width: 100%">
@@ -24,9 +27,14 @@
               <th>Email: {{ userDetail[0].email }}</th>
             </tr>
           </table>
-          <div class="card-content column is-12 px-6 pt-6">
-            <button class="button is-warning" @click="showEditPassword()">
-              Change Password
+          <div class="card-content column">
+            <button class="button is-info" @click="getDetail()">
+              Get Information of Profile
+            </button>
+          </div>
+          <div class="card-content column">
+            <button class="button is-warning" @click="clearDetail()">
+              Clear Information
             </button>
           </div>
         </div>
@@ -94,8 +102,12 @@
 
           <label class="label">Address:</label>
           <div class="control">
-            <input class="input" type="address" v-model="$v.address.$model"
-              :class="{ 'is-danger': $v.address.$error }"/>
+            <input
+              class="input"
+              type="address"
+              v-model="$v.address.$model"
+              :class="{ 'is-danger': $v.address.$error }"
+            />
           </div>
           <template v-if="$v.address.$error">
             <p class="help is-danger" v-if="!$v.address.required">
@@ -137,7 +149,7 @@
             <p class="help is-danger" v-if="!$v.email.email">Invalid Email</p>
           </template>
 
-          <div v-if="this.passwordToggle == true">
+          <div>
             <label class="label">Password:</label>
             <div class="control">
               <input
@@ -160,7 +172,7 @@
             </template>
           </div>
 
-          <div v-if="this.passwordToggle == true">
+          <div>
             <label class="label">Confirm Password</label>
             <div class="control">
               <input
@@ -178,7 +190,10 @@
           </div>
 
           <div class="card-content column is-12 px-6 pt-6">
-            <button class="button is-success is-medium is-fullwidth" @click="submit(userDetail[0].user_id)">
+            <button
+              class="button is-success is-medium is-fullwidth"
+              @click="submit(userDetail[0].user_id)"
+            >
               Submit
             </button>
           </div>
@@ -189,7 +204,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "@/plugins/axios";
 import {
   required,
   email,
@@ -234,7 +249,6 @@ export default {
       first_name: "",
       last_name: "",
       address: "",
-      passwordToggle: false,
     };
   },
   validations: {
@@ -267,7 +281,7 @@ export default {
     confirm_password: {
       sameAs: sameAs("password"),
     },
-    address:{
+    address: {
       required: required,
     },
   },
@@ -275,12 +289,23 @@ export default {
     this.getProfileDetail(this.$route.params.id);
   },
   methods: {
-    showEditPassword() {
-      if (this.passwordToggle == true) {
-        this.passwordToggle = false;
-      } else {
-        this.passwordToggle = true;
-      }
+    getDetail() {
+      this.username = this.userDetail[0].user_login;
+      this.email = this.userDetail[0].email;
+      this.mobile = this.userDetail[0].phone;
+      this.first_name = this.userDetail[0].fname;
+      this.last_name = this.userDetail[0].lname;
+      this.address = this.userDetail[0].address;
+    },
+    clearDetail() {
+      this.username = "";
+      this.email = "";
+      this.mobile = "";
+      this.first_name = "";
+      this.last_name = "";
+      this.address = "";
+      this.password = "";
+      this.confirm_password = "";
     },
     getProfileDetail(userId) {
       axios
@@ -299,7 +324,6 @@ export default {
         let data = {
           username: this.username,
           password: this.password,
-          confirm_password: this.confirm_password,
           email: this.email,
           mobile: this.mobile,
           first_name: this.first_name,
@@ -308,9 +332,11 @@ export default {
         };
 
         axios
-          .put(`http://localhost:3000/user/update/${userId}`, data)
+          .put(`http://localhost:3000/profile/update/${userId}`, data)
           .then(() => {
             alert("Update Profile Success");
+            this.getProfileDetail(this.$route.params.id);
+            this.clearDetail()
           })
           .catch((err) => {
             alert(err.response.data.details.message);

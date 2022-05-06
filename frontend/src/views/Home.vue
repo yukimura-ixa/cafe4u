@@ -27,7 +27,7 @@
     </section>
 
     <br />
-    <div class="container is-fluid mt-5 mb-6">
+    <div class="container is-fluid mt-5 mb-6" v-if="user.user_type == 'employee'">
       <div class="columns">
         <div class="card column is-2 is-offset-3">
           <router-link to="/addcafe"
@@ -37,6 +37,17 @@
           >
         </div>
         <div class="card column is-2 is-offset-2">
+          <router-link to="/promotion"
+            ><button class="button is-fullwidth">
+              Go To Promotion
+            </button></router-link
+          >
+        </div>
+      </div>
+    </div>
+    <div class="container is-fluid mt-5 mb-6" v-else>
+      <div class="columns">
+        <div class="card column is-2 is-offset-5">
           <router-link to="/promotion"
             ><button class="button is-fullwidth">
               Go To Promotion
@@ -170,13 +181,13 @@ export default {
       if (image[0] == null) {
         return "https://bulma.io/images/placeholders/640x480.png";
       }
-      return image[0].image_path;
+      return  'http://localhost:3000'+image[0].image_path;
     },
   },
   computed: {
     vfImages() {
       return this.image.map((ele) => {
-        return ele.image_path;
+        return 'http://localhost:3000'+ ele.image_path;
       });
     },
     cafeList() {
