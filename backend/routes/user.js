@@ -64,12 +64,13 @@ router.post('/user/signup', async (req, res, next) => {
 
     try {
         await conn.query(
-            'INSERT INTO user(user_login, password, fname, lname, age, address, phone, email, user_type, cafe_branchid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO user(user_login, password, fname, lname, age, address, phone, email, user_type, cafe_branchid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
             [username, password, first_name, last_name, age, address, mobile, email, user_type, cafe_branchid]
         )
-        conn.commit()
-        res.status(201).send()
+        conn.commit();
+        res.status(201).send();
     } catch (err) {
+        console.log(req.body);
         conn.rollback()
         res.status(400).json(err.toString());
     } finally {
