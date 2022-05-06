@@ -95,6 +95,7 @@ export default {
           this.cafe_desc = "";
           this.location = "";
           this.cafe_theme = "";
+          this.$router.push('/')
         })
         .catch((err) => {
           alert(err.response.data.details.message);

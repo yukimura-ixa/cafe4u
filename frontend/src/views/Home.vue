@@ -27,7 +27,7 @@
     </section>
 
     <br />
-    <div class="container is-fluid mt-5 mb-6" v-if="user.user_type == 'employee'">
+    <div class="container is-fluid mt-5 mb-6" v-if="isLoggedIn()">
       <div class="columns">
         <div class="card column is-2 is-offset-3">
           <router-link to="/addcafe"
@@ -156,6 +156,11 @@ export default {
     };
   },
   methods: {
+    isLoggedIn(){
+      if(!this.user) return false;
+      if(!this.user.user_type !== 'employee') return false
+      return true
+    },
     shortContent(content) {
       if (content.length > 150) {
         return content.substring(0, 147) + "...";

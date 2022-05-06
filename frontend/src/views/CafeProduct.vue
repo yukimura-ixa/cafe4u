@@ -476,7 +476,7 @@ export default {
     },
   },
   methods: {
-    isCafeEmployee(cafe){
+    isCafeEmployee(cafe) {
       if (!this.user) return false;
       if (this.user.user_type === "admin") return true;
       return cafe.cafe_branchid === this.user.cafe_branchid;
