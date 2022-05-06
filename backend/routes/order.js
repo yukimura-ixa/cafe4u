@@ -9,13 +9,14 @@ const orderOwner = async (req, res, next) => {
   if (req.user.user_type === 'employee') {
     return next()
   }
+  console.log('pass')
   const [[order]] = await pool.query('SELECT * FROM `order` WHERE order_id=?', [req.params.orderId])
   console.log(order)
   if (order.user_id !== req.user.user_id) {
     return res.status(403).send('You do not have permission to perform this action')
   }
-
-  next()
+  console.log('passh')
+  return next()
 }
 
 //Add Order
@@ -106,7 +107,7 @@ router.get("/orders/:user_id", async function (req, res, next) {
 
   try {
     let results = await conn.query(
-      "select * from `order` o join cafe using (cafe_branchid) join user u on (emp_id = u.user_id) left outer join promotion p using (pro_id) left outer join product p2 on (p.product_free = p2.product_id) where o.user_id = ?;",
+      "select * from `order` o join cafe using (cafe_branchid) left outer join user u on (emp_id = u.user_id) left outer join promotion p using (pro_id) left outer join product p2 on (p.product_free = p2.product_id) where o.user_id = ?;",
       [parseInt(req.params.user_id)]
     );
     let results2 = await conn.query(
@@ -147,7 +148,7 @@ router.get("/admin/orders/:cafeId", async function (req, res, next) {
   
     try {
       let results = await conn.query(
-        "select * from `order` o join cafe using (cafe_branchid) join user u on (emp_id = u.user_id) left outer join promotion p using (pro_id) left outer join product p2 on (p.product_free = p2.product_id) where o.cafe_branchid = ?;",
+        "select * from `order` o join cafe using (cafe_branchid) left outer join user u on (emp_id = u.user_id) left outer join promotion p using (pro_id) left outer join product p2 on (p.product_free = p2.product_id) where o.cafe_branchid = ?;",
         [parseInt(req.params.cafeId)]
       );
       let results2 = await conn.query(
@@ -180,7 +181,7 @@ router.get("/admin/orders/:cafeId", async function (req, res, next) {
 
 
 //Both Use
-router.put("/admin/orders/:orderId",isLoggedIn,orderOwner, async function (req, res, next) {
+router.put("/admin/orders/:orderId", async function (req, res, next) {
 
 
     const conn = await pool.getConnection();
