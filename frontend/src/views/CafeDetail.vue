@@ -1,35 +1,28 @@
 <template>
   <div style="background-color: rgb(78, 153, 110)">
     <section class="hero">
-      <Splide
-        class="is-fluid"
-        :options="{
-          cover: true,
-          type: 'loop',
-          heightRatio: 0.4,
-          autoplay: true,
-          arrows: false,
-        }"
+      <vue-flux
+        :options="{ autoplay: true }"
+        :images="vfImages"
+        :transitions="['slide']"
+        ref="slider"
       >
-        <SplideSlide>
-          <img
-            src="https://s.isanook.com/hm/0/rp/rc/w850h510/yatxacm1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL2htLzAvdWQvNC8yNDY0Ny96YWtrYWhvbWUuanBn.jpg"
-            alt="Sample 1"
-          />
-        </SplideSlide>
-        <SplideSlide>
-          <img
-            src="https://www.forfur.com/img/I78/t_7768_15834695551067208599.jpg"
-            alt="Sample 2"
-          />
-        </SplideSlide>
-        <SplideSlide>
-          <img
-            src="https://thejourneymoment.com/wp-content/uploads/2019/12/cover-cafe-no-text.jpg"
-            alt="Sample 2"
-          />
-        </SplideSlide>
-      </Splide>
+        <template v-slot:preloader>
+          <flux-preloader />
+        </template>
+
+        <template v-slot:controls>
+          <flux-controls />
+        </template>
+
+        <template v-slot:pagination>
+          <flux-pagination />
+        </template>
+
+        <template v-slot:index>
+          <flux-index />
+        </template>
+      </vue-flux>
     </section>
 
     <section class="container">
@@ -68,12 +61,12 @@
 
                 <div class="column">
                   <div class="field">
-                    <label class="label">พิกัด Google Map</label>
+                    <label class="label">ที่อยู่</label>
                     <div class="control">
                       <input
                         class="input"
                         type="text"
-                        placeholder="Google Map Coordinate"
+                        placeholder="Location"
                         v-model="editCafeLoc"
                       />
                     </div>
@@ -122,25 +115,25 @@
           <div class="level-item">
             <div class="buttons are-large">
               <router-link :to="`/cafe/${this.cafe.cafe_branchid}/product`">
-              <button class="button is-primary is-light is-outlined">
-                <font-awesome-icon
-                  icon="fa-solid fa-cart-shopping"
-                />สั่งเมนูเลย
-              </button>
+                <button class="button is-primary is-light is-outlined">
+                  <font-awesome-icon
+                    icon="fa-solid fa-cart-shopping"
+                  />สั่งเมนูเลย
+                </button>
               </router-link>
               <router-link :to="`/cafe/${this.cafe.cafe_branchid}/map`">
-              <button class="button is-link is-light is-outlined">
-                <font-awesome-icon icon="fa-solid fa-map-location-dot" />
-                ดูเส้นทางไปร้าน
-              </button>
+                <button class="button is-link is-light is-outlined">
+                  <font-awesome-icon icon="fa-solid fa-map-location-dot" />
+                  ดูเส้นทางไปร้าน
+                </button>
               </router-link>
             </div>
           </div>
         </div>
-        <div class="level-right" v-if="isCafeEmployee()">
+        <div class="level-right" v-if="isCafeEmployee(cafe)">
           <div class="level-item" v-if="!editCafeToggle">
-            <button 
-              @click="editCafeToggle = true"
+            <button
+              @click="editCafeInfo()"
               class="button is-warning is-light is-right is-outlined is-large"
             >
               <font-awesome-icon icon="fa-regular fa-pen-to-square" />
@@ -149,8 +142,8 @@
           </div>
 
           <div class="level-item" v-if="editCafeToggle">
-            <button 
-              @click="editCafeToggle = true"
+            <button
+              @click="openManageImg = true"
               class="button is-info is-light is-right is-outlined is-large"
             >
               <font-awesome-icon icon="fa-regular fa-image" />
@@ -159,8 +152,8 @@
           </div>
 
           <div class="level-item" v-if="editCafeToggle">
-            <button 
-              @click="editCafeToggle = true"
+            <button
+              @click="confirmUpdate()"
               class="button is-success is-light is-right is-outlined is-large"
             >
               <font-awesome-icon icon="fa-regular fa-floppy-disk" />
@@ -169,7 +162,7 @@
           </div>
 
           <div class="level-item" v-if="editCafeToggle">
-            <button 
+            <button
               @click="editCafeToggle = false"
               class="button is-right is-outlined is-large"
             >
@@ -199,33 +192,26 @@
                   </div>
                   <div class="column">
                     <div class="fa-2x">
-                      <template>
-                        <font-awesome-icon
-                          v-show="newStar <= 1"
-                          icon="fa-regular fa-star"
-                          @click="(newStarClicked = true), (newStar = 1)"
-                        />
-                        <font-awesome-icon
-                          v-show="newStar <= 2"
-                          icon="fa-regular fa-star"
-                          @click="(newStarClicked = true), (newStar = 2)"
-                        />
-                        <font-awesome-icon
-                          v-show="newStar <= 3"
-                          icon="fa-regular fa-star"
-                          @click="(newStarClicked = true), (newStar = 3)"
-                        />
-                        <font-awesome-icon
-                          v-show="newStar <= 4"
-                          icon="fa-regular fa-star"
-                          @click="(newStarClicked = true), (newStar = 4)"
-                        />
-                        <font-awesome-icon
-                          v-show="newStar < 5"
-                          icon="fa-regular fa-star"
-                          @click="(newStarClicked = true), (newStar = 5)"
-                        />
-                      </template>
+                      <font-awesome-icon
+                        icon="fa-regular fa-star"
+                        @click="newStar = 1"
+                      />
+                      <font-awesome-icon
+                        icon="fa-regular fa-star"
+                        @click="newStar = 2"
+                      />
+                      <font-awesome-icon
+                        icon="fa-regular fa-star"
+                        @click="newStar = 3"
+                      />
+                      <font-awesome-icon
+                        icon="fa-regular fa-star"
+                        @click="newStar = 4"
+                      />
+                      <font-awesome-icon
+                        icon="fa-regular fa-star"
+                        @click="newStar = 5"
+                      />
                       <span> {{ newStar }}</span>
                     </div>
                   </div>
@@ -239,7 +225,7 @@
                   <span class="icon is-small">
                     <font-awesome-icon icon="fa-solid fa-plus" />
                   </span>
-                  <span>รีวิว</span>
+                  <span>เพิ่มรีวิว</span>
                 </button>
               </div>
             </div>
@@ -248,7 +234,7 @@
           <div
             class="list-item"
             v-for="(review, index) in reviews"
-            :key="review.id"
+            :key="review.review_id"
           >
             <div class="list-item-content">
               <div class="columns is-vcentered" v-if="index === editToggle">
@@ -262,57 +248,52 @@
                 </div>
                 <div class="column">
                   <div class="fa-2x">
-                    <template>
-                      <font-awesome-icon
-                        v-show="newStar <= 1"
-                        icon="fa-regular fa-star"
-                        @click="(newStarClicked = true), (newStar = 1)"
-                      />
-                      <font-awesome-icon
-                        v-show="newStar <= 2"
-                        icon="fa-regular fa-star"
-                        @click="(newStarClicked = true), (newStar = 2)"
-                      />
-                      <font-awesome-icon
-                        v-show="newStar <= 3"
-                        icon="fa-regular fa-star"
-                        @click="(newStarClicked = true), (newStar = 3)"
-                      />
-                      <font-awesome-icon
-                        v-show="newStar <= 4"
-                        icon="fa-regular fa-star"
-                        @click="(newStarClicked = true), (newStar = 4)"
-                      />
-                      <font-awesome-icon
-                        v-show="newStar < 5"
-                        icon="fa-regular fa-star"
-                        @click="(newStarClicked = true), (newStar = 5)"
-                      />
-                    </template>
-                    <span> {{ newStar }}</span>
+                    <font-awesome-icon
+                      icon="fa-regular fa-star"
+                      @click="editStar = 1"
+                    />
+                    <font-awesome-icon
+                      icon="fa-regular fa-star"
+                      @click="editStar = 2"
+                    />
+                    <font-awesome-icon
+                      icon="fa-regular fa-star"
+                      @click="editStar = 3"
+                    />
+                    <font-awesome-icon
+                      icon="fa-regular fa-star"
+                      @click="editStar = 4"
+                    />
+                    <font-awesome-icon
+                      icon="fa-regular fa-star"
+                      @click="editStar = 5"
+                    />
+                    <span> {{ editStar }}</span>
                   </div>
                 </div>
               </div>
               <template v-else>
                 <div class="list-item-title">
-                  <template v-if="review.rating > 0">
-                    <template v-for="star in review.rating">
-                      <font-awesome-icon icon="fa-solid fa-star" :key="star" />
+                  <template v-if="review.review_score > 0">
+                    <template v-for="(star, index) in review.review_score">
+                      <font-awesome-icon icon="fa-solid fa-star" :key="index" />
                     </template>
-                    <template v-for="nostar in 5 - review.rating">
+                    <template
+                      v-for="(nostar, index) in 5 - review.review_score"
+                    >
                       <font-awesome-icon
                         icon="fa-regular fa-star"
-                        :key="nostar"
+                        :key="index"
                       />
                     </template>
                   </template>
                 </div>
-                <div class="list-item-title">{{ review.comment }}</div>
+                <div class="list-item-title">{{ review.review_comment }}</div>
                 <div class="list-item-description">
-                  {{ review.review_user }}
+                  {{ review.fname + " " + review.lname }}
                 </div>
                 <div class="is-size-7 subtitle">
-                  {{ review.datetime }}
+                  {{ new Date(review.review_datetime).toLocaleString() }}
                 </div>
               </template>
             </div>
@@ -320,14 +301,14 @@
             <div class="list-item-controls" v-if="isReviewOwner(review)">
               <div class="buttons is-right">
                 <template v-if="index === editToggle">
-                  <button class="button">
+                  <button @click="confirmUpdateReview(review)" class="button">
                     <span class="icon is-small">
                       <font-awesome-icon icon="fa-regular fa-floppy-disk" />
                     </span>
                     <span>บันทึก</span>
                   </button>
 
-                  <button class="button">
+                  <button @click="deleteReview(review)" class="button">
                     <span class="icon is-small">
                       <font-awesome-icon icon="fa-solid fa-xmark" />
                     </span>
@@ -349,9 +330,11 @@
 
                 <button
                   class="button"
+                  v-if="editToggle == -1"
                   @click="
                     editToggle = index;
-                    editComment = review.comment;
+                    editComment = review.review_comment;
+                    editStar = review.review_score;
                   "
                 >
                   <span class="icon is-small">
@@ -365,19 +348,84 @@
         </div>
       </div>
     </section>
+
+    <div
+      class="modal"
+      :class="{ 'is-active': openManageImg }"
+      style="z-index: 100000"
+    >
+      <div @click="openManageImg = false" class="modal-background"></div>
+      <div class="modal-card" style="width: 90%">
+        <header class="modal-card-head">
+          <p class="modal-card-title">จัดการรูปภาพ</p>
+          <button
+            @click="openManageImg = false"
+            class="delete"
+            aria-label="close"
+          ></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="columns is-multiline">
+            <div
+              class="column is-4"
+              v-for="(image, index) in images"
+              :key="image.image_id"
+            >
+              <figure class="image is-5by3">
+                <img :src="'http://localhost:3000' + image.image_path" />
+              </figure>
+              <div class="buttons mt-3 is-centered">
+                <button @click="deleteImage(index)" class="button is-danger">
+                  ลบรูป
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="modal-card-foot">
+          <div class="file">
+            <label class="file-label">
+              <input
+                multiple
+                class="file-input"
+                type="file"
+                @change="onFileChange"
+              />
+              <span class="file-cta">
+                <span class="file-icon">
+                  <font-awesome-icon icon="fa-solid fa-upload" />
+                </span>
+                <span class="file-label"> อัพโหลดรูป </span>
+              </span>
+            </label>
+          </div>
+        </footer>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { Splide, SplideSlide } from "@splidejs/vue-splide";
-import axios from "axios";
+import {
+  VueFlux,
+  FluxControls,
+  FluxIndex,
+  FluxPagination,
+  FluxPreloader,
+} from "vue-flux";
+import axios from "@/plugins/axios";
+// import axios from 'axios';
 
 export default {
   name: "CafePage",
   props: ["user", "cart"],
   components: {
-    Splide,
-    SplideSlide,
+    VueFlux,
+    FluxControls,
+    FluxIndex,
+    FluxPagination,
+    FluxPreloader,
   },
   data() {
     return {
@@ -390,22 +438,31 @@ export default {
       newStar: 0,
       newStarClicked: false,
 
-      isEmployee: true,
       editCafeToggle: false,
       editCafeName: "",
       editCafeDesc: "",
       editCafeLoc: "",
       editCafeTheme: "",
+      openManageImg: false,
+      editStar: 0,
     };
   },
   mounted() {
     this.getCafe(this.$route.params.id);
   },
   computed: {
+    vfImages() {
+      if (this.images.length > 0) {
+        return this.images.map((ele) => {
+          return "http://localhost:3000" + ele.image_path.replaceAll("\\", "/");
+        });
+      }
+      return ["https://via.placeholder.com/1280x728.png?text=ImageNotFound"];
+    },
     averageRating() {
       if (this.reviews.length > 0) {
         return (
-          this.reviews.reduce((prev, next) => prev + next.rating, 0) /
+          this.reviews.reduce((prev, next) => prev + next.review_score, 0) /
           this.reviews.length
         ).toFixed(1);
       }
@@ -413,12 +470,81 @@ export default {
     },
   },
   methods: {
+    deleteReview(review) {
+      if (confirm("ต้องการลบรีวิวนี้หรือไม่")) {
+        axios
+          .delete(`http://localhost:3000/cafe/review/${review.review_id}`)
+          .then((res) => {
+            console.log(res);
+            this.editToggle = -1;
+            this.$notify({ group: "app", text: "บันทึกการแก้ไขแล้ว" });
+            this.$router.go();
+          })
+          .catch((err) => {
+            this.error = err.response.data.message;
+            this.$notify({ group: "danger", text: this.error });
+          });
+      }
+    },
+    confirmUpdateReview(review) {
+      axios
+        .put(`http://localhost:3000/cafe/review/${review.review_id}`, {
+          comment: this.editComment,
+          score: this.editStar,
+        })
+        .then((res) => {
+          this.editToggle = -1;
+          console.log(res);
+          this.$notify({ group: "app", text: "บันทึกการแก้ไขแล้ว" });
+          this.$router.go();
+        })
+        .catch((err) => {
+          this.error = err.response.data.message;
+          this.$notify({ group: "danger", text: this.error });
+        });
+    },
+    confirmUpdate() {
+      const data = {
+        name: this.editCafeName,
+        desc: this.editCafeDesc,
+        location: this.editCafeLoc,
+        theme: this.editCafeTheme,
+      };
+      axios
+        .put(`http://localhost:3000/cafe/${this.cafe.cafe_branchid}`, data)
+        .then(() => {
+          this.cafe.cafe_name = this.editCafeName;
+          this.cafe.cafe_desc = this.editCafeDesc;
+          this.cafe.cafe_location = this.editCafeLoc;
+          this.cafe.cafe_theme = this.editCafeTheme;
+          this.editCafeToggle = false;
+          this.$notify({ group: "app", text: "บันทึกการแก้ไขแล้ว" });
+        })
+        .catch((err) => {
+          this.error = err.response.data.message;
+          this.$notify({ group: "danger", text: this.error });
+        });
+    },
+    editCafeInfo() {
+      this.editCafeToggle = true;
+      this.editCafeName = this.cafe.cafe_name;
+      this.editCafeDesc = this.cafe.cafe_desc;
+      this.editCafeLoc = this.cafe.cafe_location;
+      this.editCafeTheme = this.cafe.cafe_theme;
+    },
     isReviewOwner(review) {
       if (!this.user) return false;
       if (this.user.user_type === "admin") return true;
       return review.user_id === this.user.user_id;
     },
-    isCafeEmployee() { return true},
+    isCafeEmployee(cafe) {
+      if (!this.user) return false;
+      if (this.user.user_type === "admin") return true;
+      return (
+        cafe.cafe_branchid === this.user.cafe_branchid &&
+        this.user.user_type == "employee"
+      );
+    },
     getCafe(cafe_id) {
       axios
         .get(`http://localhost:3000/cafe/${cafe_id}`)
@@ -429,17 +555,73 @@ export default {
         })
         .catch((err) => {
           this.error = err.response.data.message;
+          this.$notify({ group: "danger", text: this.error });
         });
     },
     addComment() {
-      this.reviews.push({
-        id: this.reviews.length + 1,
+      let review = {
         comment: this.newComment,
-        rating: this.newStar,
-        review_user: "this.user",
-        datetime: new Date(),
+        score: this.newStar,
+      };
+
+      axios
+        .post(
+          `http://localhost:3000/cafe/${this.cafe.cafe_branchid}/review`,
+          review
+        )
+        .then(() => {
+          this.$router.go();
+          this.newComment = "";
+          this.$notify({ group: "app", text: "เพิ่มรีวิวของคุณแล้ว" });
+        })
+        .catch((err) => {
+          this.error = err.response.data.message;
+          this.$notify({ group: "danger", text: this.error });
+        });
+    },
+    onFileChange(e) {
+      const file = e.target.files;
+      console.log(file);
+      let formData = new FormData();
+      file.forEach((element) => {
+        formData.append("cafeImage", element);
       });
-      this.newComment = "";
+      axios
+        .post(
+          `http://localhost:3000/image/${this.cafe.cafe_branchid}`,
+          formData
+        )
+        // eslint-disable-next-line
+        .then((res) => {
+          this.$router.go();
+          this.$notify({
+            group: "app",
+            text: `อัพโหลด ${file.length} รูปแล้ว`,
+          });
+        })
+        .catch((err) => {
+          this.error = err.response.data.message;
+          this.$notify({ group: "danger", text: this.error });
+        });
+    },
+    deleteImage(index) {
+      if (confirm("คุณจะลบรูปนี้หรือใหม่")) {
+        let delImg = this.images[index].image_id;
+        axios
+          .delete(`http://localhost:3000/image/${delImg}`)
+          // eslint-disable-next-line
+          .then((res) => {
+            this.images.splice(index, 1);
+            this.$notify({
+              group: "app",
+              text: `ลบรูปแล้ว`,
+            });
+          })
+          .catch((err) => {
+            this.error = err.response.data.message;
+            this.$notify({ group: "danger", text: this.error });
+          });
+      }
     },
   },
 };

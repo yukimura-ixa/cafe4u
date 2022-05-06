@@ -23,6 +23,8 @@ const receiptRouter = require('./routes/receipt')
 const promotionRouter = require('./routes/promotion')
 const profileRouter = require('./routes/profile')
 const cartRouter = require('./routes/cart')
+const commentRouter = require('./routes/comment')
+const imageRouter = require('./routes/image')
 
 
 app.use(indexRouter.router)
@@ -35,6 +37,8 @@ app.use(receiptRouter.router)
 app.use(promotionRouter.router)
 app.use(profileRouter.router)
 app.use(cartRouter.router)
+app.use(commentRouter.router)
+app.use(imageRouter.router)
 
 app.listen(3000, () => {
   console.log(`Example app listening at http://localhost:3000`)

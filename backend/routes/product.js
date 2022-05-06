@@ -1,6 +1,5 @@
 const express = require("express");
 const pool = require("../config");
-const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
 
@@ -22,18 +21,21 @@ router = express.Router();
 
 router.get("/cafe/:id/product", function (req, res, next) {
   const promise1 = pool.query(
-    "SELECT * FROM product left outer join image using (product_id) WHERE product.cafe_id=?",
+    "SELECT * FROM product WHERE cafe_id=?",
     [req.params.id]
   );
   const promise2 = pool.query("SELECT * FROM cafe WHERE cafe_branchid=?", [
     req.params.id,
   ]);
+  const promise3 = pool.query("SELECT * FROM image WHERE cafe_id=?", [req.params.id])
 
-  Promise.all([promise1, promise2])
+  Promise.all([promise1, promise2, promise3])
     .then((results) => {
       const [products, blogFields] = results[0];
       const [cafe, cafeFields] = results[1];
+      const [images, imgFields] = results[2];
       res.json({
+        images: images,
         products: products,
         cafe: cafe[0],
         error: null,

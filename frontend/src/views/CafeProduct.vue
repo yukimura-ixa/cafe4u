@@ -12,7 +12,7 @@
                 <font-awesome-icon icon="fa-solid fa-angle-left" />
               </a>
               {{ cafe.cafe_name }}
-              <span class="is-pulled-right" v-if="isEmployee">
+              <span class="is-pulled-right" v-if="isCafeEmployee(cafe)">
                 <button
                   class="button is-primary"
                   @click="addProductModalToggle = true"
@@ -62,7 +62,7 @@
           </li>
 
           <li
-            v-if="isEmployee"
+            v-if="isCafeEmployee(cafe)"
             :class="{ 'is-active': showType === 'option' }"
             @click="showType = 'option'"
           >
@@ -95,7 +95,9 @@
               <div class="card-image">
                 <figure class="image is-4by3">
                   <img
-                    :src="'http://localhost:3000' + product.image_path"
+                    :src="
+                      'http://localhost:3000' + showImage(product.product_id)
+                    "
                     alt="Placeholder image"
                     onerror="this.onerror=null; this.src='https://bulma.io/images/placeholders/640x480.png'"
                   />
@@ -183,14 +185,14 @@
                 <a
                   @click="addToCart(product)"
                   class="card-footer-item has-background-success has-text-white"
-                  v-if="!isEmployee"
+                  v-if="!isCafeEmployee(cafe)"
                 >
                   <span class="icon is-small mr-1"
                     ><font-awesome-icon icon="fa-solid fa-cart-plus" /></span
                   ><span>เพิ่มเข้าตะกร้า</span></a
                 >
 
-                <template v-if="isEmployee && editToggle === index">
+                <template v-if="isCafeEmployee(cafe) && editToggle === index">
                   <a
                     @click="confirmUpdate(product)"
                     class="
@@ -210,7 +212,7 @@
                   >
                 </template>
 
-                <template v-else-if="isEmployee">
+                <template v-else-if="isCafeEmployee(cafe)">
                   <a
                     @click="editProduct(index, product)"
                     class="
@@ -362,7 +364,9 @@
                 <figure class="image is-64x64">
                   <img
                     class="is-rounded"
-                    :src="'http://localhost:3000' + option.image_path"
+                    :src="
+                      'http://localhost:3000' + showImage(option.product_id)
+                    "
                     onerror="this.onerror=null; this.src='https://via.placeholder.com/128x128.png?text=Image'"
                   />
                 </figure>
@@ -378,20 +382,40 @@
                 <p>{{ option.product_price }}฿</p>
               </div>
 
-              <label class="checkbox">
-                <input
-                  type="checkbox"
-                  :value="option.product_id"
-                  v-model="selectedOptions"
-                />
-              </label>
+              <div class="control">
+                <label class="radio">
+                  <input
+                    type="radio"
+                    :value="option.product_id"
+                    v-model="selectedOption"
+                  />
+                </label>
+              </div>
             </div>
           </template>
-          <div class="buttons is-right mt-3">
-            <button class="button is-success" @click="confirmAddDrink()">
-              เพิ่มเข้าตะกร้า
-            </button>
-            <button class="button" @click="cancelAddDrink()">ยกเลิก</button>
+
+          <div class="columns">
+            <div class="column is-3">
+              <div class="field">
+                <label class="label">จำนวน</label>
+                <div class="control">
+                  <input
+                    class="input"
+                    type="number"
+                    v-model.number="productQuantity"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="column">
+              <div class="buttons is-right mt-3">
+                <button class="button is-success" @click="confirmAddDrink()">
+                  เพิ่มเข้าตะกร้า
+                </button>
+                <button class="button" @click="cancelAddDrink()">ยกเลิก</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -428,24 +452,19 @@ export default {
       editToggle: -1,
 
       showType: "drink",
-      isEmployee: false,
 
       addDrinkClicked: false,
       selectedProduct: null,
-      selectedOptions: [],
+      selectedOption: null,
+      productQuantity: 1,
 
       products: [],
+      images: [],
       cafe: {},
 
       error: null,
     };
   },
-  // validation: {
-  //   newProductPrice: {
-  //     required,
-
-  //   }
-  // },
   mounted() {
     this.getProducts(this.$route.params.id);
   },
@@ -457,12 +476,18 @@ export default {
     },
   },
   methods: {
+    isCafeEmployee(cafe){
+      if (!this.user) return false;
+      if (this.user.user_type === "admin") return true;
+      return cafe.cafe_branchid === this.user.cafe_branchid;
+    },
     getProducts(cafe_id) {
       axios
         .get(`http://localhost:3000/cafe/${cafe_id}/product/`)
         .then((res) => {
           this.products = res.data.products;
           this.cafe = res.data.cafe;
+          this.images = res.data.images;
         })
         .catch((err) => {
           this.error = err.response.data.message;
@@ -473,11 +498,43 @@ export default {
       if (!this.user) {
         this.$notify({ group: "danger", text: "กรุณาเข้าสู่ระบบก่อนสั่งซื้อ" });
       } else {
+        this.selectedProduct = product;
         if (product.product_type === "drink") {
           this.addDrinkClicked = true;
-          this.selectedProduct = product;
+        } else {
+          const cartItem = {
+            product_id: this.selectedProduct.product_id,
+            quantity: this.productQuantity,
+            option: null,
+          };
+          this.addSessionCart(cartItem);
         }
       }
+    },
+    addSessionCart(cartItem) {
+      var sessionCart = JSON.parse(sessionStorage.getItem("cart"));
+      var addCart = [];
+      if (sessionCart !== null) {
+        addCart = sessionCart;
+        var flag = false;
+        for (let index = 0; index < addCart.length; index++) {
+          if (addCart[index].product_id == cartItem.product_id) {
+            // addCart[index].quantity += cartItem.quantity;
+            flag = true;
+          }
+        }
+        if (!flag) {
+          addCart.push(cartItem);
+        } else {
+          this.$notify({ group: "danger", text: "ไม่สามารถเพิ่มสินค้าซำได้" });
+        }
+      } else {
+        addCart.push(cartItem);
+      }
+
+      sessionStorage.setItem("cart", JSON.stringify(addCart));
+      this.$emit("myCart");
+      this.$notify({ group: "app", text: "เพิ่มเข้าตะกร้าสินค้าแล้ว" });
     },
     confirmUpdate(product) {
       let formData = new FormData();
@@ -504,26 +561,18 @@ export default {
     },
     confirmAddDrink() {
       const cartItem = {
-        drink: this.selectedProduct,
-        options: this.selectedOptions,
+        product_id: this.selectedProduct.product_id,
+        quantity: this.productQuantity,
+        option: this.selectedOption,
       };
-      var sessionCart = JSON.parse(sessionStorage.getItem("cart"));
-      var addCart = [];
-      if (sessionCart !== null) {
-        addCart = sessionCart;
-        addCart.push(cartItem);
-      } else {
-        addCart.push(cartItem);
-      }
-      // console.log(addCart);
-      sessionStorage.setItem("cart", JSON.stringify(addCart));
-      this.$notify({ group: "app", text: "เพิ่มเข้าตะกร้าสินค้าแล้ว" });
+      this.addSessionCart(cartItem);
       this.cancelAddDrink();
     },
     cancelAddDrink() {
       this.addDrinkClicked = false;
       this.selectedProduct = null;
-      this.selectedOptions = [];
+      this.selectedOption = null;
+      this.productQuantity = 1;
     },
     deleteProduct(product) {
       if (confirm(`ต้องการจะลบสินค้า ${product.product_name} หรือไม่?`)) {
@@ -592,6 +641,15 @@ export default {
       this.newProductType = "";
       this.newProductImage = null;
       this.previewImg = null;
+    },
+    showImage(product_id) {
+      let image = this.images.filter((each) => {
+        return each.product_id == product_id;
+      });
+      if (image[0] == null) {
+        return "https://via.placeholder.com/640x480.png?text=Image";
+      }
+      return image[0].image_path;
     },
   },
 };
