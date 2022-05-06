@@ -53,7 +53,11 @@
                 </div>
 
                 <footer class="card-footer">
-                  <a href="#" class="card-footer-item">ดูร้าน</a>
+                  <router-link
+                    class="card-footer-item"
+                    :to="`/cafe/${cafe.cafe_branchid}`"
+                    >ดูร้าน</router-link
+                  >
                 </footer>
               </div>
             </div>
