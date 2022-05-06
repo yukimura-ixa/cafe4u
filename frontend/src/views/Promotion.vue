@@ -172,8 +172,10 @@
       <div class="card column is-2 is-offset-2 m-2">
         <label class="label">Start Promotion Date</label>
         <input type="date" v-model="Newstart_date" />
+        <p class="help is-danger">***This field is required***</p>
         <label class="label">Stop Promotion Date</label>
         <input type="date" v-model="Newstop_date" />
+        <p class="help is-danger">***This field is required***</p>
       </div>
 
       <div class="card column is-4 m-2">
@@ -184,6 +186,7 @@
             placeholder="Promotion Detail"
             v-model="newproDetail"
           />
+          <p class="help is-danger">***This field is required***</p>
         </div>
       </div>
 
@@ -207,6 +210,7 @@
         />
         <label class="label">Product Count Need</label>
         <input class="input" placeholder="1-9" v-model="addProductCountNeed" />
+        <p class="help is-danger">***This field is required***</p>
       </div>
 
       <div class="card column is-2 m-2" v-else-if="this.type == 'point'">
@@ -214,6 +218,7 @@
         <input class="input" placeholder="Discount" v-model="addDiscount" />
         <label class="label">Need Point</label>
         <input class="input" placeholder="Point" v-model="addNeedPoint" />
+        <p class="help is-danger">***This field is required***</p>
       </div>
 
       <div
@@ -224,6 +229,7 @@
         <input class="input" placeholder="Discount" v-model="addDiscount" />
         <label class="label">Need Price</label>
         <input class="input" placeholder="Price" v-model="addNeedPirce" />
+        <p class="help is-danger">***This field is required***</p>
       </div>
 
       <div class="card column is-2 m-2" v-else>
@@ -233,6 +239,7 @@
         <input class="input" placeholder="1-9" v-model="addBuyCountNeed" />
         <label class="label">Product ID</label>
         <input class="input" placeholder="Product ID" v-model="addProductId" />
+        <p class="help is-danger">***This field is required***</p>
       </div>
 
       <div class="card-content column is-2 m-2">
