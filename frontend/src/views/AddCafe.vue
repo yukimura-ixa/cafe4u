@@ -14,6 +14,7 @@
               <div class="control">
                 <input v-model="cafe_name" class="input" type="text" />
               </div>
+              <p class="help is-danger">***This field is required***</p>
             </div>
 
             <div class="field">
@@ -21,6 +22,7 @@
               <div class="control">
                 <input v-model="location" class="input" type="text" />
               </div>
+              <p class="help is-danger">***This field is required***</p>
             </div>
 
             <div class="field">
@@ -28,12 +30,14 @@
               <div class="control">
                 <input v-model="cafe_theme" class="input" type="text" />
               </div>
+              <p class="help is-danger">***This field is required***</p>
             </div>
             <div class="field">
               <label class="label">Theme Describe</label>
               <div class="control">
                 <textarea v-model="cafe_desc" class="textarea" type="text" />
               </div>
+              <p class="help is-danger">***This field is required***</p>
             </div>
 
             <button
