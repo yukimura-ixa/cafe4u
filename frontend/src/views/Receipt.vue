@@ -123,18 +123,20 @@
           <p class="ml-5 mt-5">Promotion Used: {{ order.pro_detail }}</p>
         </div>
 
-        <div class="column">
-          EEE
-          <!-- MAP HERE -->
-        </div>
+        
       </div>
       <footer class="card-footer">
-        <p class="card-footer-item">
-          <span> to Menu </span>
-        </p>
-        <p class="card-footer-item">
+        <router-link to="/" class="card-footer-item">
+          <a >
+            <span> to Home </span>
+          </a>
+        </router-link>
+        <router-link to="/order" class="card-footer-item">
+          <a>
           <span> to OrderHistory </span>
-        </p>
+          </a>
+        </router-link>
+        
       </footer>
     </div>
   </div>
