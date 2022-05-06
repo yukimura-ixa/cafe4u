@@ -121,12 +121,12 @@
                   />สั่งเมนูเลย
                 </button>
               </router-link>
-              <!-- <router-link :to="`/cafe/${this.cafe.cafe_branchid}/map`">
+              <router-link :to="`/admin/order/${this.cafe.cafe_branchid}`" v-if="isCafeEmployee(cafe)">
                 <button class="button is-link is-light is-outlined">
-                  <font-awesome-icon icon="fa-solid fa-map-location-dot" />
-                  ดูเส้นทางไปร้าน
+                  <font-awesome-icon icon="fa-solid fa-list" />
+                  จัดการออเดอร์
                 </button>
-              </router-link> -->
+              </router-link>
             </div>
           </div>
         </div>

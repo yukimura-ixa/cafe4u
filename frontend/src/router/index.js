@@ -40,11 +40,6 @@ const routes = [
     component: () => import('../views/SearchPage.vue')
   },
   {
-    path: '/cafe/:id/map',
-    name: 'map',
-    component: () => import('../views/CafeMap.vue')
-  },
-  {
     path: '/promotion',
     name: 'promotion',
     component: () => import('../views/Promotion.vue')

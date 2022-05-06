@@ -238,7 +238,7 @@
 </template>
 
 <script>
-import axios from "@/plugins/axios";
+import axios from "axios";
 import {
   required,
   email,
@@ -295,7 +295,7 @@ export default {
     },
     age: {
       required,
-      ageNbranchid,
+      ageNbranchid: ageNbranchid,
       maxLength: maxLength(2),
     },
     mobile: {
@@ -314,8 +314,7 @@ export default {
       required: required,
     },
     cafe_branchid: {
-      required,
-      ageNbranchid,
+      ageNbranchid: ageNbranchid,
       maxLength: maxLength(2),
     },
   },
