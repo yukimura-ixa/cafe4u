@@ -11,7 +11,7 @@ const pool = mysql.createPool({
   //database: 'cafewebpro', //Art DB
 
   password: '', //Nook DB
-  database: 'test', //Nook DB
+  database: 'test2', //Nook DB
   
   waitForConnections: true,
   connectionLimit: 10,
