@@ -5,6 +5,19 @@ const { isLoggedIn } = require('../middlewares');
 
 router = express.Router();
 
+const orderOwner = async (req, res, next) => {
+  if (req.user.user_type === 'employee') {
+    return next()
+  }
+  const [[order]] = await pool.query('SELECT * FROM `order` WHERE order_id=?', [req.params.orderId])
+  console.log(order)
+  if (order.user_id !== req.user.user_id) {
+    return res.status(403).send('You do not have permission to perform this action')
+  }
+
+  next()
+}
+
 //Add Order
 router.put("/cut/userpoint", isLoggedIn, async function (req, res, next) {
   // Begin transaction
@@ -167,7 +180,7 @@ router.get("/admin/orders/:cafeId", async function (req, res, next) {
 
 
 //Both Use
-router.put("/admin/orders/:orderId", async function (req, res, next) {
+router.put("/admin/orders/:orderId",isLoggedIn,orderOwner, async function (req, res, next) {
 
 
     const conn = await pool.getConnection();
