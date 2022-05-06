@@ -67,4 +67,29 @@ router.get("/cafe", async function (req, res, next) {
   }
 });
 
+router.put("/cafe/:id", async function (req, res, next) {
+  const cafe_location = req.body.location;
+  const cafe_desc = req.body.desc;
+  const cafe_name = req.body.name;
+  const cafe_theme = req.body.theme;
+
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  try {
+    const [update, u] = await conn.query(
+      "UPDATE cafe SET cafe_location =?, cafe_desc = ?, cafe_name=?, cafe_theme =? WHERE cafe_branchid = ?",
+      [cafe_location, cafe_desc, cafe_name, cafe_theme, req.params.id]
+    );
+
+    await conn.commit();
+    res.send("success!");
+  } catch (err) {
+    await conn.rollback();
+    return res.status(400).json(err);
+  } finally {
+    conn.release();
+  }
+});
+
 exports.router = router;
