@@ -1,6 +1,9 @@
 <template>
   <div class="container is-fluid mt-5 mb-6">
     <div class="card column is-12 px-6 pt-6">
+      <router-link :to="'/'" class="mr-1 has-text-info">
+        <font-awesome-icon icon="fa-solid fa-angle-left" />
+      </router-link>
       <h1 class="title is-3 has-text-centered">Promotion</h1>
       <hr style="background-color: rgb(3, 51, 35)" />
 

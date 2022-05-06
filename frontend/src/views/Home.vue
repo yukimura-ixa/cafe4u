@@ -187,7 +187,7 @@ export default {
   computed: {
     vfImages() {
       return this.image.map((ele) => {
-        return ele.image_path;
+        return 'http://localhost:3000'+ ele.image_path;
       });
     },
     cafeList() {
