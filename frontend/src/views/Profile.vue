@@ -331,8 +331,6 @@ export default {
           address: this.address,
         };
 
-        console.log(data);
-
         axios
           .put(`http://localhost:3000/profile/update/${userId}`, data)
           .then(() => {
