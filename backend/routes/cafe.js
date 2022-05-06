@@ -1,6 +1,5 @@
 const express = require("express");
 const pool = require("../config");
-const Joi = require("joi");
 
 router = express.Router();
 
@@ -33,20 +32,8 @@ router.get("/cafe/:id", function (req, res, next) {
     });
 });
 
-const cafeSchema = Joi.object({
-  cafe_name: Joi.string().required(),
-  cafe_desc: Joi.string().required(),
-  cafe_location: Joi.string().required(),
-  cafe_theme: Joi.string().required(),
-});
 
 router.post("/cafe/add", async function (req, res, next) {
-  try {
-    await cafeSchema.validateAsync(req.body, { abortEarly: false });
-  } catch (err) {
-    return res.status(400).send(err);
-  }
-
   const cafe_id = req.body.cafe_branchid;
   const cafe_location = req.body.cafe_location;
   const cafe_desc = req.body.cafe_desc;
@@ -71,28 +58,12 @@ router.post("/cafe/add", async function (req, res, next) {
   }
 });
 
-router.put("/cafe/:id", async function (req, res, next) {
-  const cafe_location = req.body.location;
-  const cafe_desc = req.body.desc;
-  const cafe_name = req.body.name;
-  const cafe_theme = req.body.theme;
-
-  const conn = await pool.getConnection();
-  await conn.beginTransaction();
-
+router.get("/cafe", async function (req, res, next) {
   try {
-    const [update, u] = await conn.query(
-      "UPDATE cafe SET cafe_location =?, cafe_desc = ?, cafe_name=?, cafe_theme =? WHERE cafe_branchid = ?",
-      [cafe_location, cafe_desc, cafe_name, cafe_theme, req.params.id]
-    );
-
-    await conn.commit();
-    res.send("success!");
+      const [rows, fields] = await pool.query('SELECT * FROM cafe');
+      return res.json(rows);
   } catch (err) {
-    await conn.rollback();
-    return res.status(400).json(err);
-  } finally {
-    conn.release();
+      return res.status(500).json(err)
   }
 });
 
