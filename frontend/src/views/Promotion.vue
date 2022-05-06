@@ -30,8 +30,18 @@
                 class="list-item-description"
                 v-if="editToggle != pro.pro_id"
               >
-                Start At {{ new Date(Date.parse(pro.start_date)) }}<br />
-                End At {{ new Date(Date.parse(pro.expired_date)) }}
+                Start At
+                {{
+                  new Date(Date.parse(pro.start_date))
+                    .toLocaleString()
+                    .substring(0, 10)
+                }}<br />
+                End At
+                {{
+                  new Date(Date.parse(pro.expired_date))
+                    .toLocaleString()
+                    .substring(0, 10)
+                }}
               </div>
               <div class="list-item-description" v-else>
                 <label class="label">Start Promotion Date</label>
@@ -39,23 +49,10 @@
                 <label class="label">Stop Promotion Date</label>
                 <input type="date" v-model="stop_date" />
               </div>
-              <div
-                class="list-item-description"
-                v-if="editToggle != pro.pro_id"
-              >
+              <div class="list-item-description">
                 <label class="label"
                   >Type of Promotion: {{ pro.pro_type }}</label
                 >
-              </div>
-              <div class="list-item-description" v-else>
-                <div class="select">
-                  <select v-model="newType">
-                    <option>free</option>
-                    <option>point</option>
-                    <option>price_get_discount</option>
-                    <option>product_get_discount</option>
-                  </select>
-                </div>
               </div>
 
               <div
@@ -140,7 +137,7 @@
                   class="input"
                   placeholder="Product ID"
                   v-if="pro.pro_type == 'product_get_discount'"
-                  v-model="product_id"
+                  v-model="productId"
                 />
               </div>
             </div>
@@ -148,7 +145,7 @@
               <div class="buttons is-right">
                 <button
                   class="button is-success"
-                  @click="saveEditPromotion(pro.pro_id)"
+                  @click="saveEditPromotion(pro.pro_id, pro.pro_type)"
                   v-if="user.user_type == 'employee'"
                 >
                   <span>Edit</span>
@@ -268,7 +265,7 @@ export default {
       need_point: null,
       need_price: null,
       buy_count_need: null,
-      product_id: null,
+      productId: null,
       newType: "free",
       addProductFreeId: null,
       addProductCountNeed: null,
@@ -306,8 +303,10 @@ export default {
       this.addProductId = "";
       this.type = "free";
       this.newproDetail = "";
+      this.Newstart_date = "";
+      this.Newstop_date = "";
     },
-    saveEditPromotion(proId) {
+    saveEditPromotion(proId, type) {
       let selectedPromotion = this.promotionList.filter(
         (e) => e.pro_id === proId
       )[0];
@@ -315,8 +314,8 @@ export default {
         this.editToggle = proId;
         this.editPromotionDesc = selectedPromotion.pro_detail;
         this.newType = selectedPromotion.pro_type;
-        this.start_date = selectedPromotion.start_date;
-        this.stop_date = selectedPromotion.expired_date;
+        this.start_date = selectedPromotion.start_date.substring(0, 10);
+        this.stop_date = selectedPromotion.expired_date.substring(0, 10);
         if (selectedPromotion.pro_type == "free") {
           this.product_free_id = selectedPromotion.product_free;
           this.product_count_need = selectedPromotion.product_count_need;
@@ -329,10 +328,46 @@ export default {
         } else if (selectedPromotion.pro_type == "product_get_discount") {
           this.discount = selectedPromotion.discount;
           this.buy_count_need = selectedPromotion.buy_count_need;
-          this.product_id = selectedPromotion.product_id;
+          this.productId = selectedPromotion.product_id;
         }
       } else {
-        this.editToggle = -1;
+        let data = {};
+        if (type == "free") {
+          data = {
+            pro_detail: this.editPromotionDesc,
+            product_free_id: this.product_free_id,
+            product_count_need: this.product_count_need,
+            discount: this.discount,
+            need_point: this.need_point,
+            need_price: this.need_price,
+            buy_count_need: this.buy_count_need,
+            product_id: this.product_free_id,
+            start_date: this.start_date,
+            expired_date: this.stop_date,
+          };
+        } else {
+          data = {
+            pro_detail: this.editPromotionDesc,
+            product_free_id: this.product_free_id,
+            product_count_need: this.product_count_need,
+            discount: this.discount,
+            need_point: this.need_point,
+            need_price: this.need_price,
+            buy_count_need: this.buy_count_need,
+            product_id: this.productId,
+            start_date: this.start_date,
+            expired_date: this.stop_date,
+          };
+        }
+        axios
+          .put(`http://localhost:3000/promotion/edit/${proId}`, data)
+          .then(() => {
+            this.getPromotionDetail();
+            this.editToggle = -1;
+          })
+          .catch((err) => {
+            alert(err.response.data.details.message);
+          });
       }
     },
     addNewPromotion(lengthOfPro) {
@@ -348,6 +383,8 @@ export default {
           need_price: this.addNeedPirce,
           buy_count_need: this.addBuyCountNeed,
           product_id: this.addProductFreeId,
+          start_date: this.Newstart_date,
+          expired_date: this.Newstop_date,
         };
       } else {
         data = {
@@ -360,6 +397,8 @@ export default {
           need_price: this.addNeedPirce,
           buy_count_need: this.addBuyCountNeed,
           product_id: this.addProductId,
+          start_date: this.Newstart_date,
+          expired_date: this.Newstop_date,
         };
       }
       axios
