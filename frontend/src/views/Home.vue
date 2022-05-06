@@ -158,8 +158,8 @@ export default {
   methods: {
     isLoggedIn(){
       if(!this.user) return false;
-      if(!this.user.user_type !== 'employee') return false
-      return true
+      // if(!this.user.user_type != 'employee') return false
+      return this.user.user_type == 'admin'
     },
     shortContent(content) {
       if (content.length > 150) {

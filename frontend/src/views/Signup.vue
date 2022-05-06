@@ -356,7 +356,7 @@ export default {
             this.cafe_branchid = null;
           })
           .catch((err) => {
-            alert(err.response.data.details.message);
+            alert(err.response.data.message);
           });
       }
     },

@@ -20,14 +20,16 @@ const upload = multer({ storage: storage });
 router = express.Router();
 
 router.get("/cafe/:id/product", function (req, res, next) {
-  const promise1 = pool.query(
-    "SELECT * FROM product WHERE cafe_id=?",
-    [req.params.id]
-  );
+  const promise1 = pool.query("SELECT * FROM product WHERE cafe_id=?", [
+    req.params.id,
+  ]);
   const promise2 = pool.query("SELECT * FROM cafe WHERE cafe_branchid=?", [
     req.params.id,
   ]);
-  const promise3 = pool.query("SELECT * FROM image WHERE cafe_id=?", [req.params.id])
+  const promise3 = pool.query(
+    "select * from image where cafe_id = ? or product_id in (select product_id from product where cafe_id=?)",
+    [req.params.id, req.params.id]
+  );
 
   Promise.all([promise1, promise2, promise3])
     .then((results) => {
@@ -83,7 +85,7 @@ router.post(
         [file.path.substring(6), inserted, cid]
       );
 
-      res.send('Inserted ID' + inserted)
+      res.send("Inserted ID" + inserted);
       await conn.commit();
     } catch (err) {
       console.log(err);
@@ -120,7 +122,7 @@ router.put(
           [file.path.substring(6), pid]
         );
       }
-      res.send('Updated ID' + pid)
+      res.send("Updated ID" + pid);
       await conn.commit();
     } catch (err) {
       console.log(err);
