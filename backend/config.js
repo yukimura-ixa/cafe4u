@@ -12,6 +12,8 @@ const pool = mysql.createPool({
 
   // password: '', //Nook DB
   // database: 'test', //Nook DB
+  // password: '', //Nook DB
+  // database: 'test2', //Nook DB
   
   waitForConnections: true,
   connectionLimit: 10,

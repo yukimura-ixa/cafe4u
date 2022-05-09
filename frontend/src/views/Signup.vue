@@ -211,12 +211,6 @@
                 />
               </div>
               <template v-if="$v.cafe_branchid.$error">
-                <p class="help is-danger" v-if="!$v.cafe_branchid.required">
-                  This field is required
-                </p>
-                <p class="help is-danger" v-if="!$v.cafe_branchid.ageNbranchid">
-                  Invalid Cafe Branch ID
-                </p>
                 <p class="help is-danger" v-if="!$v.cafe_branchid.maxLength">
                   Must be less than 3 characters
                 </p>
@@ -249,9 +243,6 @@ import {
 function mobile(value) {
   return !!value.match(/0[0-9]{9}/);
 }
-function ageNbranchid(value) {
-  return !!value.match(/[0-9]{2}/);
-}
 function complexPassword(value) {
   if (!(value.match(/[a-z]/) && value.match(/[A-Z]/) && value.match(/[0-9]/))) {
     return false;
@@ -277,25 +268,24 @@ export default {
   },
   validations: {
     username: {
-      required,
+      required: required,
       minLength: minLength(5),
       maxLength: maxLength(20),
     },
     first_name: {
-      required,
+      required: required,
       maxLength: maxLength(150),
     },
     last_name: {
-      required,
+      required: required,
       maxLength: maxLength(150),
     },
     email: {
-      required,
+      required: required,
       email,
     },
     age: {
-      required,
-      ageNbranchid: ageNbranchid,
+      required: required,
       maxLength: maxLength(2),
     },
     mobile: {
@@ -314,7 +304,6 @@ export default {
       required: required,
     },
     cafe_branchid: {
-      ageNbranchid: ageNbranchid,
       maxLength: maxLength(2),
     },
   },

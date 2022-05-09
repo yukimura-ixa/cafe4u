@@ -43,22 +43,19 @@ const signupSchema = Joi.object({
   username: Joi.string().required().min(5).max(20).external(usernameValidator),
   age: Joi.string()
     .required()
-    .pattern(/[0-9]{2}/)
     .max(2),
   cafe_branchid: Joi.string()
-    .required()
-    .pattern(/[0-9]{2}/)
     .max(2),
   user_type: Joi.string().required(),
   address: Joi.string().required(),
 });
 
 router.post("/user/signup", async (req, res, next) => {
-  // try {
-  //     await signupSchema.validateAsync(req.body, { abortEarly: false })
-  // } catch (err) {
-  //     return res.status(400).send(err)
-  // }
+  try {
+    await signupSchema.validateAsync(req.body, { abortEarly: false })
+  } catch (err) {
+    return res.status(402).send(err)
+  }
 
   const conn = await pool.getConnection();
   await conn.beginTransaction();
@@ -82,19 +79,20 @@ router.post("/user/signup", async (req, res, next) => {
         password,
         first_name,
         last_name,
-        age,
+        parseInt(age),
         address,
         mobile,
         email,
         user_type,
-        cafe_branchid,
+        parseInt(cafe_branchid),
       ]
     );
-    conn.commit();
+    console.log("go to ..");
+    await conn.commit();
     res.status(201).send();
   } catch (err) {
     console.log(req.body);
-    conn.rollback();
+    await conn.rollback();
     res.status(400).json(err.toString());
   } finally {
     conn.release();

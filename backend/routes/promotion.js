@@ -88,15 +88,23 @@ router.put('/promotion/edit/:id', async function (req, res, next) {
 });
 
 router.delete('/promotion/:id', async function (req, res, next) {
+    const conn = await pool.getConnection()
+    await conn.beginTransaction();
     try {
-        const [rows1, _] = await pool.query('SELECT * FROM promotion_product WHERE pro_id=?;', [req.params.id])
+        const [rows1, _] = await conn.query('SELECT * FROM promotion_product WHERE pro_id=?;', [req.params.id])
         if (rows1.length > 0) {
-            await pool.query("DELETE FROM promotion_product WHERE pro_id=?;", [req.params.id])
+            await conn.query("DELETE FROM promotion_product WHERE pro_id=?;", [req.params.id])
         }
-        await pool.query('DELETE FROM promotion WHERE pro_id=?;', [req.params.id])
+        await conn.query('DELETE FROM promotion WHERE pro_id=?;', [req.params.id])
         res.json("success")
+        await conn.commit()
     } catch (error) {
-        res.status(500).json(error)
+        await conn.rollback();
+        return res.status(500).json(error)
+    }
+    finally {
+        console.log('finally')
+        conn.release();
     }
 });
 

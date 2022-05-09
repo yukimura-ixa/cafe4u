@@ -39,6 +39,7 @@ const updateProfileSchema = Joi.object({
     first_name: Joi.string().required().max(150),
     last_name: Joi.string().required().max(150),
     username: Joi.string().required().min(5).max(20).external(usernameValidator),
+    confirm_password: Joi.string().required().valid(Joi.ref("password")),
     password: Joi.string().required().custom(passwordValidator),
     address: Joi.string().required(),
 })
@@ -54,7 +55,7 @@ router.put('/profile/update/:id', async (req, res, next) => {
     await conn.beginTransaction()
 
     const username = req.body.username
-    const password = req.body.password
+    const password = await bcrypt.hash(req.body.password, 5);
     const first_name = req.body.first_name
     const last_name = req.body.last_name
     const email = req.body.email
