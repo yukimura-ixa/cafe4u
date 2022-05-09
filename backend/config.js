@@ -7,11 +7,11 @@ const pool = mysql.createPool({
   // password: '4545', //Nut DB
   // database: 'test', //Nut DB
 
-  //password: 'admin',  //Art DB
-  //database: 'cafewebpro', //Art DB
+  password: 'admin',  //Art DB
+  database: 'cafewebpro', //Art DB
 
-  password: '', //Nook DB
-  database: 'test', //Nook DB
+  // password: '', //Nook DB
+  // database: 'test', //Nook DB
   
   waitForConnections: true,
   connectionLimit: 10,
